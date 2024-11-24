@@ -11,32 +11,46 @@
 require_once '../config/pdo_db.php';
 
 function generate_random_string($stringLength = 6, $stringType = 'number', $prefix = '') {
-    $characters = '';
-    
+    $characters_num = '0123456789';
+    $characters_lower = 'abcdefghijklmnopqrstuvwxyz';
+    $characters_upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $random_string = '';
+
     switch ($stringType) {
         case 'num':
-            $characters = '0123456789';
+            $characters = $characters_num;
             break;
         case 'lower':
-            $characters = 'abcdefghijklmnopqrstuvwxyz';
+            $characters = $characters_lower;
             break;
         case 'upper':
-            $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $characters = $characters_upper;
             break;
         case 'lowernum':
-            $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            $num_count = ceil($stringLength / 2);
+            $char_count = $stringLength - $num_count;
+            $random_string = str_shuffle(
+                substr(str_shuffle($characters_lower), 0, $char_count) .
+                substr(str_shuffle($characters_num), 0, $num_count)
+            );
             break;
         case 'uppernum':
-            $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            $num_count = ceil($stringLength / 2);
+            $char_count = $stringLength - $num_count;
+            $random_string = str_shuffle(
+                substr(str_shuffle($characters_upper), 0, $char_count) .
+                substr(str_shuffle($characters_num), 0, $num_count)
+            );
             break;
         default:
-            $characters = '0123456789';
+            $characters = $characters_num;
     }
 
-    $random_string = '';
-    $characters_length = strlen($characters);
-    for ($i = 0; $i < $stringLength; $i++) {
-        $random_string .= $characters[rand(0, $characters_length - 1)];
+    if (!empty($characters)) {
+        $characters_length = strlen($characters);
+        for ($i = 0; $i < $stringLength; $i++) {
+            $random_string .= $characters[rand(0, $characters_length - 1)];
+        }
     }
 
     return $prefix . $random_string;
