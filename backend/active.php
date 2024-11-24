@@ -60,17 +60,23 @@ $total_result = $conn->query($total_query);
 $total_row = $total_result->fetch_assoc();
 $total_users = $total_row['total_users'];
 
-$query = "WITH TotalSesi AS (
-    SELECT username, acctsessiontime, acctinputoctets, acctoutputoctets
-    FROM radacct WHERE acctstoptime IS NULL
+$query = "
+WITH TotalSesi AS (
+    SELECT username, 
+           SUM(acctsessiontime) AS total_acctsessiontime, 
+           SUM(acctinputoctets) AS total_acctinputoctets, 
+           SUM(acctoutputoctets) AS total_acctoutputoctets,
+           SUM(CASE WHEN acctstoptime IS NULL THEN acctsessiontime ELSE 0 END) AS last_uptime
+    FROM radacct 
     GROUP BY username
 )
 SELECT ra.username, 
        ra.callingstationid, 
        ra.framedipaddress, 
-       ts.acctsessiontime, 
-       ts.acctinputoctets, 
-       ts.acctoutputoctets, 
+       ts.total_acctsessiontime, 
+       ts.total_acctinputoctets, 
+       ts.total_acctoutputoctets, 
+       ts.last_uptime, 
        ubi.planName, 
        rgc.value AS Max_All_Session
 FROM radacct ra
@@ -78,7 +84,8 @@ JOIN TotalSesi ts ON ra.username = ts.username
 LEFT JOIN userbillinfo ubi ON ra.username = ubi.username
 LEFT JOIN radgroupcheck rgc ON ubi.planName = rgc.groupname AND rgc.attribute = 'Max-All-Session'
 WHERE ra.acctstoptime IS NULL
-GROUP BY ra.username, ra.callingstationid, ra.framedipaddress, ts.acctsessiontime, ts.acctinputoctets, ts.acctoutputoctets, ubi.planName, rgc.value;";
+GROUP BY ra.username, ra.callingstationid, ra.framedipaddress, ts.total_acctsessiontime, ts.total_acctinputoctets, ts.total_acctoutputoctets, ts.last_uptime, ubi.planName, rgc.value;
+";
 
 $result = $conn->query($query);
 
@@ -94,13 +101,13 @@ if ($result->num_rows > 0) {
         if (is_null($row['Max_All_Session'])) {
             $totalTime = "";
         } else {
-            $totalTime = time2str(($row['Max_All_Session']) - ($row['acctsessiontime']));
+            $totalTime = time2str(($row['Max_All_Session']) - ($row['total_acctsessiontime']));
         }
 
-        $uptime = htmlspecialchars(time2str($row['acctsessiontime']));
-        $upload = htmlspecialchars(toxbyte($row['acctinputoctets']));
-        $download = htmlspecialchars(toxbyte($row['acctoutputoctets']));
-        $traffic = htmlspecialchars(toxbyte($row['acctinputoctets'] + $row['acctoutputoctets']));
+        $uptime = htmlspecialchars(time2str($row['last_uptime']));
+        $upload = htmlspecialchars(toxbyte($row['total_acctinputoctets']));
+        $download = htmlspecialchars(toxbyte($row['total_acctoutputoctets']));
+        $traffic = htmlspecialchars(toxbyte($row['total_acctinputoctets'] + $row['total_acctoutputoctets']));
 
         $activeUsers[] = [
             'username' => $username,
