@@ -64,8 +64,8 @@ $query = "
 WITH TotalSesi AS (
     SELECT username, 
            SUM(acctsessiontime) AS total_acctsessiontime, 
-           SUM(acctinputoctets) AS total_acctinputoctets, 
-           SUM(acctoutputoctets) AS total_acctoutputoctets,
+           SUM(CASE WHEN acctstoptime IS NULL THEN acctinputoctets ELSE 0 END) AS total_acctinputoctets,
+           SUM(CASE WHEN acctstoptime IS NULL THEN acctoutputoctets ELSE 0 END) AS total_acctoutputoctets,
            SUM(CASE WHEN acctstoptime IS NULL THEN acctsessiontime ELSE 0 END) AS last_uptime
     FROM radacct 
     GROUP BY username
