@@ -21,7 +21,7 @@ $resultOnlineCount = $conn->query($sqlOnlineCount);
 $rowOnlineCount = $resultOnlineCount->fetch_assoc();
 $totalOnline = $rowOnlineCount['total_online'];
 
-$sqlTotalUser = "SELECT COUNT(*) AS total_user FROM radcheck WHERE username NOT LIKE '%:%' AND username NOT LIKE '%-%'";
+$sqlTotalUser = "SELECT COUNT(DISTINCT username) AS total_user FROM radcheck WHERE username NOT LIKE '%:%' AND username NOT LIKE '%-%'";
 $resultTotalUser = $conn->query($sqlTotalUser);
 $rowTotalUser = $resultTotalUser->fetch_assoc();
 $totalUser = $rowTotalUser['total_user'];
