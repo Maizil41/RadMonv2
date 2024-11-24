@@ -13,9 +13,9 @@ include('../include/billing.edit.php');
 ?>
 
 <div id="sidenav" class="sidenav">
-<a href="../pages/dashboard.php" class="menu "><i class="fa fa-dashboard"></i> Dashboard</a>
+<a href="../pages/dashboard.php" class="menu"><i class="fa fa-dashboard"></i> Dashboard</a>
 <!--hotspot-->
-<div class="dropdown-btn active"><i class="fa fa-wifi"></i> Hotspot
+<div class="dropdown-btn"><i class="fa fa-wifi"></i> Hotspot
 <i class="fa fa-caret-down"></i>
 </div>
 <div class="dropdown-container">
@@ -28,10 +28,10 @@ include('../include/billing.edit.php');
 <a href="../hotspot/generate.php" class=""> &nbsp;&nbsp;&nbsp;<i class="fa fa-user-plus"></i> Generate </a>        
 </div>
 <!--profile-->
-<div class="dropdown-btn active"><i class="fa fa-pie-chart"></i> User Profile<i class="fa fa-caret-down"></i>
+<div class="dropdown-btn "><i class=" fa fa-pie-chart"></i> User Profile<i class="fa fa-caret-down"></i>
 </div>
 <div class="dropdown-container ">
-<a href="../hotspot/profile.php" class="active"> &nbsp;&nbsp;&nbsp;<i class="fa fa-list "></i> Profile List </a>
+<a href="../hotspot/profile.php" class=""> &nbsp;&nbsp;&nbsp;<i class="fa fa-list "></i> Profile List </a>
 <a href="../hotspot/bandwidth.php" class=""> &nbsp;&nbsp;&nbsp;<i class="fa fa-hourglass "></i> Bandwidth List </a>
 </div>
 <!--active-->
@@ -52,8 +52,15 @@ include('../include/billing.edit.php');
 </div>
 <!--system-->
 <a href="../pages/server.php" class="menu"> <i class="fa fa-server"></i> Status </a>
+<!--billing-->
+<div class="dropdown-btn active"><i class="fa fa-credit-card"></i> Billing<i class="fa fa-caret-down"></i>
+</div>
+<div class="dropdown-container ">
+<a href="../billing/request.php" class=""> <i class="fa fa-plus-circle"></i> Topup Request </a>
+<a href="../billing/user.php" class="active"> <i class="fa fa-user"></i> Client List </a>
+</div>
 <!--report-->
-<a href="#" class="menu"><i class="nav-icon fa fa-money"></i> Report</a>
+<a href="../hotspot/report.php" class="menu"><i class="nav-icon fa fa-money"></i> Report</a>
 <!--settings-->
 <div class="dropdown-btn "><i class="fa fa-gear"></i> Settings 
 <i class="fa fa-caret-down"></i> &nbsp;
