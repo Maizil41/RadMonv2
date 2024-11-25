@@ -96,7 +96,7 @@ include ("../include/head.html.php");
                         <table class="table table-sm">
                             <tr>
                                 <td class="align-middle">Username </td>
-                                <td><input class="form-control" id="useradm" type="text" size="10" name="useradm" title="User Admin" value="<?php include('../backend/settings.php'); echo htmlspecialchars($username_value); ?>" required="1" /></td>
+                                <td><input class="form-control" id="useradm" type="text" size="10" name="useradm" title="User Admin" value="<?php include ("../backend/settings.php"); echo htmlspecialchars($username_value); ?>" required="1" /></td>
                             </tr>
                             <tr>
                                 <td class="align-middle">Password </td>

@@ -9,7 +9,7 @@
 *******************************************************************************************************************
 */
 include ("../include/head.html.php");
-include('../include/hotspot.editbw.php');
+include ("../include/hotspot.editbw.php");
 ?>
 
 <div id="sidenav" class="sidenav">

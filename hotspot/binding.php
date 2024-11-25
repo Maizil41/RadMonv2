@@ -9,7 +9,7 @@
 *******************************************************************************************************************
 */
 include ("../include/head.html.php");
-include ('../backend/binding.php');
+include ("../backend/binding.php");
 ?>
 
 <div id="sidenav" class="sidenav">
@@ -157,7 +157,7 @@ include ('../backend/binding.php');
 </tr>
 </thead>
 <tbody>
-<?php include ('../include/hotspot.mac.php'); ?>
+<?php include ("../include/hotspot.mac.php"); ?>
 </div>
 <script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
 <script src="../js/radmon.js"></script>

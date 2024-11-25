@@ -9,7 +9,7 @@
 *******************************************************************************************************************
 */
 include ("../include/head.html.php");
-include('../backend/profile.php');
+include ("../backend/profile.php");
 ?>
 
 <div id="sidenav" class="sidenav">
