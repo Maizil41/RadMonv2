@@ -18,6 +18,19 @@ function loadCache($key) {
     return null;
 }
 
+function getUserIP() {
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    } else {
+        $ip = $_SERVER['REMOTE_ADDR'];
+    }
+    return $ip;
+}
+
+$userIP = getUserIP();
+
 $theme = isset($_GET['themes']) ? $_GET['themes'] : (loadCache('theme') ?? 'blue');
 ?>
 <!DOCTYPE html>
@@ -52,6 +65,7 @@ $theme = isset($_GET['themes']) ? $_GET['themes'] : (loadCache('theme') ?? 'blue
       </div>
       <center>
       <form autocomplete="off" action="../pages/login.php" method="post">
+      <input type="hidden" name="ipaddress" id="ipaddress" value="<?php echo $userIP ?>">
       <table class="table" style="width:90%">
         <tr>
           <td class="align-middle text-center">

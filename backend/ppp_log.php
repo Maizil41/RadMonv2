@@ -12,7 +12,7 @@ require_once '../config/mysqli_db.php';
 
 $sql = "SELECT username, reply, authdate 
         FROM radpostauth 
-        WHERE reply NOT IN ('PPP Login Success', 'PPP Login Failed') 
+        WHERE reply IN ('PPP Login Success', 'PPP Login Failed') 
         ORDER BY id DESC";
 
 $result = $conn->query($sql);

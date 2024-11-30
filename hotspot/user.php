@@ -14,7 +14,6 @@ include ("../backend/alluser.php");
 
 <div id="sidenav" class="sidenav">
 <a href="../pages/dashboard.php" class="menu"><i class="fa fa-dashboard"></i> Dashboard</a>
-
 <!--hotspot-->
 <div class="dropdown-btn active"><i class="fa fa-wifi"></i> Hotspot
 <i class="fa fa-caret-down"></i>
@@ -22,9 +21,9 @@ include ("../backend/alluser.php");
 <div class="dropdown-container ">
 <a href="../hotspot/user.php" class="active"><i class="fa fa-users"></i> Hotspot User</a>
 <a href="../hotspot/profile.php" class=""><i class="fa fa-pie-chart"></i> Hotspot Profile</a>
+<a href="../hotspot/binding.php" class="menu"><i class="fa fa-address-book"></i> MAC Bindings</a>
 <a href="../hotspot/active.php" class=""><i class="fa fa-wifi"></i> Hotspot Active</a>
 </div>
-
 <!--pppoe-->
 <div class="dropdown-btn"><i class="fa fa-sitemap"></i> PPPoE
 <i class="fa fa-caret-down"></i>
@@ -34,9 +33,8 @@ include ("../backend/alluser.php");
 <a href="../pppoe/profile.php" class=""><i class="fa fa-pie-chart"></i> PPPoE Profile</a>
 <a href="../pppoe/active.php" class=""><i class="fa fa-plug"></i> PPPoE Active</a>
 </div>
-
+<!--bandwidth-->
 <a href="../hotspot/bandwidth.php" class=""><i class="fa fa-area-chart "></i> Bandwidth </a>
-
 <!--quick print-->
 <a href="../voucher/quick_print.php" class="menu"> <i class="fa fa-print"></i> Quick Print </a>
 <!--vouchers-->
@@ -46,6 +44,8 @@ include ("../backend/alluser.php");
 </div>
 <div class="dropdown-container">
 <a href="../logs/hotspot.php" class=""> <i class="fa fa-wifi"></i> Hotspot Log </a>
+<a href="../logs/pppoe.php" class=""> <i class="fa fa-sitemap"></i> PPPoE Log </a>
+<a href="../logs/applog.php" class="menu"><i class="fa fa-exclamation-circle"></i> App Log </a>
 <a href="../logs/radius.php" class=""> <i class="fa fa-database"></i> Radius Log </a>
 </div>
 <!--system-->

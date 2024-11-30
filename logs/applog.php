@@ -9,6 +9,7 @@
 *******************************************************************************************************************
 */
 include ("../include/head.html.php");
+include ("../backend/app_log.php");
 ?>
 
 <div id="sidenav" class="sidenav">
@@ -35,16 +36,16 @@ include ("../include/head.html.php");
 <!--bandwidth-->
 <a href="../hotspot/bandwidth.php" class="menu"><i class="fa fa-area-chart "></i> Bandwidth </a>
 <!--quick print-->
-<a href="../voucher/quick_print.php" class="active"><i class="fa fa-print"></i> Quick Print </a>
+<a href="../voucher/quick_print.php" class="menu"><i class="fa fa-print"></i> Quick Print </a>
 <!--vouchers-->
 <a href="../voucher/voucher.php" class="menu"><i class="fa fa-ticket"></i> Vouchers </a>
 <!--log-->
-<div class="dropdown-btn"><i class="fa fa-align-justify"></i> Log<i class="fa fa-caret-down"></i>
+<div class="dropdown-btn active"><i class="fa fa-align-justify"></i> Log<i class="fa fa-caret-down"></i>
 </div>
 <div class="dropdown-container">
 <a href="../logs/hotspot.php" class="menu"><i class="fa fa-wifi"></i> Hotspot Log </a>
 <a href="../logs/pppoe.php" class="menu"><i class="fa fa-sitemap"></i> PPPoE Log </a>
-<a href="../logs/applog.php" class="menu"><i class="fa fa-exclamation-circle"></i> App Log </a>
+<a href="../logs/applog.php" class="active"><i class="fa fa-exclamation-circle"></i> App Log </a>
 <a href="../logs/radius.php" class="menu"><i class="fa fa-database"></i> Radius Log </a>
 </div>
 <!--system-->
@@ -52,7 +53,7 @@ include ("../include/head.html.php");
 <!--billing-->
 <div class="dropdown-btn"><i class="fa fa-credit-card"></i> Billing<i class="fa fa-caret-down"></i>
 </div>
-<div class="dropdown-container">
+<div class="dropdown-container ">
 <a href="../billing/request.php" class="menu"><i class="fa fa-plus-circle "></i> Topup Request </a>
 <a href="../billing/user.php" class="menu"><i class="fa fa-user "></i> Client List </a>
 </div>
@@ -71,38 +72,69 @@ include ("../include/head.html.php");
 <a href="../pages/about.php" class="menu"><i class="fa fa-info-circle"></i> About</a>
 </div>
 
-</div>
 <div id="main">  
-    <div id="loading" class="lds-dual-ring"></div>
-    <div class="main-container" style="display:none">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fa fa-print"></i> Quick Print &nbsp;&nbsp; | &nbsp;&nbsp;<i onclick="location.reload();" class="fa fa-refresh pointer" title="Reload data"></i>
-                            <select class="dropd pd-5" id="prinMode">
-                                <option value="printTickets1.php" disabled selected>Select Ticket</option>
-                                <option value="printTickets1.php">Ticket 1</option>
-                                <option value="printTickets2.php">Ticket 2</option>
-                                <option value="printTickets3.php">Ticket 3</option>
-                                <option value="printTickets4.php">Ticket 4</option>
-                            </select>
-                        </h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="overflow" style="max-height: 80vh">    
-                            <div class="row" id="batch-container">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<div id="loading" class="lds-dual-ring"></div>
+<div class="main-container" style="display:none">
+<div class="row">
+<div class="col-12">
+<div class="card">
+<div class="card-header">
+    <h3><i class=" fa fa-align-justify"></i> App Log &nbsp; | &nbsp;&nbsp;<i onclick="location.reload();" class="fa fa-refresh pointer " title="Reload data"></i></h3>
 </div>
-<script src="../plugins/print.batch.js"></script>
+<div class="card-body">
+
+<div style="max-width: 350px;">
+    <input id="filterTable" type="text" class="form-control" placeholder="Search.."> 
+</div>
+<div style="padding: 5px; max-height: 75vh;" class="mr-t-10 overflow">
+<table class="table table-sm table-bordered table-hover" id="dataTable" >
+	<thead>
+        <tr>
+            <th class="text-center">Username</th>
+            <th class="text-center">Password</th>
+            <th class="text-center">IP Address</th>
+            <th class="text-center">Reply</th>
+            <th class="text-center">Time</th>
+        </tr>
+    </thead>
+	<tbody>
+<?php foreach($user_data as $user) {
+$color = ($user['reply'] == 'Login successful') ? 'green' : 
+(($user['reply'] == 'Login Failed') ? 'red' : 'black');
+echo "
+<tr>
+    <td><center>{$user['username']}</center></td>
+    <td><center>{$user['password']}</center></td>
+    <td><center>{$user['ipaddress']}</center></td>
+    <td style='color: {$color};'><center>{$user['reply']}</center></td>
+    <td><center>{$user['authdate']}</center></td>
+</tr>
+";
+} ?>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
 <script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
 <script src="../js/radmon.js"></script>
+<script>
+$(document).ready(function(){
+  makeAllSortable();
+  $("#filterTable").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#dataTable tbody tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
 </body>
 </html>
 
