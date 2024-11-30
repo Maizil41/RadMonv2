@@ -48,6 +48,7 @@ Features
 - Disconnect Users
 - Income Calculation
 - QRCode Tickets support
+- PPPoE Management Support
 
 Credit
 ---
