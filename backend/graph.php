@@ -10,7 +10,7 @@
 */
 header("Content-Type: application/json");
 
-$interface = 'br-hotspot';
+$interface = 'br-radius';
 
 function getInterfaceSpeed($interface) {
     $output = shell_exec("cat /proc/net/dev | grep $interface");

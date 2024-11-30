@@ -48,7 +48,7 @@ function money($number) {
     return "Rp " . number_format($number, 0, ',', '.');
 }
 try {
-    $sql_total = "SELECT COUNT(*) as total FROM billing_plans WHERE planCode != 'PPPoE'";
+    $sql_total = "SELECT COUNT(*) as total FROM billing_plans WHERE planCode = 'PPPoE'";
     $result_total = $conn->query($sql_total);
     $row_total = $result_total->fetch_assoc();
     $response['total_batches'] = $row_total['total'];
@@ -85,7 +85,7 @@ LEFT JOIN
         bandwidth bw
         ON rgbw.bw_id = bw.id 
 WHERE 
-        bp.planCode <> 'PPPoE'
+        bp.planCode = 'PPPoE'
 ORDER BY 
         bp.id DESC;
     ";

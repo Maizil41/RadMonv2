@@ -53,7 +53,7 @@ $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $limit = 10;
 $offset = ($page - 1) * $limit;
 
-$total_query = "SELECT COUNT(DISTINCT username) AS total_users FROM radacct WHERE acctstoptime IS NULL AND framedprotocol != 'ppp';";
+$total_query = "SELECT COUNT(DISTINCT username) AS total_users FROM radacct WHERE acctstoptime IS NULL AND framedprotocol = 'ppp';";
 $total_result = $conn->query($total_query);
 $total_row = $total_result->fetch_assoc();
 $total_users = $total_row['total_users'];
@@ -76,14 +76,18 @@ SELECT ra.username,
        ts.total_acctoutputoctets, 
        ts.last_uptime, 
        ubi.planName, 
-       rgc.value AS Max_All_Session
+       rgc.value AS Max_All_Session,
+       rc.value AS password,
+       ubi.contactperson
 FROM radacct ra
 JOIN TotalSesi ts ON ra.username = ts.username
 LEFT JOIN userbillinfo ubi ON ra.username = ubi.username
 LEFT JOIN radgroupcheck rgc ON ubi.planName = rgc.groupname AND rgc.attribute = 'Max-All-Session'
+LEFT JOIN radcheck rc ON ra.username = rc.username AND rc.attribute = 'Cleartext-Password'
 WHERE ra.acctstoptime IS NULL
-  AND ra.servicetype != 'Framed-User'
-GROUP BY ra.username, ra.callingstationid, ra.framedipaddress, ts.total_acctsessiontime, ts.total_acctinputoctets, ts.total_acctoutputoctets, ts.last_uptime, ubi.planName, rgc.value;
+  AND ra.servicetype = 'Framed-User'
+GROUP BY ra.username, ra.callingstationid, ra.framedipaddress, ts.total_acctsessiontime, ts.total_acctinputoctets, ts.total_acctoutputoctets, ts.last_uptime, ubi.planName, rgc.value, rc.value, ubi.contactperson;
+
 ";
 
 $result = $conn->query($query);
@@ -92,7 +96,9 @@ $activeUsers = [];
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
+        $clientName = htmlspecialchars($row['contactperson']);
         $username = htmlspecialchars($row['username']);
+        $password = htmlspecialchars($row['password']);
         $usermac = htmlspecialchars($row['callingstationid']);    
         $ip = htmlspecialchars($row['framedipaddress']);
         $plan = htmlspecialchars($row['planName']);
@@ -109,7 +115,9 @@ if ($result->num_rows > 0) {
         $traffic = htmlspecialchars(toxbyte($row['total_acctinputoctets'] + $row['total_acctoutputoctets']));
 
         $activeUsers[] = [
+            'clientName' => $clientName,
             'username' => $username,
+            'password' => $password,
             'mac' => $usermac,
             'ip' => $ip,
             'plan' => $plan,

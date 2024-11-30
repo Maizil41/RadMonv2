@@ -10,117 +10,79 @@
 */
 require_once '../config/mysqli_db.php';
 
-$sqlOnlineCount = "
-    SELECT 
-        COUNT(*) AS total_online
-    FROM radacct ra
-    LEFT JOIN userbillinfo ub ON ra.username = ub.username
-    WHERE ra.acctstoptime IS NULL
-";
+$sqlOnlineCount = "SELECT COUNT(*) AS total_online FROM radacct WHERE acctstoptime IS NULL AND framedprotocol != 'ppp';";
 $resultOnlineCount = $conn->query($sqlOnlineCount);
 $rowOnlineCount = $resultOnlineCount->fetch_assoc();
 $totalOnline = $rowOnlineCount['total_online'];
 
-$sqlTotalUser = "SELECT COUNT(DISTINCT username) AS total_user FROM radcheck WHERE username NOT LIKE '%:%' AND username NOT LIKE '%-%'";
+$sqlTotalUser = "SELECT COUNT(DISTINCT username) AS total_user
+FROM radcheck
+WHERE username NOT LIKE '%:%'
+  AND username NOT LIKE '%-%'
+  AND username NOT IN (
+      SELECT username
+      FROM radcheck
+      WHERE attribute = 'Cleartext-Password'
+  );
+";
 $resultTotalUser = $conn->query($sqlTotalUser);
 $rowTotalUser = $resultTotalUser->fetch_assoc();
 $totalUser = $rowTotalUser['total_user'];
 
-$sqlUserCountToday = "
-    SELECT COUNT(DISTINCT a.username) AS total_user_today
-    FROM radacct a
-    WHERE a.acctstarttime IS NOT NULL AND DATE(a.acctstarttime) = CURDATE()
+$sqlpppOnline = "SELECT COUNT(*) AS online_ppp FROM radacct WHERE acctstoptime IS NULL AND framedprotocol = 'ppp';";
+$resultOnlineppp = $conn->query($sqlpppOnline);
+$rowOnlineppp = $resultOnlineppp->fetch_assoc();
+$pppOnline = $rowOnlineppp['online_ppp'];
+
+$sqlTotalppp = "SELECT COUNT(DISTINCT username) AS total_ppp
+FROM radcheck
+WHERE username NOT LIKE '%:%'
+  AND username NOT LIKE '%-%'
+  AND username IN (
+      SELECT username
+      FROM radcheck
+      WHERE attribute = 'Cleartext-Password'
+  );
 ";
-
-$sqlUserCountYesterday = "
-    SELECT COUNT(DISTINCT a.username) AS total_user_yesterday
-    FROM radacct a
-    WHERE a.acctstoptime IS NOT NULL AND DATE(a.acctstarttime) = CURDATE() - INTERVAL 1 DAY
-";
-
-$resultUserCountToday = $conn->query($sqlUserCountToday);
-$userCountToday = $resultUserCountToday->fetch_assoc()['total_user_today'];
-
-$resultUserCountYesterday = $conn->query($sqlUserCountYesterday);
-$userCountYesterday = $resultUserCountYesterday->fetch_assoc()['total_user_yesterday'];
-
-    if ($userCountYesterday > 0 && $userCountToday > 0) {
-        $percentChange1 = (($userCountToday - $userCountYesterday) / $userCountYesterday) * 100;
-    } else {
-        $percentChange1 = ($userCountToday > 0) ? 100 : 0;
-    }
-
-$percentChangeFormatted1 = number_format($percentChange1, 0) . '%';
+$resultTotalppp = $conn->query($sqlTotalppp);
+$rowTotalppp = $resultTotalppp->fetch_assoc();
+$pppTotal = $rowTotalppp['total_ppp'];
 
 $sqlPendapatanHariIni = "
-SELECT SUM(amount) AS total_pendapatan
+SELECT SUM(amount) AS total_harian
 FROM income
 WHERE DATE(date) = CURDATE();
 ";
 $resultPendapatanHariIni = $conn->query($sqlPendapatanHariIni);
 $rowPendapatanHariIni = $resultPendapatanHariIni->fetch_assoc();
-$totalPendapatanHariIni = $rowPendapatanHariIni['total_pendapatan'];
-
-$sqlPendapatanKemarin = "
-SELECT SUM(amount) AS total_pendapatan
-FROM income
-WHERE DATE(date) = CURDATE() - INTERVAL 1 DAY
-";
-$resultPendapatanKemarin = $conn->query($sqlPendapatanKemarin);
-$rowPendapatanKemarin = $resultPendapatanKemarin->fetch_assoc();
-$totalPendapatanKemarin = $rowPendapatanKemarin['total_pendapatan'];
-
-        if ($totalPendapatanKemarin > 0 && $totalPendapatanHariIni > 0) {
-            $percentChange2 = (($totalPendapatanHariIni - $totalPendapatanKemarin) / $totalPendapatanKemarin) * 100;
-        } else {
-            $percentChange2 = ($totalPendapatanHariIni > 0) ? 100 : 0;
-        }
-
-$percentChangeFormatted2 = number_format(abs($percentChange2), 0) . '%';
-$percentChangeFormatted2 = number_format($percentChange2, 0) . '%';
-
-$totalPendapatanKemarin = number_format($totalPendapatanKemarin, 0);
+$totalPendapatanHariIni = $rowPendapatanHariIni['total_harian'];
 
 $sqlPendapatan_bulanIni = "
-SELECT SUM(amount) AS total_pendapatan
+SELECT SUM(amount) AS total_bulanan
 FROM income
 WHERE YEAR(date) = YEAR(CURDATE()) AND MONTH(date) = MONTH(CURDATE())
 ";
 
 $resultPendapatan_bulanIni = $conn->query($sqlPendapatan_bulanIni);
 $rowPendapatan_bulanIni = $resultPendapatan_bulanIni->fetch_assoc();
+$totalPendapatan_bulanIni = $rowPendapatan_bulanIni['total_bulanan'];
 
-if (is_array($rowPendapatan_bulanIni) && isset($rowPendapatan_bulanIni['total_pendapatan'])) {
-    $totalPendapatan_bulanIni = $rowPendapatan_bulanIni['total_pendapatan'];
-} else {
-    $totalPendapatan_bulanIni = 0;
-}
-
-$sqlPendapatan_bulanLalu = "
-SELECT SUM(amount) AS total_pendapatan
+$sqlPendapatan_tahunIni = "
+SELECT SUM(amount) AS total_tahunan
 FROM income
-WHERE YEAR(date) = YEAR(CURDATE() - INTERVAL 1 MONTH) 
-  AND MONTH(date) = MONTH(CURDATE() - INTERVAL 1 MONTH)
+WHERE YEAR(date) = YEAR(CURDATE())
 ";
 
-$resultPendapatan_bulanLalu = $conn->query($sqlPendapatan_bulanLalu);
-$rowPendapatan_bulanLalu = $resultPendapatan_bulanLalu->fetch_assoc();
+$resultPendapatan_tahunIni = $conn->query($sqlPendapatan_tahunIni);
+$rowPendapatan_tahunIni = $resultPendapatan_tahunIni->fetch_assoc();
+$totalPendapatan_tahunIni = $rowPendapatan_tahunIni['total_tahunan'];
 
-if (is_array($rowPendapatan_bulanLalu) && isset($rowPendapatan_bulanLalu['total_pendapatan'])) {
-    $totalPendapatan_bulanLalu = $rowPendapatan_bulanLalu['total_pendapatan'];
-} else {
-    $totalPendapatan_bulanLalu = 0;
-}
+$sqlPendapatan_total = "
+SELECT SUM(amount) AS total_pendapatan
+FROM income
+";
 
-        if ($totalPendapatan_bulanLalu > 0 && $totalPendapatan_bulanIni > 0) {
-            $percentChange3 = (($totalPendapatan_bulanIni - $totalPendapatan_bulanLalu) / $totalPendapatan_bulanIni) * 100;
-        } else {
-            $percentChange3 = ($totalPendapatan_bulanIni > 0) ? 100 : 0;
-        }
-
-$percentChangeFormatted3 = number_format(abs($percentChange3), 0) . '%';
-$percentChangeFormatted3 = number_format($percentChange3, 0) . '%';
-
-$totalPendapatan_bulanLalu = number_format($totalPendapatan_bulanLalu, 0);
-
+$resultPendapatan_total = $conn->query($sqlPendapatan_total);
+$rowPendapatan_total = $resultPendapatan_total->fetch_assoc();
+$totalPendapatan_total = $rowPendapatan_total['total_pendapatan'];
 ?>

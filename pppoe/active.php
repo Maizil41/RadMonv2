@@ -15,23 +15,23 @@ include ("../include/head.html.php");
 <a href="../pages/dashboard.php" class="menu"><i class="fa fa-dashboard"></i> Dashboard</a>
 
 <!--hotspot-->
-<div class="dropdown-btn active"><i class="fa fa-wifi"></i> Hotspot
+<div class="dropdown-btn"><i class="fa fa-wifi"></i> Hotspot
 <i class="fa fa-caret-down"></i>
 </div>
 <div class="dropdown-container ">
 <a href="../hotspot/user.php" class=""><i class="fa fa-users"></i> Hotspot User</a>
-<a href="../hotspot/profile.php" class="active"><i class="fa fa-pie-chart"></i> Hotspot Profile</a>
+<a href="../hotspot/profile.php" class=""><i class="fa fa-pie-chart"></i> Hotspot Profile</a>
 <a href="../hotspot/active.php" class=""><i class="fa fa-wifi"></i> Hotspot Active</a>
 </div>
 
 <!--pppoe-->
-<div class="dropdown-btn"><i class="fa fa-sitemap"></i> PPPoE
+<div class="dropdown-btn active"><i class="fa fa-sitemap"></i> PPPoE
 <i class="fa fa-caret-down"></i>
 </div>
 <div class="dropdown-container ">
 <a href="../pppoe/account.php" class=""><i class="fa fa-users"></i> PPPoE User</a>
 <a href="../pppoe/profile.php" class=""><i class="fa fa-pie-chart"></i> PPPoE Profile</a>
-<a href="../pppoe/active.php" class=""><i class="fa fa-plug"></i> PPPoE Active</a>
+<a href="../pppoe/active.php" class="active"><i class="fa fa-plug"></i> PPPoE Active</a>
 </div>
 
 <a href="../hotspot/bandwidth.php" class=""><i class="fa fa-area-chart "></i> Bandwidth </a>
@@ -71,39 +71,40 @@ include ("../include/head.html.php");
 <a href="../pages/about.php" class="menu"><i class="fa fa-info-circle"></i> About</a>
 </div>
 
-<div id="main">  
+<div id="main">
 <div id="loading" class="lds-dual-ring"></div>
 <div class="main-container" style="display:none">
 <div class="row">
 <div class="col-12">
 <div class="card">
-<div class="card-header align-middle">
-    <h3><i class=" fa fa-pie-chart"></i> User Profile 
-    &nbsp; | &nbsp; <a href="../hotspot/newprofile.php" title="Add User"><i class="fa fa-plus"></i> Add</a>
-	</h3>
+<div class="card-header">
+<h3><i class="fa fa-sitemap"></i> PPPoE Active <span id="total-users">0</span> item</h3>
 </div>
-<!-- /.card-header -->
-<div class="card-body">
-<div class="overflow box-bordered" style="max-height: 75vh"> 			   
+<div class="card-body overflow">
+<div id="reloadHotspotActive">
 <table id="tFilter" class="table table-bordered table-hover text-nowrap">
-  <thead>
-     <tr> 
-		<th style="min-width:50px;" class="text-center" ><span id="totalBatches">0</span> items</th>
-		<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Name</th>
-		<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Code</th>
-		<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Price</th>
-		<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Duration</th>
-		<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Validity</th>
-		<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Data</th>
-		<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Shared</th>
-		<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Bandwidth</th>
-    </tr>
-  </thead>
-  <tbody>
+<thead>
+<tr>
+<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Client</th>
+<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Username</th>
+<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Password</th>
+<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> IP Address</th>
+<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Mac Address</th>
+<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Profile</th>
+<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Uptime</th>
+<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Time Left</th>
+<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Upload</th>
+<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Download</th>
+<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Total</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
 </table>
 </div>
 <script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
 <script src="../js/radmon.js"></script>
-<script src="../plugins/delete.plans.js"></script>
+<script src="../plugins/active.pppoe.js"></script>
 </body>
 </html>
+

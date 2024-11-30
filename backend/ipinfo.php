@@ -169,7 +169,7 @@ $services = [
     "MySQL" => "mysql",
     "Radiusd" => "radiusd",
     "Chilli" => "chilli",
-    "Openclash" => "openclash"
+    "PPPoE" => "pppoe"
 ];
 
 ?>

@@ -16,31 +16,29 @@ include ("../backend/auth_log.php");
 
 <div id="sidenav" class="sidenav">
 <a href="../pages/dashboard.php" class="menu active"><i class="fa fa-dashboard"></i> Dashboard</a>
+
 <!--hotspot-->
 <div class="dropdown-btn"><i class="fa fa-wifi"></i> Hotspot
 <i class="fa fa-caret-down"></i>
 </div>
-<div class="dropdown-container">
-<!--users--> 
-<div class="dropdown-btn"><i class="fa fa-users"></i> Users<i class="fa fa-caret-down"></i>
+<div class="dropdown-container ">
+<a href="../hotspot/user.php" class=""><i class="fa fa-users"></i> Hotspot User</a>
+<a href="../hotspot/profile.php" class=""><i class="fa fa-pie-chart"></i> Hotspot Profile</a>
+<a href="../hotspot/active.php" class=""><i class="fa fa-wifi"></i> Hotspot Active</a>
 </div>
-<div class="dropdown-container">
-<a href="../hotspot/user.php" class=""> &nbsp;&nbsp;&nbsp;<i class="fa fa-list "></i> User List </a>
-<a href="../hotspot/adduser.php" class=""> &nbsp;&nbsp;&nbsp;<i class="fa fa-user-plus "></i> Add User </a>
-<a href="../hotspot/generate.php" class=""> &nbsp;&nbsp;&nbsp;<i class="fa fa-user-plus"></i> Generate </a>        
-</div>
-<!--profile-->
-<div class="dropdown-btn "><i class=" fa fa-pie-chart"></i> User Profile<i class="fa fa-caret-down"></i>
+
+<!--pppoe-->
+<div class="dropdown-btn"><i class="fa fa-sitemap"></i> PPPoE
+<i class="fa fa-caret-down"></i>
 </div>
 <div class="dropdown-container ">
-<a href="../hotspot/profile.php" class=""> &nbsp;&nbsp;&nbsp;<i class="fa fa-list "></i> Profile List </a>
-<a href="../hotspot/bandwidth.php" class=""> &nbsp;&nbsp;&nbsp;<i class="fa fa-hourglass "></i> Bandwidth List </a>
+<a href="../pppoe/account.php" class=""><i class="fa fa-users"></i> PPPoE User</a>
+<a href="../pppoe/profile.php" class=""><i class="fa fa-pie-chart"></i> PPPoE Profile</a>
+<a href="../pppoe/active.php" class=""><i class="fa fa-plug"></i> PPPoE Active</a>
 </div>
-<!--active-->
-<a href="../hotspot/active.php" class="menu"><i class="fa fa-wifi"></i> Hotspot Active</a>
-<!--ip bindings-->
-<a href="../hotspot/binding.php" class="menu"><i class="fa fa-address-book"></i> MAC Bindings</a>
-</div>
+
+<a href="../hotspot/bandwidth.php" class=""><i class="fa fa-area-chart "></i> Bandwidth </a>
+
 <!--quick print-->
 <a href="../voucher/quick_print.php" class="menu"> <i class="fa fa-print"></i> Quick Print </a>
 <!--vouchers-->
@@ -121,6 +119,7 @@ include ("../backend/auth_log.php");
             </div>
           </div> 
         </div>
+        
         <div class="row">
           <div class="col-12">
             <div id="r_2" class="row">
@@ -135,7 +134,7 @@ include ("../backend/auth_log.php");
                     <div class="col-3 col-box-6">
                       <div class="box bg-blue bmh-75">
                         <a href="../hotspot/active.php">
-                          <h1><span id="dataonline"><?php echo "$totalOnline"; ?></span> <span style="font-size: 15px;">item</span>
+                          <h1><span id="dataonline"><?php echo "$totalOnline"; ?></span> <span style="font-size: 15px;">items</span>
                           </h1>
                           <div>
                             <i class="fa fa-laptop"></i> Hotspot Active
@@ -183,6 +182,70 @@ include ("../backend/auth_log.php");
                 </div>
               </div>
             </div>
+            
+        <div class="row">
+          <div class="col-12">
+            <div id="r_2" class="row">
+              <div class="card">
+                <div class="card-header">
+                  <h3>
+                    <i class="fa fa-sitemap"></i> PPPoE
+                  </h3>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-3 col-box-6">
+                      <div class="box bg-blue bmh-75">
+                        <a href="../pppoe/active.php">
+                          <h1><span id="ppponline"><?php echo "$pppOnline"; ?></span> <span style="font-size: 15px;">items</span>
+                          </h1>
+                          <div>
+                            <i class="fa fa-plug"></i> PPPoE Active
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                    <div class="col-3 col-box-6">
+                      <div class="box bg-green bmh-75">
+                        <a href="../pppoe/account.php">
+                          <h1><span id="ppptotal"><?php echo "$pppTotal"; ?></span> <span style="font-size: 15px;">items</span>
+                          </h1>
+                          <div>
+                            <i class="fa fa-users"></i> PPPoE User
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                    <div class="col-3 col-box-6">
+                      <div class="box bg-yellow bmh-75">
+                          <div>
+                              <h1>Rp <span style="font-size: 22px;" id="incomeyear"><?php echo number_format($totalPendapatan_tahunIni, 0, ',', '.'); ?></span>
+                            </h1>
+                          </div>
+                          <div>
+                            <i class="fa fa-money"></i> Yearly Income
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                    <div class="col-3 col-box-6">
+                      <div class="box bg-red bmh-75">
+                          <div>
+                            <h1>
+                              <h1>Rp <span style="font-size: 22px;" id="incometotal"><?php echo number_format($totalPendapatan_total, 0, ',', '.'); ?></span>
+                            </h1>
+                          </div>
+                          <div>
+                            <i class="fa fa-money"></i> Total Income
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
             <div class="row">
               <!-- Traffic -->
               <div class="col-8">
@@ -219,7 +282,7 @@ include ("../backend/auth_log.php");
                 <div class="card">
                   <div class="card-header">
                     <h3>
-                        <i class="fa fa-align-justify"></i> Hotspot Log </a>
+                        <i class="fa fa-align-justify"></i> Login Log </a>
                         </h3>
                     </div>
                   <div class="card-body">
@@ -233,16 +296,19 @@ include ("../backend/auth_log.php");
                     </tr>
                 </thead>
             <tbody>
-                <?php foreach($user_data as $user){echo"  <tr>
-                    <td><center>{$user['username']}</center></td>
-                        <td style='color: ".($user['reply']=='log in by voucher' || $user['reply'] == 'log in by mac' ? 'green':($user['reply'] == 'login failed, invalid voucher' || $user['reply'] == 'login failed, invalid mac' ? 'red':'black')).";'><center>{$user['reply']}</center></td>
-                            <td><center>{$user['authdate']}</center></td>
-                            </tr>";} ?>
-                        </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <?php foreach($user_data as $user) { ?>
+                <tr>
+                    <td><center><?php echo htmlspecialchars($user['username']); ?></center></td>
+                        <td style="color: 
+                            <?php echo($user['reply']=='log in by voucher'||$user['reply']=='log in by mac'||$user['reply']=='PPP Login Success')?'green':(($user['reply']=='login failed, invalid voucher'||$user['reply']=='login failed, invalid mac'||$user['reply']=='PPP Login Failed')?'red':'black'); ?>;">
+                                <center><?php echo htmlspecialchars($user['reply']); ?></center>
+                                </td>
+                                <td><center><?php echo htmlspecialchars($user['authdate']); ?></center></td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

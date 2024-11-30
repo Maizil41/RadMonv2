@@ -49,50 +49,16 @@ function time2str($time) {
     return rtrim($str, ', ');
 }
 
-$statusFilter = isset($_GET['status']) ? $_GET['status'] : '';
-
-$planNameFilter = isset($_GET['planName']) ? $_GET['planName'] : '';
-
-$total_query = "
-SELECT COUNT(DISTINCT r.username) as total_users 
-FROM radcheck r 
-LEFT JOIN (
-    SELECT username, acctstoptime, acctterminatecause, framedipaddress, acctsessiontime, acctinputoctets, acctoutputoctets 
-    FROM radacct 
-    WHERE (username, acctstarttime) IN (
-        SELECT username, MAX(acctstarttime) 
-        FROM radacct 
-        GROUP BY username
-    )
-) latest_acct ON r.username = latest_acct.username 
-LEFT JOIN userbillinfo u ON r.username = u.username 
-LEFT JOIN billing_plans p ON u.planName = p.planName 
-LEFT JOIN radusergroup ugr ON r.username = ugr.username 
-WHERE ('$statusFilter' = '' OR 
-    CASE 
-        WHEN latest_acct.username IS NULL THEN 'OFFLINE' 
-        WHEN latest_acct.acctterminatecause = 'Session-Timeout' THEN 'EXPIRED' 
-        WHEN latest_acct.acctstoptime IS NOT NULL THEN 'OFFLINE' 
-        WHEN latest_acct.acctstoptime IS NULL THEN 'ONLINE' 
-        ELSE 'OFFLINE' 
-    END = '$statusFilter'
-) 
-AND ('$planNameFilter' = '' OR u.planName = '$planNameFilter') 
-AND r.username NOT LIKE '%:%'
-AND r.username NOT LIKE '%-%'
-AND r.username NOT IN (
-    SELECT username
-    FROM radcheck
-    WHERE attribute = 'Cleartext-Password'
-);
+$total_query = "SELECT COUNT(DISTINCT username) AS total_ppp
+FROM radcheck 
+WHERE attribute = 'Cleartext-Password';
 ";
 
 $total_result = $conn->query($total_query);
 $total_row = $total_result->fetch_assoc();
-$total_users = $total_row['total_users'];
+$total_ppp = $total_row['total_ppp'];
 
-
-$query = "
+$sql = "
 WITH LatestAcct AS (
     SELECT username,
            MAX(acctstarttime) AS latest_acctstarttime
@@ -112,9 +78,9 @@ StatusData AS (
 ),
 AcctSummary AS (
     SELECT username,
-           SUM(acctinputoctets) AS total_input_octets,
-           SUM(acctoutputoctets) AS total_output_octets,
-           SUM(acctsessiontime) AS total_session_time
+           SUM(acctinputoctets) AS total_acctinputoctets,
+           SUM(acctoutputoctets) AS total_acctoutputoctets,
+           SUM(acctsessiontime) AS total_acctsessiontime
     FROM radacct
     GROUP BY username
 ),
@@ -124,17 +90,26 @@ AggregatedData AS (
            u.planName,
            p.planCost,
            ugr.groupname,
-           MAX(a.framedipaddress) AS ip_address,
-           MAX(a.callingstationid) AS mac_address,
-           COALESCE(acs.total_input_octets, 0) AS total_input_octets,
-           COALESCE(acs.total_output_octets, 0) AS total_output_octets,
-           COALESCE(acs.total_session_time, 0) AS total_session_time
+           MAX(CASE WHEN rr.attribute = 'Framed-IP-Address' THEN rr.value END) AS Framed_IP_Address,
+           MAX(a.callingstationid) AS callingstationid,
+           MAX(CASE WHEN rc.attribute = 'Cleartext-Password' THEN rc.value END) AS Password,
+           COALESCE(acs.total_acctinputoctets, 0) AS total_acctinputoctets,
+           COALESCE(acs.total_acctoutputoctets, 0) AS total_acctoutputoctets,
+           COALESCE(acs.total_acctsessiontime, 0) AS total_acctsessiontime
     FROM radcheck r
     LEFT JOIN userbillinfo u ON r.username = u.username
     LEFT JOIN billing_plans p ON u.planName = p.planName
     LEFT JOIN radusergroup ugr ON r.username = ugr.username
     LEFT JOIN AcctSummary acs ON r.username = acs.username
     LEFT JOIN radacct a ON r.username = a.username
+    LEFT JOIN radreply rr ON r.username = rr.username
+    LEFT JOIN radcheck rc ON r.username = rc.username
+    WHERE EXISTS (
+        SELECT 1
+        FROM radcheck rc2
+        WHERE rc2.username = r.username
+          AND rc2.attribute = 'Cleartext-Password'
+    )
     GROUP BY r.username, u.contactperson, u.planName, p.planCost, ugr.groupname
 ),
 FinalData AS (
@@ -143,30 +118,19 @@ FinalData AS (
            ad.planName,
            ad.planCost,
            ad.groupname,
-           ad.ip_address,
-           ad.mac_address,
-           ad.total_input_octets,
-           ad.total_output_octets,
-           ad.total_session_time,
+           ad.Framed_IP_Address,
+           ad.callingstationid,
+           ad.Password,
+           ad.total_acctinputoctets,
+           ad.total_acctoutputoctets,
+           ad.total_acctsessiontime,
            COALESCE(sd.status, 'OFFLINE') AS status
     FROM AggregatedData ad
     LEFT JOIN StatusData sd ON ad.username = sd.username
 )
 SELECT *
-FROM FinalData
-WHERE ('$statusFilter' = '' OR status = '$statusFilter')
-AND ('$planNameFilter' = '' OR planName = '$planNameFilter')
-AND username NOT IN (
-    SELECT username
-    FROM radcheck
-    WHERE attribute = 'Cleartext-Password'
-);
+FROM FinalData;
 ";
-$result = $conn->query($query);
 
-
-function isMacAddress($username) {
-    return preg_match('/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/', $username);
-}
-
+$result = $conn->query($sql);
 ?>

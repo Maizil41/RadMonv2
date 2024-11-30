@@ -9,7 +9,6 @@
 *******************************************************************************************************************
 */
 include ("../include/head.html.php");
-include ("../include/billing.edit.php");
 ?>
 
 <div id="sidenav" class="sidenav">
@@ -26,12 +25,12 @@ include ("../include/billing.edit.php");
 </div>
 
 <!--pppoe-->
-<div class="dropdown-btn"><i class="fa fa-sitemap"></i> PPPoE
+<div class="dropdown-btn active"><i class="fa fa-sitemap"></i> PPPoE
 <i class="fa fa-caret-down"></i>
 </div>
 <div class="dropdown-container ">
 <a href="../pppoe/account.php" class=""><i class="fa fa-users"></i> PPPoE User</a>
-<a href="../pppoe/profile.php" class=""><i class="fa fa-pie-chart"></i> PPPoE Profile</a>
+<a href="../pppoe/profile.php" class="active"><i class="fa fa-pie-chart"></i> PPPoE Profile</a>
 <a href="../pppoe/active.php" class=""><i class="fa fa-plug"></i> PPPoE Active</a>
 </div>
 
@@ -51,11 +50,11 @@ include ("../include/billing.edit.php");
 <!--system-->
 <a href="../pages/server.php" class="menu"> <i class="fa fa-server"></i> Status </a>
 <!--billing-->
-<div class="dropdown-btn active"><i class=" fa fa-credit-card"></i> Billing<i class="fa fa-caret-down"></i>
+<div class="dropdown-btn "><i class=" fa fa-credit-card"></i> Billing<i class="fa fa-caret-down"></i>
 </div>
 <div class="dropdown-container ">
 <a href="../billing/request.php" class=""> <i class="fa fa-plus-circle "></i> Topup Request </a>
-<a href="../billing/user.php" class="active"> <i class="fa fa-user "></i> Client List </a>
+<a href="../billing/user.php" class=""> <i class="fa fa-user "></i> Client List </a>
 </div>
 <!--report-->
 <a href="../hotspot/report.php" class="menu"><i class="nav-icon fa fa-money"></i> Report</a>
@@ -72,67 +71,69 @@ include ("../include/billing.edit.php");
 <a href="../pages/about.php" class="menu"><i class="fa fa-info-circle"></i> About</a>
 </div>
 
-<div id="main">  
-    <div id="loading" class="lds-dual-ring"></div>
+<div id="main">
+<div id="loading" class="lds-dual-ring"></div>
     <div class="main-container" style="display:none">
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3><i class="fa fa-edit"></i> Edit Client : <?php echo htmlspecialchars($uid['username']); ?></h3>
+                        <h3><i class="fa fa-plus"></i> Add Profile &nbsp; | &nbsp; 
+                            <small id="loader" style="display: none;">
+                                <i><i class="fa fa-circle-o-notch fa-spin"></i> Processing...</i>
+                            </small>
+                            <?php if (isset($_GET['message'])): ?>
+                                <small id="message">
+                                    <?php echo htmlspecialchars($_GET['message']); ?>
+                                </small>
+                            <?php endif; ?>
+                        </h3>
                     </div>
                     <div class="card-body">
-                        <form method="post" role="form" action="../backend/update_client.php">
+                        <form method="post" role="form" action="../backend/add.ppp.profile.php" id="addprofile">
                             <div>
-                                <input type="hidden" id="uid" name="uid" value="<?php echo htmlspecialchars($_GET['id']); ?>">
-                                <a class="btn bg-warning" href="../billing/user.php"> <i class="fa fa-close"></i> Close</a>
-                                <button type="submit" name="updateusers" class="btn bg-primary"><i class="fa fa-save"></i> Save</button>
+                                <input type="hidden" id="profileTimeBank" name="profileTimeBank" value="0">
+                                <input type="hidden" id="rate_down" name="rate_down">
+                                <input type="hidden" id="rate_up" name="rate_up">
+                                <a class="btn bg-warning" href="../pppoe/profile.php"> <i class="fa fa-close"></i> Close</a>
+                                <button type="submit" name="updatebillplans" value="top" class="btn bg-primary"><i class="fa fa-save"></i> Save</button>
                             </div>
 
                             <table class="table">
                                 <tr>
-                                    <td>Username</td>
-                                    <td>
-                                        <input type="text" class="form-control" id="username" name="username" maxlength="16" value="<?php echo htmlspecialchars($uid['username']); ?>" required>
-                                    </td>
+                                    <td>Profile Name</td>
+                                    <td><input type="text" class="form-control" id="planName" name="planName" required></td>
                                 </tr>
-                                <tr>
-                                    <td>Password</td>
-                                    <td>
-                                        <input type="text" class="form-control" id="password" name="password" maxlength="16" value="<?php echo htmlspecialchars($uid['password']); ?>" required>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="align-middle">Balance</td>
+                                
+                                <tr id="TimeLimit">
+                                    <td class="align-middle">Duration</td>
                                     <td>
                                         <div class="input-group">
-                                            <div class="input-group-1">
-                                                <input type="text" class="form-control" value="Rp" disabled>
+                                            <div class="input-group-8">
+                                                <input type="number" class="form-control" id="profileTimeBankInput" name="profileTimeBankInput" value="0" min="0">
                                             </div>
-                                            <div class="input-group-11">
-                                                <input type="number" id="balance" class="form-control" name="balance" value="<?php echo htmlspecialchars($uid['balance']); ?>" min="0" required>
+                                            <div class="input-group-4">
+                                                <select class="form-control" id="profileTimeBankSelect" name="profileTimeBankSelect">
+                                                    <option value="M">Menit</option>
+                                                    <option value="H">Jam</option>
+                                                    <option value="D">Hari</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
+
                                 <tr>
-                                    <td class="align-middle">Telegram</td>
+                                    <td>Rate limit</td>
                                     <td>
-                                        <input type="number" class="form-control" id="telegram" name="telegram" value="<?php echo htmlspecialchars($uid['telegram_id']); ?>" oninput="if(this.value.length > 12) this.value = this.value.slice(0,12);" title="Masukkan ID yang valid">
+                                        <select id="bw_id" name="bw_id" class="form-control" required>
+                                            <option value="">Select Bandwidth...</option>
+                                        </select>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="align-middle">WhatsApp</td>
-                                    <td>
-                                        <div class="input-group">
-                                            <div class="input-group-1">
-                                                <input type="number" class="form-control" value="62" disabled>
-                                            </div>
-                                            <div class="input-group-11">
-                                                <input type="text" class="form-control" id="whatsapp" name="whatsapp" value="<?php echo htmlspecialchars($client_phone); ?>" oninput="if(this.value.length > 17) this.value = this.value.slice(0,17);" pattern="[0-9\-]+" title="Masukkan nomor yang valid">
-                                            </div>
-                                        </div>
-                                    </td>
+                                    <td class="align-middle">Selling Price Rp</td>
+                                    <td><input type="number" id="planCost" class="form-control" name="planCost" value="0" min="0" required></td>
                                 </tr>
                             </table>
                         </form>
@@ -144,5 +145,6 @@ include ("../include/billing.edit.php");
 </div>
 <script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
 <script src="../js/radmon.js"></script>
+<script src="../plugins/add.ppp.profile.js"></script>
 </body>
 </html>

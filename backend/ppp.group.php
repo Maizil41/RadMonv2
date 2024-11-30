@@ -19,7 +19,7 @@ WHERE planName IN (
     INTERSECT
     SELECT DISTINCT groupname FROM radgroupreply
 )
-AND planCode != 'PPPoE';
+AND planCode = 'PPPoE';
 ";
 
 $result_combined = $conn->query($sql_combined);

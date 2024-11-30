@@ -15,21 +15,21 @@ include ("../include/head.html.php");
 <a href="../pages/dashboard.php" class="menu"><i class="fa fa-dashboard"></i> Dashboard</a>
 
 <!--hotspot-->
-<div class="dropdown-btn active"><i class="fa fa-wifi"></i> Hotspot
+<div class="dropdown-btn"><i class="fa fa-wifi"></i> Hotspot
 <i class="fa fa-caret-down"></i>
 </div>
 <div class="dropdown-container ">
-<a href="../hotspot/user.php" class="active"><i class="fa fa-users"></i> Hotspot User</a>
+<a href="../hotspot/user.php" class=""><i class="fa fa-users"></i> Hotspot User</a>
 <a href="../hotspot/profile.php" class=""><i class="fa fa-pie-chart"></i> Hotspot Profile</a>
 <a href="../hotspot/active.php" class=""><i class="fa fa-wifi"></i> Hotspot Active</a>
 </div>
 
 <!--pppoe-->
-<div class="dropdown-btn"><i class="fa fa-sitemap"></i> PPPoE
+<div class="dropdown-btn active"><i class="fa fa-sitemap"></i> PPPoE
 <i class="fa fa-caret-down"></i>
 </div>
 <div class="dropdown-container ">
-<a href="../pppoe/account.php" class="active"><i class="fa fa-users"></i> PPPoE User</a>
+<a href="../pppoe/account.php" class="actives"><i class="fa fa-users"></i> PPPoE User</a>
 <a href="../pppoe/profile.php" class=""><i class="fa fa-pie-chart"></i> PPPoE Profile</a>
 <a href="../pppoe/active.php" class=""><i class="fa fa-plug"></i> PPPoE Active</a>
 </div>
@@ -79,7 +79,7 @@ include ("../include/head.html.php");
 <div class="card box-bordered">
 <div class="card-header">
 <h3>
-    <i class="fa fa-user-plus"></i> Add User &nbsp; | &nbsp;
+    <i class="fa fa-user-plus"></i> Add Account &nbsp; | &nbsp;
     <small id="loader" style="display: none;">
         <i><i class="fa fa-circle-o-notch fa-spin"></i> Processing...</i>
     </small>
@@ -91,9 +91,9 @@ include ("../include/head.html.php");
 </h3>
 </div>
 <div class="card-body">
-    <form method="post" role="form" action="../backend/adduser.php" id="addUserForm">
+    <form method="post" role="form" action="../backend/add.pppoe.php" id="addUserForm">
         <div>
-            <a class="btn bg-warning" href="../hotspot/user.php">
+            <a class="btn bg-warning" href="../pppoe/account.php">
                 <i class="fa fa-close"></i> Close
             </a>
             <button type="submit" name="addUser" value="top" class="btn bg-primary">
@@ -103,15 +103,27 @@ include ("../include/head.html.php");
 
         <table class="table">
             <tr>
-                <td class="align-middle">Username</td>
-                <td>
-                    <input class="form-control" type="text" autocomplete="off" id="usernameTop" name="username" required autofocus>
-                </td>
-            </tr>
-            <tr>
                 <td class="align-middle">Client Name</td>
                 <td>
                     <input class="form-control" type="text" autocomplete="off" id="clientName" name="clientName" autofocus>
+                </td>
+            </tr>
+            <tr>
+                <td class="align-middle">Username</td>
+                <td>
+                    <input class="form-control" type="text" autocomplete="off" id="Username" name="Username" required autofocus>
+                </td>
+            </tr>
+            <tr>
+                <td class="align-middle">Password</td>
+                <td>
+                    <input class="form-control" type="text" autocomplete="off" id="Password" name="Password" required autofocus>
+                </td>
+            </tr>
+            <tr>
+                <td class="align-middle">IP Address</td>
+                <td>
+                    <input class="form-control" type="text" autocomplete="off" id="ip_address" name="ip_address" required autofocus>
                 </td>
             </tr>
             <tr>
@@ -120,18 +132,6 @@ include ("../include/head.html.php");
                     <select class="form-control" id="planDropup" name="planName" autocomplete="off">
                         <option value="">Select Plan</option>
                     </select>
-                </td>
-            </tr>
-            <tr>
-                <td class="align-middle">WhatsApp</td>
-                <td>
-                    <input class="form-control" type="tel" autocomplete="off" id="Whatsapp_number" name="Whatsapp_number" placeholder="">
-                </td>
-            </tr>
-            <tr>
-                <td class="align-middle">Telegram</td>
-                <td>
-                    <input class="form-control" type="text" title="No special characters" id="comment" autocomplete="off" name="comment">
                 </td>
             </tr>
         </table>
@@ -168,6 +168,6 @@ include ("../include/head.html.php");
 </div>
 <script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
 <script src="../js/radmon.js"></script>
-<script src="../plugins/add.user.js"></script>
+<script src="../plugins/add.pppoe.js"></script>
 </body>
 </html>
