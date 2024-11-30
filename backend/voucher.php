@@ -20,6 +20,8 @@ LEFT JOIN
     ON rug.groupname = bp.planName
     AND rug.username NOT LIKE '%:%'
     AND rug.username NOT LIKE '%-%'
+WHERE 
+    bp.planCode <> 'PPPoE'
 GROUP BY 
     bp.planName
 
@@ -33,6 +35,7 @@ FROM
 WHERE 
     rc.username NOT LIKE '%:%'
     AND rc.username NOT LIKE '%-%'
+    AND rc.attribute <> 'Cleartext-Password'
 ORDER BY 
     CASE 
         WHEN planName = 'All Users' THEN 0 

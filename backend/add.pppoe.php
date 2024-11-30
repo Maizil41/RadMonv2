@@ -18,32 +18,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $plan_name = isset($_POST['planName']) ? trim($_POST['planName']) : '';
     $now = date('Y-m-d H:i:s');
     $iprange = $ip_address . "-" . $ip_address;
+    
+    if (!empty($ip_address)) {
+        $check_stmt = $conn->prepare("SELECT COUNT(*) FROM radreply WHERE value = ?");
+        $check_stmt->bind_param("s", $ip_address);
+        $check_stmt->execute();
+        $check_stmt->bind_result($count);
+        $check_stmt->fetch();
+        $check_stmt->close();
 
-    $query = "SELECT r.bw_id, b.rate_down, b.rate_up 
-              FROM radgroupbw r
-              JOIN bandwidth b ON r.bw_id = b.id 
-              WHERE r.groupname = ?";
-    $stmt = $conn->prepare($query);
+        if ($count > 0) {
+            $message = urlencode("❌ IP Address already exists.");
+            header('Location: ../pppoe/add_account.php?message=' . $message);
+            exit();
+        
+            }
+        }
+
+    $stmt = $conn->prepare("SELECT r.bw_id, b.rate_down, b.rate_up 
+                            FROM radgroupbw r
+                            JOIN bandwidth b ON r.bw_id = b.id 
+                            WHERE r.groupname = ?");
     $stmt->bind_param("s", $plan_name);
     $stmt->execute();
     $stmt->bind_result($bw_id, $rate_down, $rate_up);
-    
+
     if ($stmt->fetch()) {
-        $stmt->close();
-        
         $dspeed = number_format(($rate_down / 1048576) * 125) . "kb/s";
         $uspeed = number_format(($rate_up / 1048576) * 125) . "kb/s";
-        
-        shell_exec("iptables -I FORWARD -m iprange --dst-range $iprange -m hashlimit --hashlimit-above $dspeed --hashlimit-mode dstip --hashlimit-name $username -j DROP -m comment --comment $username");
-        shell_exec("iptables -I FORWARD -m iprange --src-range $iprange -m hashlimit --hashlimit-above $uspeed --hashlimit-mode srcip --hashlimit-name $username -j DROP -m comment --comment $username");
-        
-    } else {
-        $stmt->close();
-        $message = urlencode("❌ Plan tidak ditemukan.");
-        header('Location: ../pppoe/add_account.php?message=' . $message);
-        exit();
-    }
 
+        $stmt->close();
+    }
+    
     if (!empty($username)) {
         $check_stmt = $conn->prepare("SELECT COUNT(*) FROM radcheck WHERE username = ?");
         $check_stmt->bind_param("s", $username);
@@ -136,6 +142,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     $conn->commit();
                     
+                    shell_exec("iptables -I FORWARD -m iprange --dst-range $iprange -m hashlimit --hashlimit-above $dspeed --hashlimit-mode dstip --hashlimit-name $username -j DROP -m comment --comment $username");
+                    shell_exec("iptables -I FORWARD -m iprange --src-range $iprange -m hashlimit --hashlimit-above $uspeed --hashlimit-mode srcip --hashlimit-name $username -j DROP -m comment --comment $username");
+                
                     $message = urlencode("✅ User successfully added.");
                     header('Location: ../pppoe/add_account.php?message=' . $message);
                     exit();

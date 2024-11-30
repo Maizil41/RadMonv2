@@ -129,7 +129,7 @@ include ("../include/head.html.php");
             <tr>
                 <td class="align-middle">Profile</td>
                 <td>
-                    <select class="form-control" id="planDropup" name="planName" autocomplete="off">
+                    <select class="form-control" id="planDropup" name="planName" required autocomplete="off">
                         <option value="">Select Plan</option>
                     </select>
                 </td>
