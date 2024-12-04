@@ -99,7 +99,7 @@ include ("../backend/auth_log.php");
               <div class="box-group-icon"><i class="fa fa-info-circle"></i></div>
               <div class="box-group-area">
                 <span>
-                  Board Name: <?php echo "$board"; ?><br/>
+                  Hostname: <?php echo "$host"; ?><br/>
                   Model: <?php echo "$model"; ?><br/>
                   Router OS: <?php echo "$id $version"; ?>
                 </span>

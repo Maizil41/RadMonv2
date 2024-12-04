@@ -10,7 +10,7 @@
 */
 require_once '../config/mysqli_db.php';
 
-$sql = "SELECT username, reply, authdate 
+$sql = "SELECT username, pass, reply, authdate 
         FROM radpostauth 
         WHERE reply IN ('PPP Login Success', 'PPP Login Failed') 
         ORDER BY id DESC";
@@ -21,11 +21,13 @@ $user_data = [];
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $username = htmlspecialchars($row['username']);
+        $password = htmlspecialchars($row['pass']);
         $reply = htmlspecialchars($row['reply']);
         $authdate = htmlspecialchars($row['authdate']);
 
         $user_data[] = [
             'username' => $username,
+            'password' => $password,
             'reply' => $reply,
             'authdate' => $authdate
         ];
@@ -33,6 +35,7 @@ if ($result->num_rows > 0) {
 } else {
     $user_data[] = [
         'username' => '',
+        'password' => '',
         'reply' => '',
         'authdate' => ''
     ];

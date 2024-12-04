@@ -91,6 +91,7 @@ include ("../backend/ppp_log.php");
 	<thead>
         <tr>
             <th class="text-center">Username</th>
+            <th class="text-center">Password</th>
             <th class="text-center">Reply</th>
             <th class="text-center">Time</th>
         </tr>
@@ -102,6 +103,7 @@ $color = ($user['reply'] == 'PPP Login Success') ? 'green' :
 echo "
 <tr>
     <td><center>{$user['username']}</center></td>
+    <td><center>{$user['password']}</center></td>
     <td style='color: {$color};'><center>{$user['reply']}</center></td>
     <td><center>{$user['authdate']}</center></td>
 </tr>

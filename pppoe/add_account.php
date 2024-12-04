@@ -75,7 +75,7 @@ include ("../include/head.html.php");
 <div id="loading" class="lds-dual-ring"></div>
 <div class="main-container" style="display:none">
 <div class="row">
-<div class="col-8">
+<div class="col-12">
 <div class="card box-bordered">
 <div class="card-header">
 <h3>
@@ -136,35 +136,6 @@ include ("../include/head.html.php");
             </tr>
         </table>
     </form>
-</div>
-</div>
-</div>
-<div class="col-4">
-  <div class="card">
-    <div class="card-header">
-      <h3>
-        <i class="fa fa-book"></i> Read Me
-      </h3>
-    </div>
-    <div class="card-body">
-      <table>
-        <tr>
-        <table class="table table-bordered">
-          <td colspan="2">
-                <ul>
-                    <li>Username : Kode Voucher</li>
-                    <li>Client Name : Nama pelanggan</li>
-                    <li>WhatsApp : Nomor WA Pelanggan (Diawali 62)</li>
-                    <li>Telegram : ID Telegram Pelanggan.</li><br>
-                </ul>
-            <p style="padding:0px 5px;"><b>NOTES:</b>
-            Yang wajib diisi hanya Username, sisanya opsional<br>
-            Abaikan jika tidak ingin diisi</p>
-          </td>
-        </tr>
-      </table>
-    </div>
-  </div>
 </div>
 <script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
 <script src="../js/radmon.js"></script>

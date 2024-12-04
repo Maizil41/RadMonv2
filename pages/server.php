@@ -100,7 +100,7 @@ include ("../backend/ipinfo.php");
                 <i class="fa fa-info-circle"></i>
               </div>
               <div class="box-group-area">
-                <span> Board Name : <?php echo "$board"; ?> <br /> Model : <?php echo "$model"; ?> <br /> Router OS : <?php echo "$id $version"; ?> </span>
+                <span> Board Name : <?php echo "$host"; ?> <br /> Model : <?php echo "$model"; ?> <br /> Router OS : <?php echo "$id $version"; ?> </span>
               </div>
             </div>
           </div>

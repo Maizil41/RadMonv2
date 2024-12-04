@@ -144,5 +144,5 @@ if (file_exists("/usr/bin/cpustat") && is_executable("/usr/bin/cpustat")) {
 $model = htmlspecialchars($model);
 $uptime = htmlspecialchars($time);
 $load = htmlspecialchars($load);
-$board = 'AMLogic';
+$host = gethostname();
 ?> 
