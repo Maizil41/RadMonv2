@@ -48,6 +48,7 @@ Features
 - Disconnect Users
 - Income Calculation
 - QRCode Tickets support
+- PPPoE Management ([RadMon V2 Dev](https://github.com/Maizil41/RadMonv2/tree/dev))
 
 Credit
 ---
