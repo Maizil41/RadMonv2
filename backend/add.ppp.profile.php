@@ -150,6 +150,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $query_reply = "INSERT INTO radgroupreply (groupname, attribute, op, value) VALUES ";
         $params_reply = [];
         $values_reply = [];
+        
+        if (!empty($down)) {
+            $values_reply[] = "(?, 'WISPr-Bandwidth-Max-Down', ':=', ?)";
+            $params_reply[] = $planName;
+            $params_reply[] = $down;
+        }
+
+        if (!empty($up)) {
+            $values_reply[] = "(?, 'WISPr-Bandwidth-Max-Up', ':=', ?)";
+            $params_reply[] = $planName;
+            $params_reply[] = $up;
+        }
 
         $values_reply[] = "(?, 'Acct-Interim-Interval', ':=', '60')";
         $params_reply[] = $planName;

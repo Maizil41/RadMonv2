@@ -203,7 +203,7 @@ include ("../include/head.html.php");
                                 <tr>
                                     <td>Rate limit</td>
                                     <td>
-                                        <select id="bw_id" name="bw_id" class="form-control" required>
+                                        <select id="bw_id" name="bw_id" class="form-control">
                                             <option value="">Select Bandwidth...</option>
                                         </select>
                                     </td>

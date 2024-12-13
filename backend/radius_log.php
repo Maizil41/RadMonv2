@@ -23,18 +23,18 @@ $log = array_reverse($log);
 
 $logString = '';
 foreach ($log as $line) {
-    if (strpos($line, 'Login incorrect') !== false) {
-        if (preg_match('/\[([A-Fa-f0-9]{2}[:-]){5}[A-Fa-f0-9]{2}\//', $line)) {
-            continue;
-        }
-    }
+    #if (strpos($line, 'Login incorrect') !== false) {
+    #    if (preg_match('/\[([A-Fa-f0-9]{2}[:-]){5}[A-Fa-f0-9]{2}\//', $line)) {
+    #        continue;
+    #    }
+    #}
 
     $encodedLine = htmlspecialchars($line);
     $encodedLine = str_replace(
         ['Login OK', 'LogOut OK', 'Login incorrect'],
-        ['<span style="color:green;">Login OK</span>', 
-         '<span style="color:orange;">LogOut OK</span>', 
-         '<span style="color:red;">Login incorrect</span>'],
+        ['<span style="color:#4DBD74;">Login OK</span>', 
+         '<span style="color:#FFC107;">LogOut OK</span>', 
+         '<span style="color:#FF0000;">Login incorrect</span>'],
         $encodedLine
     );
     

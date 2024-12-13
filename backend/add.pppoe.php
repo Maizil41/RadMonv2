@@ -35,20 +35,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
 
-    $stmt = $conn->prepare("SELECT r.bw_id, b.rate_down, b.rate_up 
-                            FROM radgroupbw r
-                            JOIN bandwidth b ON r.bw_id = b.id 
-                            WHERE r.groupname = ?");
-    $stmt->bind_param("s", $plan_name);
-    $stmt->execute();
-    $stmt->bind_result($bw_id, $rate_down, $rate_up);
+    # $stmt = $conn->prepare("SELECT r.bw_id, b.rate_down, b.rate_up 
+    #                         FROM radgroupbw r
+    #                         JOIN bandwidth b ON r.bw_id = b.id 
+    #                         WHERE r.groupname = ?");
+    # $stmt->bind_param("s", $plan_name);
+    # $stmt->execute();
+    # $stmt->bind_result($bw_id, $rate_down, $rate_up);
 
-    if ($stmt->fetch()) {
-        $dspeed = number_format(($rate_down / 1048576) * 125) . "kb/s";
-        $uspeed = number_format(($rate_up / 1048576) * 125) . "kb/s";
+    # if ($stmt->fetch()) {
+    #     $dspeed = number_format(($rate_down / 1048576) * 125) . "kb/s";
+    #     $uspeed = number_format(($rate_up / 1048576) * 125) . "kb/s";
 
-        $stmt->close();
-    }
+    #     $stmt->close();
+    # }
     
     if (!empty($username)) {
         $check_stmt = $conn->prepare("SELECT COUNT(*) FROM radcheck WHERE username = ?");
@@ -142,8 +142,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     $conn->commit();
                     
-                    shell_exec("iptables -I FORWARD -m iprange --dst-range $iprange -m hashlimit --hashlimit-above $dspeed --hashlimit-mode dstip --hashlimit-name $username -j DROP -m comment --comment $username");
-                    shell_exec("iptables -I FORWARD -m iprange --src-range $iprange -m hashlimit --hashlimit-above $uspeed --hashlimit-mode srcip --hashlimit-name $username -j DROP -m comment --comment $username");
+                    # shell_exec("iptables -I FORWARD -m iprange --dst-range $iprange -m hashlimit --hashlimit-above $dspeed --hashlimit-mode dstip --hashlimit-name $username -j DROP -m comment --comment $username");
+                    # shell_exec("iptables -I FORWARD -m iprange --src-range $iprange -m hashlimit --hashlimit-above $uspeed --hashlimit-mode srcip --hashlimit-name $username -j DROP -m comment --comment $username");
                 
                     $message = urlencode("✅ User successfully added.");
                     header('Location: ../pppoe/add_account.php?message=' . $message);

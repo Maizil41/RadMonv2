@@ -266,7 +266,7 @@ include ("../backend/auth_log.php");
                     <tr>
                       <td><center><?php echo htmlspecialchars($user['username']); ?></center></td>
                       <td style="color: 
-                        <?php echo ($user['reply']=='log in by voucher'||$user['reply']=='log in by mac'||$user['reply']=='PPP Login Success') ? 'green' : (($user['reply']=='login failed, invalid voucher'||$user['reply']=='login failed, invalid mac'||$user['reply']=='PPP Login Failed') ? 'red' : 'black'); ?>;">
+                        <?php echo ($user['reply']=='log in by voucher'||$user['reply']=='log in by mac'||$user['reply']=='PPP Login Success') ? '#4DBD74' : (($user['reply']=='login failed, invalid voucher'||$user['reply']=='login failed, invalid mac'||$user['reply']=='PPP Login Failed') ? '#FF0000' : 'black'); ?>;">
                         <center><?php echo htmlspecialchars($user['reply']); ?></center>
                       </td>
                       <td><center><?php echo htmlspecialchars($user['authdate']); ?></center></td>

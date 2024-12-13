@@ -99,8 +99,8 @@ include ("../backend/app_log.php");
     </thead>
 	<tbody>
 <?php foreach($user_data as $user) {
-$color = ($user['reply'] == 'Login successful') ? 'green' : 
-(($user['reply'] == 'Login Failed') ? 'red' : 'black');
+$color = ($user['reply'] == 'Login successful') ? '#4DBD74' : 
+(($user['reply'] == 'Login Failed') ? 'red' : '#FF0000');
 echo "
 <tr>
     <td><center>{$user['username']}</center></td>

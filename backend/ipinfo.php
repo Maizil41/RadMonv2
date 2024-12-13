@@ -41,7 +41,7 @@ function executeCommand($command)
     return trim(shell_exec($command));
 }
 
-function printWan()
+function printWan1()
 {
     $output = "";
     $firewallZones = explode(
@@ -56,6 +56,9 @@ function printWan()
                 executeCommand("uci -q get firewall.$zone.network")
             );
             foreach ($networks as $device) {
+                if ($device === "wan2") {
+                    continue;
+                }
                 $status = executeCommand(
                     "ubus call network.interface.$device status 2>/dev/null"
                 );
@@ -68,7 +71,46 @@ function printWan()
                             !empty($ip4) && !empty($subnet4)
                                 ? "$ip4/$subnet4"
                                 : $ip4;
-                        $output .= "WAN: $ip4 <br>";
+                        $output .= "WAN1: $ip4 <br>";
+                    }
+                }
+            }
+        }
+    }
+    return $output;
+}
+
+function printWan2()
+{
+    $output = "";
+    $firewallZones = explode(
+        "\n",
+        executeCommand("uci -q show firewall | grep .masq= | cut -f2 -d.")
+    );
+    foreach ($firewallZones as $zone) {
+        $isMasquerading = executeCommand("uci -q get firewall.$zone.masq");
+        if ($isMasquerading === "1") {
+            $networks = explode(
+                " ",
+                executeCommand("uci -q get firewall.$zone.network")
+            );
+            foreach ($networks as $device) {
+                if ($device === "wan1") {
+                    continue;
+                }
+                $status = executeCommand(
+                    "ubus call network.interface.$device status 2>/dev/null"
+                );
+                if (!empty($status)) {
+                    $statusData = json_decode($status, true);
+                    if (isset($statusData["ipv4-address"][0])) {
+                        $ip4 = $statusData["ipv4-address"][0]["address"] ?? "";
+                        $subnet4 = $statusData["ipv4-address"][0]["mask"] ?? "";
+                        $ip4 =
+                            !empty($ip4) && !empty($subnet4)
+                                ? "$ip4/$subnet4"
+                                : $ip4;
+                        $output .= "WAN2: $ip4 <br>";
                     }
                 }
             }
@@ -94,7 +136,7 @@ function printLan()
                 executeCommand("uci -q get firewall.$zone.network")
             );
             foreach ($networks as $device) {
-                if ($device === "hotspot") {
+                if ($device === "hotspot" || $device === "pppoe_server") {
                     continue;
                 }
                 $status = executeCommand(
@@ -159,6 +201,46 @@ function printHotspot()
     return $output;
 }
 
+function printPPPoE()
+{
+    $output = "";
+    $firewallZones = explode(
+        "\n",
+        executeCommand(
+            "uci -q show firewall | grep ']=zone' | cut -f2 -d. | cut -f1 -d="
+        )
+    );
+    foreach ($firewallZones as $zone) {
+        $isMasquerading = executeCommand("uci -q get firewall.$zone.masq");
+        if ($isMasquerading !== "1") {
+            $networks = explode(
+                " ",
+                executeCommand("uci -q get firewall.$zone.network")
+            );
+            foreach ($networks as $device) {
+                if ($device !== "pppoe_server") {
+                    continue;
+                }
+                $status = executeCommand(
+                    "ubus call network.interface.$device status 2>/dev/null"
+                );
+                if (!empty($status)) {
+                    $statusData = json_decode($status, true);
+                    if (isset($statusData["ipv4-address"][0])) {
+                        $ip4 = $statusData["ipv4-address"][0]["address"] ?? "";
+                        $subnet4 = $statusData["ipv4-address"][0]["mask"] ?? "";
+                        $ip4 =
+                            !empty($ip4) && !empty($subnet4)
+                                ? "$ip4/$subnet4"
+                                : $ip4;
+                        $output .= "PPPoE: $ip4 <br>";
+                    }
+                }
+            }
+        }
+    }
+    return $output;
+}
 function check_service_status($service_name) {
     $command = "pgrep $service_name";
     $output = shell_exec($command);

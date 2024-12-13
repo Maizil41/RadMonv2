@@ -100,7 +100,7 @@ include ("../backend/ipinfo.php");
                 <i class="fa fa-info-circle"></i>
               </div>
               <div class="box-group-area">
-                <span> Board Name : <?php echo "$host"; ?> <br /> Model : <?php echo "$model"; ?> <br /> Router OS : <?php echo "$id $version"; ?> </span>
+                <span> Hostname : <?php echo "$host"; ?> <br /> Model : <?php echo "$model"; ?> <br /> Router OS : <?php echo "$id $version"; ?> </span>
               </div>
             </div>
           </div>
@@ -152,8 +152,8 @@ include ("../backend/ipinfo.php");
                 <span> 
                 <?php
                 echo printLan();
-                echo printWan();
-                echo printHotspot();
+                echo printWan1();
+                echo printWan2();
                 ?>
                 </span>
             </div>

@@ -98,8 +98,8 @@ include ("../backend/ppp_log.php");
     </thead>
 	<tbody>
 <?php foreach($user_data as $user) {
-$color = ($user['reply'] == 'PPP Login Success') ? 'green' : 
-(($user['reply'] == 'PPP Login Failed') ? 'red' : 'black');
+$color = ($user['reply'] == 'PPP Login Success') ? '#4DBD74' : 
+(($user['reply'] == 'PPP Login Failed') ? 'red' : '#FF0000');
 echo "
 <tr>
     <td><center>{$user['username']}</center></td>
