@@ -44,6 +44,7 @@ if ($result->num_rows > 0) {
 
         echo"
             <td><center>
+                <input type='checkbox' class='delete-checkbox' value='" . htmlspecialchars($username) . "'>&nbsp;&nbsp;
                 <span class='fa fa-trash text-danger pointer' onclick=\"deleteUser('" . htmlspecialchars($username) . "')\"></span>&nbsp;&nbsp;
                 <span class='fa fa-refresh text-warning pointer' onclick=\"resetuser('" . htmlspecialchars($username) . "')\"></span>
             </td>
@@ -72,4 +73,6 @@ if ($result->num_rows > 0) {
         <tr><td colspan='11'><center>Tidak ada data</center></td></tr>";
 }
 echo "<script>function printTicket(username,planName){var selectElement=document.getElementById('selectPrinter'+username);var selectedPrinter=selectElement.value;var url='../voucher/'+selectedPrinter+'?type=batch&plan='+encodeURIComponent(planName)+'&accounts=Username,Password||'+encodeURIComponent(username)+',Accept';var newWindow=window.open(url,'_blank','width=800,height=600,scrollbars=yes');newWindow.onload=function(){newWindow.print()}}</script>";
+echo "<script>document.getElementById('deleteSelected').addEventListener('click',function(){const checkboxes=document.querySelectorAll('.delete-checkbox:checked');const selectedUsers=Array.from(checkboxes).map(checkbox=>checkbox.value);if(selectedUsers.length===0){alert('Tidak ada pengguna yang dipilih.');return}
+if(confirm('Apakah Anda yakin ingin menghapus pengguna yang dipilih?')){fetch('../backend/delete_selected.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({users:selectedUsers})}).then(response=>response.json()).then(data=>{if(data.success){location.reload()}else{alert('Gagal menghapus pengguna.')}}).catch(error=>console.error('Error:',error))}});</script>";
 ?>
