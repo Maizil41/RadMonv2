@@ -11,6 +11,7 @@
 <hr>
 
 <p align="center">
+<a href="https://sociabuzz.com/maizil41/tribe"><img src="https://img.shields.io/badge/SOCIALBUZZ-6FBB18?style=for-the-badge&logo=ko-fi&logoColor=white"></a>
 <a href="https://saweria.co/mutiarawrt"><img src="https://img.shields.io/badge/Donation-FFAE00?style=for-the-badge&logo=ko-fi&logoColor=white"></a>
 
 <p align="center">
