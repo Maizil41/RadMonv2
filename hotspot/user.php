@@ -132,7 +132,9 @@ include ("../backend/alluser.php");
 </div>
 </div>
 
-<button id="deleteSelected" class="btn bg-danger">Delete</button>
+<button id="deleteSelected" class="btn bg-danger">
+    <i class="fa fa-trash"></i> Delete
+</button>
  
 <div class="col-6">
 
