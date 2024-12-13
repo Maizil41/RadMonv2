@@ -143,7 +143,14 @@ include ("../backend/alluser.php");
 <table id="dataTable" class="table table-bordered table-hover text-nowrap">
 <thead>
 <tr>
-<th class="text-center align-middle"><?php echo "$total_users"; ?></th>
+<th class="text-center align-middle">
+    <?php if ($total_users > 0): ?>
+        <input type="checkbox" id="checkAll">
+        &nbsp;&nbsp;<?php echo "$total_users"; ?>&nbsp;&nbsp;
+    <?php else: ?>
+        <?php echo "$total_users"; ?>
+    <?php endif; ?>
+</th>
 <th class="text-center align-middle">Print</th>
 <th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Name</th>
 <th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Voucher</th>
