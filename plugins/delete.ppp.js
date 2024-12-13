@@ -1,6 +1,6 @@
 /**
  * Radius Monitor Delete User
- * Made by Maizil <https://github.com/maizil41>
+ * Author : Maizil <https://github.com/maizil41>
  */
 function deleteUser(username){if(confirm("Apakah anda yakin ingin menghapus user "+username+"?")){$.ajax({url:"../backend/delete.ppp.php",type:"GET",data:{id:username},success:function(response){location.reload()},error:function(xhr,status,error){console.error("Terjadi kesalahan:",error)},})}}
 function resetuser(username){if(confirm("Apakah anda yakin ingin mereset user "+username+"?")){$.ajax({url:"../backend/reset.php",type:"GET",data:{id:username},success:function(response){location.reload()},error:function(xhr,status,error){console.error("Terjadi kesalahan:",error)},})}}

@@ -93,14 +93,15 @@ include ("../backend/app_log.php");
             <th class="text-center">Username</th>
             <th class="text-center">Password</th>
             <th class="text-center">IP Address</th>
-            <th class="text-center">Reply</th>
+            <th class="text-center">Message</th>
             <th class="text-center">Time</th>
         </tr>
     </thead>
 	<tbody>
 <?php foreach($user_data as $user) {
 $color = ($user['reply'] == 'Login successful') ? '#4DBD74' : 
-(($user['reply'] == 'Login Failed') ? 'red' : '#FF0000');
+         (($user['reply'] == 'Login Failed') ? '#FF0000' : 
+         (($user['reply'] == 'Password Changed') ? '#FFC107' : 'black'));
 echo "
 <tr>
     <td><center>{$user['username']}</center></td>

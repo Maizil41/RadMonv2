@@ -97,8 +97,8 @@ include ("../backend/hotspot_log.php");
     </thead>
 	<tbody>
 <?php foreach($user_data as $user) {
-$color = ($user['reply'] == 'log in by mac' || $user['reply'] == 'log in by voucher' || $user['reply'] == 'PPP Login Success') ? '#4DBD74' : 
-(($user['reply'] == 'login failed, invalid mac' || $user['reply'] == 'login failed, invalid voucher' || $user['reply'] == 'PPP Login Failed') ? '#FF0000' : 'black');
+$color = ($user['reply'] == 'log in by mac' || $user['reply'] == 'log in by voucher') ? '#4DBD74' : 
+(($user['reply'] == 'login failed, invalid mac' || $user['reply'] == 'login failed, invalid voucher') ? '#FF0000' : 'black');
 echo "
 <tr>
     <td><center>{$user['username']}</center></td>

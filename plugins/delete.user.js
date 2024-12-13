@@ -1,6 +1,6 @@
 /**
  * Radius Monitor Delete User
- * Made by Maizil <https://github.com/maizil41>
+ * Author : Maizil <https://github.com/maizil41>
  */
 const planName = new URLSearchParams(window.location.search).get('planName') || '';
 document.getElementById('userstatus').addEventListener('change',function(){const status=this.value;window.location.href=`?planName=${planName}&status=${status}`});

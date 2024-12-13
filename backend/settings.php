@@ -10,6 +10,19 @@
 */
 require_once '../config/mysqli_db.php';
 
+function getUserIP() {
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    } else {
+        $ip = $_SERVER['REMOTE_ADDR'];
+    }
+    return $ip;
+}
+
+$userIP = getUserIP();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
     $useradm = $_POST['useradm'];
     $passadm = $_POST['passadm'];
@@ -19,6 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
     $stmt->bind_param("ss", $useradm, $passadm);
 
     if ($stmt->execute()) {
+        $log_stmt = $conn->prepare("INSERT INTO app_log (username, password, ipaddress, reply) VALUES (?, ?, ?, ?)");
+        $log_stmt->execute([$useradm, $passadm, $userIP, 'Password Changed']);
         $message = urlencode("✅ Success.");
         header('Location: ../pages/admin.php?message=' . $message);
         exit();
