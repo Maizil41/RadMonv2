@@ -114,12 +114,7 @@ include ("../include/head.html.php");
                             <tr>
                                 <td></td>
                                 <td class="text-right">
-                                    <div class="input-group-4">
-                                        <input class="group-item group-item-l" type="submit" style="cursor: pointer;" name="save" value="Save"/>
-                                    </div>
-                                    <div class="input-group-2">
-                                        <div style="cursor: pointer;" class="group-item group-item-r pd-2p5 text-center" onclick="location.reload();" title="Reload Data"><i class="fa fa-refresh"></i></div>
-                                    </div>
+                                    <button type="submit" name="save" value="save" class="btn bg-primary"><i class="fa fa-save"></i> Save</button>
                                 </div>
                             </td>
                         </tr>

@@ -75,7 +75,6 @@ include ("../backend/pppuser.php");
 <div id="main">  
 <div id="loading" class="lds-dual-ring"></div>
 <div class="main-container" style="display:none">
-
 <div class="row">
 <div class="col-12">
 <div class="card">
@@ -86,7 +85,6 @@ include ("../backend/pppuser.php");
 <small id="loader" style="display: none;" ><i><i class='fa fa-circle-o-notch fa-spin'></i> Processing... </i></small>
 </h3>
 </div>
-
 <div class="card-body">
 <div class="row">
 <div class="col-6 pd-t-5 pd-b-5">
@@ -96,86 +94,28 @@ include ("../backend/pppuser.php");
 </div>
 </div>
 </div>
- 
 <div class="col-6">
 </div>
 </div>
-<?php
-echo "
 <div class='overflow mr-t-10 box-bordered' style='max-height: 75vh'>
-    <table id='dataTable' class='table table-bordered table-hover text-nowrap'>
-    <thead>
-    <tr>
-    <th class='text-center align-middle'>$total_ppp items</th>
-    <th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Client</th>
-    <th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Username</th>
-    <th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Password</th>
-    <th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> IP Address</th>
-    <th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Mac Address</th>
-    <th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Profile</th>
-    <th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Cost</th>
-    <th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Usage</th>
-    <th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Traffic</th>
-    <th class='text-center align-middle'>Status</th>
-    </tr>
-    </thead>
-    <tbody>";
-
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $clientName =  htmlspecialchars($row['contactperson']);
-        $username = htmlspecialchars($row['username']);
-        $password = htmlspecialchars($row['Password']);
-        $ipAddress = htmlspecialchars($row['Framed_IP_Address']);
-        $macAddress = htmlspecialchars($row['callingstationid']);
-        $profile = htmlspecialchars($row['groupname']);
-        $cost = htmlspecialchars(money($row['planCost']));
-        $usage = htmlspecialchars(time2str($row['total_acctsessiontime']));
-        $traffic = htmlspecialchars(toxbyte($row['total_acctinputoctets'] + $row['total_acctoutputoctets']));
-        $status = htmlspecialchars($row['status']);
-
-        $statusClass = '';
-        switch (true) {
-            case strpos($status, 'ONLINE') !== false:
-                $statusClass = 'fa fa-check-circle text-success';
-                $title = 'Online';
-                break;
-            case strpos($status, 'EXPIRED') !== false:
-                $statusClass = 'fa fa-ban text-danger';
-                $title = 'Expired';
-                break;
-            case strpos($status, 'OFFLINE') !== false:
-                $statusClass = 'fa fa-times-circle text-secondary';
-                $title = 'Offline';
-                break;
-        }
-
-        echo "<tr>
-                <td><center>
-                <span class='fa fa-trash text-danger pointer' onclick=\"deleteUser('" . htmlspecialchars($username) . "')\"></span>&nbsp;&nbsp;
-                <span class='fa fa-refresh text-warning pointer' onclick=\"resetuser('" . htmlspecialchars($username) . "')\"></span>
-                </td>
-                <td><center>$clientName</td>
-                <td><center>$username</td>
-                <td><center>$password</td>
-                <td><center>$ipAddress</td>
-                <td><center>$macAddress</td>
-                <td><center>$profile</td>
-                <td><center>$cost</td>
-                <td><center>$usage</td>
-                <td><center>$traffic</td>
-                <td><center><span class='$statusClass' title='$title'> $title</span></td>
-              </tr>";
-    }
-
-} else {
-    echo "<tr><td colspan='11'><center>Tidak ada data</center></td></tr>";
-}
-
-echo "</tbody></table></div>";
-
-$conn->close();
-?>
+<table id='dataTable' class='table table-bordered table-hover text-nowrap'>
+<thead>
+<tr>
+<th class='text-center align-middle'><?php echo "$total_ppp" ?> items</th>
+<th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Name</th>
+<th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Username</th>
+<th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Password</th>
+<th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> IP Address</th>
+<th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Mac Address</th>
+<th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Profile</th>
+<th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Cost</th>
+<th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Usage</th>
+<th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Traffic</th>
+<th class='text-center align-middle'>Status</th>
+</tr>
+</thead>
+<tbody>
+<?php include ("../include/ppp.user.php"); ?>
 </div>
 <script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
 <script src="../js/radmon.js"></script>

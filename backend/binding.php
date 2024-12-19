@@ -120,8 +120,16 @@ AggregatedData AS (
            u.planName,
            p.planCost,
            ugr.groupname,
-           MAX(a.framedipaddress) AS ip_address,
-           MAX(a.callingstationid) AS mac_address,
+           (SELECT framedipaddress 
+            FROM radacct 
+            WHERE username = r.username 
+              AND acctstarttime = la.latest_acctstarttime
+            LIMIT 1) AS ip_address,
+           (SELECT callingstationid 
+            FROM radacct 
+            WHERE username = r.username 
+              AND acctstarttime = la.latest_acctstarttime
+            LIMIT 1) AS mac_address,
            COALESCE(acs.total_input_octets, 0) AS total_input_octets,
            COALESCE(acs.total_output_octets, 0) AS total_output_octets,
            COALESCE(acs.total_session_time, 0) AS total_session_time
@@ -130,10 +138,9 @@ AggregatedData AS (
     LEFT JOIN billing_plans p ON u.planName = p.planName
     LEFT JOIN radusergroup ugr ON r.username = ugr.username
     LEFT JOIN AcctSummary acs ON r.username = acs.username
-    LEFT JOIN radacct a ON r.username = a.username
+    LEFT JOIN LatestAcct la ON r.username = la.username
     LEFT JOIN userinfo uinfo ON r.username = uinfo.username
     WHERE r.username REGEXP '^[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}$'
-    GROUP BY r.username, uinfo.firstname, u.planName, p.planCost, ugr.groupname
 ),
 FinalData AS (
     SELECT ad.username,

@@ -78,11 +78,8 @@ $status = isset($_GET['status']) ? $_GET['status'] : '';
                 <option value="light">Light</option>
                 <option value="dark">Dark</option>
             </select>
-            </div>
         </div>
     </div>
+</div>
+<script src="../js/themes-change.js"></script>
 
-<script>
-function changeTheme(tema){localStorage.setItem('userTheme',tema);window.location.href=`?themes=${tema}`}
-window.onload=function(){const userTheme=localStorage.getItem('userTheme')||'blue';document.getElementById('themeSelector').value=userTheme;const themeSelector=document.getElementById('themeSelector');if(themeSelector.value!==""){setTimeout(()=>{themeSelector.value=""},100)}}
-</script>

@@ -10,6 +10,14 @@
 */
 require_once '../config/mysqli_db.php';
 
+if (isset($_POST['hapus']) && $_POST['hapus'] == '1') {
+    $query = "DELETE FROM radpostauth WHERE reply IN ('PPP Login Success', 'PPP Login Failed')";
+
+    if (!$conn->query($query)) {
+        error_log("Error saat menghapus data: " . $conn->error);
+    }
+}
+
 $sql = "SELECT username, pass, reply, authdate 
         FROM radpostauth 
         WHERE reply IN ('PPP Login Success', 'PPP Login Failed') 
@@ -40,4 +48,6 @@ if ($result->num_rows > 0) {
         'authdate' => ''
     ];
 }
+
+$conn->close();
 ?>

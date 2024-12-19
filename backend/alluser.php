@@ -124,8 +124,8 @@ AggregatedData AS (
            u.planName,
            p.planCost,
            ugr.groupname,
-           MAX(a.framedipaddress) AS ip_address,
-           MAX(a.callingstationid) AS mac_address,
+           la.framedipaddress AS ip_address,
+           la.callingstationid AS mac_address,
            COALESCE(acs.total_input_octets, 0) AS total_input_octets,
            COALESCE(acs.total_output_octets, 0) AS total_output_octets,
            COALESCE(acs.total_session_time, 0) AS total_session_time
@@ -134,8 +134,12 @@ AggregatedData AS (
     LEFT JOIN billing_plans p ON u.planName = p.planName
     LEFT JOIN radusergroup ugr ON r.username = ugr.username
     LEFT JOIN AcctSummary acs ON r.username = acs.username
-    LEFT JOIN radacct a ON r.username = a.username
-    GROUP BY r.username, u.contactperson, u.planName, p.planCost, ugr.groupname
+    LEFT JOIN (
+        SELECT a.username, a.framedipaddress, a.callingstationid
+        FROM radacct a
+        JOIN LatestAcct la ON a.username = la.username AND a.acctstarttime = la.latest_acctstarttime
+    ) la ON r.username = la.username
+    GROUP BY r.username, u.contactperson, u.planName, p.planCost, ugr.groupname, la.framedipaddress, la.callingstationid
 ),
 FinalData AS (
     SELECT ad.username,

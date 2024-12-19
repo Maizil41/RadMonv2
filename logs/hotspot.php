@@ -79,7 +79,15 @@ include ("../backend/hotspot_log.php");
 <div class="col-12">
 <div class="card">
 <div class="card-header">
-    <h3><i class=" fa fa-align-justify"></i> Hotspot Log &nbsp; | &nbsp;&nbsp;<i onclick="location.reload();" class="fa fa-refresh pointer " title="Reload data"></i></h3>
+<h3>
+<i class="fa fa-align-justify"></i> Hotspot Log
+    &nbsp; | &nbsp;
+    <i onclick="location.reload();" class="fa fa-refresh pointer" title="Reload data" aria-label="Reload data"></i>&nbsp;&nbsp; | &nbsp;
+    <form method="post" style="display: inline;">
+        <input type="hidden" name="hapus" value="1">
+        <i class="fa fa-trash pointer" title="Clean log" aria-label="Clean log" onclick="this.closest('form').submit();"></i>
+    </form>
+</h3>
 </div>
 <div class="card-body">
 
@@ -120,17 +128,7 @@ echo "
 </div>
 <script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
 <script src="../js/radmon.js"></script>
-<script>
-$(document).ready(function(){
-  makeAllSortable();
-  $("#filterTable").on("keyup", function() {
-    var value = $(this).val().toLowerCase();
-    $("#dataTable tbody tr").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-  });
-});
-</script>
+<script src="../plugins/keyup.js"></script>
 </body>
 </html>
 

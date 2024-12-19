@@ -17,8 +17,8 @@ $totalOnline = $rowOnlineCount['total_online'];
 
 $sqlTotalUser = "SELECT COUNT(DISTINCT username) AS total_user
 FROM radcheck
-WHERE username NOT LIKE '%:%'
-  AND username NOT LIKE '%-%'
+WHERE username NOT LIKE '%:%:%:%:%:%'
+  AND username NOT LIKE '%-%-%-%-%-%'
   AND username NOT IN (
       SELECT username
       FROM radcheck
@@ -36,9 +36,7 @@ $pppOnline = $rowOnlineppp['online_ppp'];
 
 $sqlTotalppp = "SELECT COUNT(DISTINCT username) AS total_ppp
 FROM radcheck
-WHERE username NOT LIKE '%:%'
-  AND username NOT LIKE '%-%'
-  AND username IN (
+WHERE username IN (
       SELECT username
       FROM radcheck
       WHERE attribute = 'Cleartext-Password'

@@ -79,7 +79,15 @@ include ("../backend/radius_log.php");
 <div class="col-12">
 <div class="card">
 <div class="card-header">
-<h3><i class=" fa fa-align-justify"></i> Radius Log &nbsp; | &nbsp;&nbsp;<i onclick="location.reload();" class="fa fa-refresh pointer " title="Reload data"></i></h3>
+<h3>
+<i class="fa fa-align-justify"></i> Radius Log
+    &nbsp; | &nbsp;
+    <i onclick="location.reload();" class="fa fa-refresh pointer" title="Reload data" aria-label="Reload data"></i>&nbsp;&nbsp; | &nbsp;
+    <form method="post" style="display: inline;">
+        <input type="hidden" name="hapus" value="1">
+        <i class="fa fa-trash pointer" title="Clean log" aria-label="Clean log" onclick="this.closest('form').submit();"></i>
+    </form>
+</h3>
 </div>
 <div class="card-body">
 
@@ -91,18 +99,10 @@ include ("../backend/radius_log.php");
 <td class="logs-container">
 <pre><?php echo nl2br($logString); ?></pre>
 </td>
-</thead>
-<tbody>
-</tbody>
+    </thead>
+        <tbody>
+    </tbody>
 </table>
-</div>
-</div>
-</div>
-</div>
-</div>
-
-</div>
-</div>
 </div>
 <script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
 <script src="../js/radmon.js"></script>

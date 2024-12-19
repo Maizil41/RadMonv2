@@ -148,6 +148,7 @@ echo '<div id="main">
             <th><center>No</center></th>
             <th><center>Username</center></th>
             <th><center>Date</center></th>
+            <th><center>Time</center></th>
             <th><center>Price</center></th>
         </tr>
         </thead>
@@ -160,11 +161,12 @@ echo '<div id="main">
                 echo "<td><center>" . $counter++ . "</center></td>";
                 echo "<td><center>" . htmlspecialchars($row["username"]) . "</center></td>";
                 echo "<td><center>" . htmlspecialchars($row["date"]) . "</center></td>";
+                echo "<td><center>" . htmlspecialchars($row["time"]) . "</center></td>";
                 echo "<td style='text-align:center;'>" . htmlspecialchars($row["amount"]) . "</td>";
                 echo "</tr>";
             }
         } else {
-            echo "<tr><td colspan='4'><center>Tidak ada data</center></td></tr>";
+            echo "<tr><td colspan='5'><center>Tidak ada data</center></td></tr>";
         }
 
         echo '
@@ -194,28 +196,9 @@ echo '<div id="main">
         window.location.href = url;
     }
 </script>';
-
-$conn->close(); 
-
-?>
-
-</div>
-</div>
-</div>
+$conn->close(); ?>
 </div>
 <script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
 <script src="../js/radmon.js"></script>
-<script src="../plugins/add.profile.js"></script>
-<script>
-    $(document).ready(function(){
-        makeAllSortable();
-        $("#filterTable").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-            $("#dataTable tbody tr").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-            });
-        });
-    });
-</script>
 </body>
 </html>

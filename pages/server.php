@@ -190,12 +190,12 @@ include ("../backend/ipinfo.php");
                   </div> <?php endforeach; ?> </div>
               </div>
             </div>
-          </div>
         </div>
-      </div>
-    <script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
-    <script src="../js/radmon.js"></script>
-    <script src="../plugins/dash.load.js" defer></script>
-    <script>window.onload=function(){const host='google.com';const resultDiv=document.getElementById('result');resultDiv.innerHTML='Check Ping...';fetch(`../backend/check_ping.php?host=${host}`) .then(response=>response.json()) .then(data=>{const packetLoss=data.packetLoss;const avgTime=data.avgTime;resultDiv.innerHTML=` Host : ${host}<br>Loss : ${packetLoss}%<br>Time : ${avgTime}ms `}) .catch(error=>{resultDiv.innerHTML='Ping failed.'})};</script>
+    </div>
+</div>
+<script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
+<script src="../js/radmon.js"></script>
+<script src="../plugins/dash.load.js" defer></script>
+<script src="../plugins/check.ping.js"></script>
 </body>
 </html>

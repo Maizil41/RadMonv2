@@ -123,14 +123,16 @@ include ("../include/head.html.php");
             <tr>
                 <td class="align-middle">IP Address</td>
                 <td>
-                    <input class="form-control" type="text" autocomplete="off" id="ip_address" name="ip_address" required autofocus>
+                    <select class="form-control" id="ip_address" name="ip_address" required autocomplete="off">
+                        <option value="">Select IP Address</option>
+                    </select>
                 </td>
             </tr>
             <tr>
                 <td class="align-middle">Profile</td>
                 <td>
                     <select class="form-control" id="planDropup" name="planName" required autocomplete="off">
-                        <option value="">Select Plan</option>
+                        <option value="">Select Profile</option>
                     </select>
                 </td>
             </tr>

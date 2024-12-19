@@ -6,11 +6,10 @@ $(document).ready(function(){makeAllSortable();$("#filterTable").on("keyup",func
 <tr>
 <td class="text-center">
 <i class='fa fa-trash text-danger pointer' onclick="deletePlan('${item.planName}')"></i>&nbsp;&nbsp;&nbsp;&nbsp;
-<i class='fa fa-edit pointer' onclick="editPlan('${item.id}')"></i> 
+<i class='fa fa-edit pointer' onclick="editPlan('${item.id}')"></i>&nbsp;&nbsp;&nbsp;&nbsp;
+<i class='fa fa-circle ${iconClass}'></i>
 </td>
-<td class="text-center">
-<i class='fa fa-ci fa-circle ${iconClass}'></i> ${item.planName}
-</td>
+<td class="text-center">${item.planName}</td>
 <td class="text-center">${item.planCost}</td>
 <td class="text-center">${item.maxAllSession}</td>
 <td class="text-center">${item.bandwidthName}</td>

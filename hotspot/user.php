@@ -75,7 +75,6 @@ include ("../backend/alluser.php");
 <div id="main">  
 <div id="loading" class="lds-dual-ring"></div>
 <div class="main-container" style="display:none">
-
 <div class="row">
 <div class="col-12">
 <div class="card">
@@ -87,7 +86,6 @@ include ("../backend/alluser.php");
 <small id="loader" style="display: none;" ><i><i class='fa fa-circle-o-notch fa-spin'></i> Processing... </i></small>
 </h3>
 </div>
-
 <div class="card-body">
 <div class="row">
 <div class="col-6 pd-t-5 pd-b-5">
@@ -95,7 +93,6 @@ include ("../backend/alluser.php");
 <div class="input-group-4 col-box-4">
 <input id="filterTable" type="text" style="padding:5.8px;" class="group-item group-item-l" placeholder="Search">
 </div>
-  
 <div class="input-group-4 col-box-4">
 <select id="userstatus" name="userstatus" class="group-item group-item-m" onchange="location = this.value; loader()">
     <option value="">All User</option>
@@ -103,7 +100,6 @@ include ("../backend/alluser.php");
     <option value="OFFLINE" <?php echo ($statusFilter == 'OFFLINE' ? 'selected' : ''); ?>>Offline</option>
     <option value="EXPIRED" <?php echo ($statusFilter == 'EXPIRED' ? 'selected' : ''); ?>>Expired</option>
 </select>
-
 </div>
 <div class="input-group-4 col-box-4">
     <select style="padding:5px;" class="group-item group-item-m" onchange="location = this.value; loader()" title="Filter by Profile">
@@ -129,22 +125,17 @@ include ("../backend/alluser.php");
         ?>
     </select>
 </div>
-</div>
-</div>
-
-<button id="deleteSelected" class="btn bg-danger">
+    </div>
+        </div>
+        <button id="deleteSelected" class="btn bg-danger">
     <i class="fa fa-trash"></i> Delete
 </button>
-
- 
 <div class="col-6">
-
-</div>
-</div>
-
-<div class="overflow mr-t-10 box-bordered" style="max-height: 75vh">
-<table id="dataTable" class="table table-bordered table-hover text-nowrap">
-<thead>
+    </div>
+        </div>
+            <div class="overflow mr-t-10 box-bordered" style="max-height: 75vh">
+        <table id="dataTable" class="table table-bordered table-hover text-nowrap">
+    <thead>
 <tr>
 <th class="text-center align-middle">
     <?php if ($total_users > 0): ?>
@@ -156,7 +147,7 @@ include ("../backend/alluser.php");
 </th>
 <th class="text-center align-middle">Print</th>
 <th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Name</th>
-<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Voucher</th>
+<th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Voucher Code</th>
 <th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Mac Address</th>
 <th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> IP Address</th>
 <th class="text-center align-middle pointer" title="Click to sort"><i class="fa fa-sort"></i> Cost</th>
@@ -172,6 +163,6 @@ include ("../backend/alluser.php");
 <script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
 <script src="../js/radmon.js"></script>
 <script src="../plugins/delete.user.js"></script>
+<script src="../plugins/hotspot.user.js"></script>
 </body>
 </html>
-

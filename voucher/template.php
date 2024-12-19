@@ -162,12 +162,8 @@ $conn->close();
 </tr>
 <tr>
 <td></td>
-<td>
-<div class="input-group-4">
-<input class="group-item group-item-md" type="submit" style="cursor: pointer;" name="save" value="Save"/>
-</div>
-<div class="input-group-1">	
-<div style="cursor: pointer;" class="group-item group-item-r pd-2p5 text-center" onclick="location.reload();" title="Reload Data"><i class="fa fa-refresh"></i></div>
+<td class="text-right">
+<button type="submit" name="save" value="save" class="btn bg-primary"><i class="fa fa-save"></i> Save</button>
 </div>
 </table>
 </div>

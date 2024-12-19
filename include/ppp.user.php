@@ -10,20 +10,15 @@
 */
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
+        $clientName =  htmlspecialchars($row['contactperson']);
         $username = htmlspecialchars($row['username']);
-
-        if (isMacAddress($username)) {
-            continue;
-        }
-
-        $name = htmlspecialchars($row['contactperson']);
-        $usermac = htmlspecialchars($row['mac_address']);
-        $ip = htmlspecialchars($row['ip_address']);
+        $password = htmlspecialchars($row['Password']);
+        $ipAddress = htmlspecialchars($row['Framed_IP_Address']);
+        $macAddress = htmlspecialchars($row['callingstationid']);
+        $profile = htmlspecialchars($row['groupname']);
         $cost = htmlspecialchars(money($row['planCost']));
-        $plan = htmlspecialchars($row['planName']);
-        $group = htmlspecialchars($row['groupname']);
-        $totalTime = htmlspecialchars(time2str($row['total_session_time']));
-        $traffic = htmlspecialchars(toxbyte($row['total_input_octets'] + $row['total_output_octets']));
+        $usage = htmlspecialchars(time2str($row['total_acctsessiontime']));
+        $traffic = htmlspecialchars(toxbyte($row['total_acctinputoctets'] + $row['total_acctoutputoctets']));
         $status = htmlspecialchars($row['status']);
 
         $statusClass = '';
@@ -42,33 +37,29 @@ if ($result->num_rows > 0) {
                 break;
         }
 
-        echo"
-            <td><center>
-                <input type='checkbox' class='delete-checkbox' value='" . htmlspecialchars($username) . "'>&nbsp;&nbsp;
+        echo "<tr>
+                <td><center>
                 <span class='fa fa-trash text-danger pointer' onclick=\"deleteUser('" . htmlspecialchars($username) . "')\"></span>&nbsp;&nbsp;
                 <span class='fa fa-refresh text-warning pointer' onclick=\"resetuser('" . htmlspecialchars($username) . "')\"></span>
-            </td>
-            <td><center>
-                <select class='group-item-m dropd pd-2' id='selectPrinter" . $row['username'] . "'>
-                    <option value='printTickets1.php'>1</option>
-                    <option value='printTickets2.php'>2</option>
-                    <option value='printTickets3.php'>3</option>
-                    <option value='printTickets4.php'>4</option>
-                </select>
-                <span class='fa fa-qrcode pointer' style='cursor:pointer;' onclick=\"printTicket('" . $row['username'] . "', '" . $row['planName'] . "')\"></span>
-              </center></td>
-            <td><center>$name</td>
-            <td><center>$username</td>
-            <td><center>$usermac</td>
-            <td><center>$ip</td>
-            <td><center>$cost</td>
-            <td><center>$plan</td>
-            <td><center>$totalTime</td>
-            <td><center>$traffic</td>
-            <td><center><span class='$statusClass' title='$title'> $title</span></td>
-        </tr>";
+                </td>
+                <td><center>$clientName</td>
+                <td><center>$username</td>
+                <td><center>$password</td>
+                <td><center>$ipAddress</td>
+                <td><center>$macAddress</td>
+                <td><center>$profile</td>
+                <td><center>$cost</td>
+                <td><center>$usage</td>
+                <td><center>$traffic</td>
+                <td><center><span class='$statusClass' title='$title'> $title</span></td>
+              </tr>";
     }
+
 } else {
     echo "<tr><td colspan='11'><center>Tidak ada data</center></td></tr>";
 }
+
+echo "</tbody></table></div>";
+
+$conn->close();
 ?>

@@ -10,6 +10,13 @@
 */
 $logFile = '/tmp/log/radius.log';
 
+if (isset($_POST['hapus']) && $_POST['hapus'] == '1') {
+    if (file_exists($logFile)) {
+        file_put_contents($logFile, '');
+    } else {
+    }
+}
+
 if (file_exists($logFile)) {
     $log = file($logFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     if ($log === false) {

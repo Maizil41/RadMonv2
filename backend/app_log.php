@@ -10,6 +10,14 @@
 */
 require_once '../config/mysqli_db.php';
 
+if (isset($_POST['hapus']) && $_POST['hapus'] == '1') {
+    $query = "TRUNCATE TABLE app_log";
+
+    if (!$conn->query($query)) {
+        error_log("Error saat truncate tabel app_log: " . $conn->error);
+    }
+}
+
 $sql = "SELECT * FROM app_log ORDER BY id DESC";
 
 $result = $conn->query($sql);
@@ -40,4 +48,6 @@ if ($result->num_rows > 0) {
         'authdate' => ''
     ];
 }
+
+$conn->close();
 ?>
