@@ -26,9 +26,9 @@
 >
 > - This application uses the [Mikhmon V3](https://github.com/laksa19/mikhmonv3) template
 >
-> - This application was created for novice hotspot entrepreneurs who do not yet have a MikroTik
+> - This app is designed for beginner hotspot entrepreneurs who don’t yet have a MikroTik.
 > 
-> - This application does not intend to harm any party
+> - This app isn’t meant to harm anyone in any way.
 
 Packages Needed
 ---
