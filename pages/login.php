@@ -9,16 +9,6 @@
 *******************************************************************************************************************
 */
 include ("../backend/login.php");
-
-function loadCache($key) {
-    $cacheFile = __DIR__ . '/../cache/' . $key . '.cache';
-    if (file_exists($cacheFile)) {
-        return file_get_contents($cacheFile);
-    }
-    return null;
-}
-
-$theme = isset($_GET['themes']) ? $_GET['themes'] : (loadCache('theme') ?? 'blue');
 ?>
 <!DOCTYPE html>
 <html>
@@ -52,15 +42,41 @@ $theme = isset($_GET['themes']) ? $_GET['themes'] : (loadCache('theme') ?? 'blue
       </div>
       <center>
       <form autocomplete="off" action="../pages/login.php" method="post">
+      <input type="hidden" name="ipaddress" id="ipaddress" value="<?php echo $userIP ?>">
       <table class="table" style="width:90%">
         <tr>
           <td class="align-middle text-center">
-            <input style="width: 100%; height: 35px; font-size: 16px;" class="form-control" type="text" name="username" id="username" placeholder="Username" required="1" autofocus>
+            <div style="position: relative; width: 100%; display: inline-block;">
+              <input style="width: 100%; height: 35px; font-size: 16px;" 
+                     class="form-control" 
+                     type="username" 
+                     name="username" 
+                     id="username" 
+                     placeholder="Username" 
+                     required="1">
+              <button type="button" 
+                      style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none;">
+                <i class="fa fa-user"></i>
+              </button>
+            </div>
           </td>
         </tr>
         <tr>
           <td class="align-middle text-center">
-            <input style="width: 100%; height: 35px; font-size: 16px;" class="form-control" type="password" name="password" id="password" placeholder="Password" required="1">
+            <div style="position: relative; width: 100%; display: inline-block;">
+              <input style="width: 100%; height: 35px; font-size: 16px;" 
+                     class="form-control" 
+                     type="password" 
+                     name="password" 
+                     id="password" 
+                     placeholder="Password" 
+                     required="1">
+              <button type="button" 
+                      onclick="togglePassword()" 
+                      style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer;">
+                <i id="toggleIcon" class="fa fa-lock"></i>
+              </button>
+            </div>
           </td>
         </tr>
         <tr>
@@ -85,6 +101,21 @@ $theme = isset($_GET['themes']) ? $_GET['themes'] : (loadCache('theme') ?? 'blue
     </div>
   </div>
 </div>
+<script>
+function togglePassword() {
+  const passwordField = document.getElementById('password');
+  const toggleIcon = document.getElementById('toggleIcon');
+  
+  if (passwordField.type === 'password') {
+    passwordField.type = 'text';
+    toggleIcon.classList.remove('fa-lock');
+    toggleIcon.classList.add('fa-unlock');
+  } else {
+    passwordField.type = 'password';
+    toggleIcon.classList.remove('fa-unlock');
+    toggleIcon.classList.add('fa-lock');
+  }
+}
+</script>
 </body>
 </html>
-
