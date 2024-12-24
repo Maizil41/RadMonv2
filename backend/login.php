@@ -27,16 +27,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($user && $user['password'] === $password) {
         $_SESSION['username'] = $username;
 
-        $log_stmt = $conn->prepare("INSERT INTO app_log (username, password, ipaddress, reply) VALUES (?, ?, ?, ?)");
-        $log_stmt->execute([$username, $password, $userIP, 'Login successful']);
+        #$log_stmt = $conn->prepare("INSERT INTO app_log (username, password, ipaddress, reply) VALUES (?, ?, ?, ?)");
+        #$log_stmt->execute([$username, $password, $userIP, 'Login successful']);
 
         header("Location: ../pages/dashboard.php");
         exit();
     } else {
         $_SESSION['error'] = "Invalid username or password.";
 
-        $log_stmt = $conn->prepare("INSERT INTO app_log (username, password, ipaddress, reply) VALUES (?, ?, ?, ?)");
-        $log_stmt->execute([$username, $password, $userIP, 'Login Failed']);
+        #$log_stmt = $conn->prepare("INSERT INTO app_log (username, password, ipaddress, reply) VALUES (?, ?, ?, ?)");
+        #$log_stmt->execute([$username, $password, $userIP, 'Login Failed']);
 
         header("Location: ../pages/login.php");
         exit();
