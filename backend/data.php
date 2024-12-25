@@ -141,8 +141,26 @@ if (file_exists("/usr/bin/cpustat") && is_executable("/usr/bin/cpustat")) {
     }
 }
 
+define('PROC_UPTIME', '/proc/uptime');
+
+function getSystemUptime() {
+    if (file_exists(PROC_UPTIME)) {
+        $uptimeData = file_get_contents(PROC_UPTIME);
+        $uptimeSeconds = (float) explode(" ", $uptimeData)[0];
+
+        $days = floor($uptimeSeconds / 86400);
+        $hours = floor(($uptimeSeconds % 86400) / 3600);
+        $minutes = floor(($uptimeSeconds % 3600) / 60);
+        $seconds = floor($uptimeSeconds % 60);
+
+        return sprintf('%dd %dh %dm %ds', $days, $hours, $minutes, $seconds);
+    } else {
+        return "Tidak dapat membaca uptime sistem.";
+    }
+}
+
 $model = htmlspecialchars($model);
-$uptime = htmlspecialchars($time);
+$uptime = getSystemUptime();
 $load = htmlspecialchars($load);
 $board = 'AMLogic';
 ?> 
