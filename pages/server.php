@@ -19,27 +19,14 @@ include ("../backend/ipinfo.php");
 <div class="dropdown-btn"><i class="fa fa-wifi"></i> Hotspot
 <i class="fa fa-caret-down"></i>
 </div>
-<div class="dropdown-container">
-<!--users--> 
-<div class="dropdown-btn"><i class="fa fa-users"></i> Users<i class="fa fa-caret-down"></i>
-</div>
-<div class="dropdown-container">
-<a href="../hotspot/user.php" class=""> &nbsp;&nbsp;&nbsp;<i class="fa fa-list "></i> User List </a>
-<a href="../hotspot/adduser.php" class=""> &nbsp;&nbsp;&nbsp;<i class="fa fa-user-plus "></i> Add User </a>
-<a href="../hotspot/generate.php" class=""> &nbsp;&nbsp;&nbsp;<i class="fa fa-user-plus"></i> Generate </a>        
-</div>
-<!--profile-->
-<div class="dropdown-btn "><i class=" fa fa-pie-chart"></i> User Profile<i class="fa fa-caret-down"></i>
-</div>
 <div class="dropdown-container ">
-<a href="../hotspot/profile.php" class=""> &nbsp;&nbsp;&nbsp;<i class="fa fa-list "></i> Profile List </a>
-<a href="../hotspot/bandwidth.php" class=""> &nbsp;&nbsp;&nbsp;<i class="fa fa-hourglass "></i> Bandwidth List </a>
-</div>
-<!--active-->
-<a href="../hotspot/active.php" class="menu"><i class="fa fa-wifi"></i> Hotspot Active</a>
-<!--ip bindings-->
+<a href="../hotspot/user.php" class=""><i class="fa fa-users"></i> Hotspot User</a>
+<a href="../hotspot/profile.php" class=""><i class="fa fa-pie-chart"></i> Hotspot Profile</a>
 <a href="../hotspot/binding.php" class="menu"><i class="fa fa-address-book"></i> MAC Bindings</a>
+<a href="../hotspot/active.php" class=""><i class="fa fa-wifi"></i> Hotspot Active</a>
 </div>
+<!--bandwidth-->
+<a href="../hotspot/bandwidth.php" class=""><i class="fa fa-area-chart "></i> Bandwidth </a>
 <!--quick print-->
 <a href="../voucher/quick_print.php" class="menu"> <i class="fa fa-print"></i> Quick Print </a>
 <!--vouchers-->
@@ -52,7 +39,7 @@ include ("../backend/ipinfo.php");
 <a href="../logs/radius.php" class=""> <i class="fa fa-database"></i> Radius Log </a>
 </div>
 <!--system-->
-<a href="../pages/server.php" class="menu active"> <i class="fa fa-server"></i> Status </a>
+<a href="../pages/server.php" class="active"> <i class="fa fa-server"></i> Status </a>
 <!--billing-->
 <div class="dropdown-btn "><i class=" fa fa-credit-card"></i> Billing<i class="fa fa-caret-down"></i>
 </div>
@@ -66,10 +53,11 @@ include ("../backend/ipinfo.php");
 <div class="dropdown-btn "><i class="fa fa-gear"></i> Settings 
 <i class="fa fa-caret-down"></i> &nbsp;
 </div>
-<div class="dropdown-container ">
-<a href="../pages/admin.php" class="menu"> <i class="fa fa-gear"></i> Admin Settings </a>
-<a href="../hotspot/hslogo.php" class="menu"> <i class="fa fa-upload"></i> Upload Logo </a>
-<a href="../voucher/template.php" class="menu"> <i class="fa fa-edit"></i> Template Setting </a>          
+<div class="dropdown-container">
+<a href="../pages/admin.php" class="menu"><i class="fa fa-gear"></i> Admin Settings </a>
+<a href="../hotspot/hslogo.php" class="menu"><i class="fa fa-upload"></i> Upload Logo </a>
+<a href="../voucher/template.php" class="menu"><i class="fa fa-edit"></i> Template Setting </a>          
+<a href="../pages/backup.php" class="menu"><i class="fa fa-folder-open"></i> Backup & Restore </a>          
 </div>
 <!--about-->
 <a href="../pages/about.php" class="menu"><i class="fa fa-info-circle"></i> About</a>
@@ -102,7 +90,7 @@ include ("../backend/ipinfo.php");
                 <i class="fa fa-info-circle"></i>
               </div>
               <div class="box-group-area">
-                <span> Board Name : <?php echo "$board"; ?> <br /> Model : <?php echo "$model"; ?> <br /> Router OS : <?php echo "$id $version"; ?> </span>
+                <span> Hostname : <?php echo "$host"; ?> <br /> Model : <?php echo "$model"; ?> <br /> Router OS : <?php echo "$distrib $version"; ?> </span>
               </div>
             </div>
           </div>
