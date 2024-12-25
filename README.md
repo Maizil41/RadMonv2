@@ -66,10 +66,10 @@ Screenshot
 ---
 * Login
 <p align="center">
-    <img src="/img/login.png">
+    <img src="/img/loginpage.png">
 </p>
 
 * Dashboard
 <p align="center">
-    <img src="/img/dash.png">
+    <img src="/img/dashboard.png">
 </p>
