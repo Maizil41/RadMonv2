@@ -23,15 +23,6 @@ include ("../include/head.html.php");
 <a href="../hotspot/binding.php" class="menu"><i class="fa fa-address-book"></i> MAC Bindings</a>
 <a href="../hotspot/active.php" class="menu"><i class="fa fa-wifi"></i> Hotspot Active</a>
 </div>
-<!--pppoe-->
-<div class="dropdown-btn"><i class="fa fa-sitemap"></i> PPPoE
-<i class="fa fa-caret-down"></i>
-</div>
-<div class="dropdown-container">
-<a href="../pppoe/account.php" class="menu"><i class="fa fa-users"></i> PPPoE User</a>
-<a href="../pppoe/profile.php" class="menu"><i class="fa fa-pie-chart"></i> PPPoE Profile</a>
-<a href="../pppoe/active.php" class="menu"><i class="fa fa-plug"></i> PPPoE Active</a>
-</div>
 <!--bandwidth-->
 <a href="../hotspot/bandwidth.php" class="menu"><i class="fa fa-area-chart "></i> Bandwidth </a>
 <!--quick print-->
@@ -43,8 +34,6 @@ include ("../include/head.html.php");
 </div>
 <div class="dropdown-container">
 <a href="../logs/hotspot.php" class="menu"><i class="fa fa-wifi"></i> Hotspot Log </a>
-<a href="../logs/pppoe.php" class="menu"><i class="fa fa-sitemap"></i> PPPoE Log </a>
-<a href="../logs/applog.php" class="menu"><i class="fa fa-exclamation-circle"></i> App Log </a>
 <a href="../logs/radius.php" class="menu"><i class="fa fa-database"></i> Radius Log </a>
 </div>
 <!--system-->
