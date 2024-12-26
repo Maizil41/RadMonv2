@@ -1,0 +1,6 @@
+/**
+ * Radius Monitor Update bandwidth
+ * Author : Maizil <https://github.com/maizil41>
+ */
+document.getElementById('saveBtn').addEventListener('click',async()=>{const loading=document.getElementById('loader');const message=document.getElementById('message');loading.style.display='';if(message)message.style.display='none';const mainElement=document.getElementById('main');const bwId=mainElement.getAttribute('data-bw-id');const bwName=mainElement.getAttribute('data-bw-name');const data={id:bwId,name:document.getElementById('name').value,rate_down:document.getElementById('rate_down').value,rate_down_unit:document.getElementById('rate_down_unit').value,rate_up:document.getElementById('rate_up').value,rate_up_unit:document.getElementById('rate_up_unit').value,};try{const response=await fetch('../backend/update_bw.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await response.json();if(result.success){message.textContent=result.message}else{message.textContent="Error: "+result.message}
+message.style.display=''}catch(error){console.error('Error:',error)}finally{loading.style.display='none'}})
