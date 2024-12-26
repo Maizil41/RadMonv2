@@ -67,6 +67,7 @@ include ("../backend/radius_log.php");
 <a href="../pages/admin.php" class="menu"><i class="fa fa-gear"></i> Admin Settings </a>
 <a href="../hotspot/hslogo.php" class="menu"><i class="fa fa-upload"></i> Upload Logo </a>
 <a href="../voucher/template.php" class="menu"><i class="fa fa-edit"></i> Template Setting </a>          
+<a href="../pages/backup.php" class="menu"><i class="fa fa-folder-open"></i> Backup & Restore </a>          
 </div>
 <!--about-->
 <a href="../pages/about.php" class="menu"><i class="fa fa-info-circle"></i> About</a>

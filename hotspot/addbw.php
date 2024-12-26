@@ -66,14 +66,15 @@ include ("../include/head.html.php");
 <a href="../pages/admin.php" class="menu"><i class="fa fa-gear"></i> Admin Settings </a>
 <a href="../hotspot/hslogo.php" class="menu"><i class="fa fa-upload"></i> Upload Logo </a>
 <a href="../voucher/template.php" class="menu"><i class="fa fa-edit"></i> Template Setting </a>          
+<a href="../pages/backup.php" class="menu"><i class="fa fa-folder-open"></i> Backup & Restore </a>          
 </div>
 <!--about-->
 <a href="../pages/about.php" class="menu"><i class="fa fa-info-circle"></i> About</a>
 </div>
 
 <div id="main">
-<div id="loading" class="lds-dual-ring"></div>
-    <div class="main-container" style="display:none">
+    <div id="loading" class="lds-dual-ring" style="display:none;"></div>
+    <div class="main-container">
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -82,24 +83,22 @@ include ("../include/head.html.php");
                             <small id="loader" style="display: none;">
                                 <i><i class="fa fa-circle-o-notch fa-spin"></i> Processing...</i>
                             </small>
-                            <?php if (isset($_GET['message'])): ?>
-                                <small id="message">
-                                    <?php echo htmlspecialchars($_GET['message']); ?>
-                                </small>
-                            <?php endif; ?>
+                            <small id="message" style="display: none;"></small>
                         </h3>
                     </div>
                     <div class="card-body">
-                        <form method="post" role="form" action="../backend/addbw.php" id="addbwForm">
-                            <div>
-                                <a class="btn bg-warning" href="../hotspot/bandwidth.php"> <i class="fa fa-close"></i> Close</a>
-                                <button type="submit" name="updatebillplans" value="top" class="btn bg-primary"><i class="fa fa-save"></i> Save</button>
-                            </div>
+                        <div>
+                            <a class="btn bg-warning" href="../hotspot/bandwidth.php"> <i class="fa fa-close"></i> Close</a>
+                            <button type="button" id="saveButton" class="btn bg-primary"><i class="fa fa-save"></i> Save</button>
+                        </div>
 
+                        <form id="addbwForm">
                             <table class="table">
                                 <tr>
                                     <td>Bandwidth Name</td>
-                                    <td><input type="text" class="form-control" id="name" name="name" autocomplete="name" required></td>
+                                    <td>
+                                        <input type="text" class="form-control" id="name" name="name" autocomplete="name" required>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Rate Download</td>
@@ -109,13 +108,15 @@ include ("../include/head.html.php");
                                                 <input type="number" class="form-control" id="rate_down" name="rate_down" value="1" min="1">
                                             </div>
                                             <div class="input-group-4">
-                                            <select class="form-control" id="rate_down_unit" name="rate_down_unit">
-                                                <option value="Kbps">Kbps</option>
-                                                <option value="Mbps">Mbps</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
+                                                <select class="form-control" id="rate_down_unit" name="rate_down_unit">
+                                                    <option value="Kbps">Kbps</option>
+                                                    <option value="Mbps">Mbps</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td>Rate Upload</td>
                                     <td>
                                         <div class="input-group">
@@ -123,24 +124,24 @@ include ("../include/head.html.php");
                                                 <input type="number" class="form-control" id="rate_up" name="rate_up" value="1" min="1">
                                             </div>
                                             <div class="input-group-4">
-                                            <select class="form-control" id="rate_up_unit" name="rate_up_unit">
-                                                <option value="Kbps">Kbps</option>
-                                                <option value="Mbps">Mbps</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-
+                                                <select class="form-control" id="rate_up_unit" name="rate_up_unit">
+                                                    <option value="Kbps">Kbps</option>
+                                                    <option value="Mbps">Mbps</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
                             </table>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
+</div>
 <script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
 <script src="../js/radmon.js"></script>
 <script src="../plugins/add.bandwidth.js"></script>
-
 </body>
 </html>

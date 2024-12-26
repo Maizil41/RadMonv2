@@ -9,7 +9,7 @@
 *******************************************************************************************************************
 */
 include ("../include/head.html.php");
-$selectedPlan = isset($_GET['planName']) ? $_GET['planName'] : '';
+include ("../backend/bill.profile.php");
 ?>
 
 <div id="sidenav" class="sidenav">
@@ -63,10 +63,11 @@ $selectedPlan = isset($_GET['planName']) ? $_GET['planName'] : '';
 <div class="dropdown-btn "><i class="fa fa-gear"></i> Settings 
 <i class="fa fa-caret-down"></i> &nbsp;
 </div>
-<div class="dropdown-container ">
-<a href="../pages/admin.php" class="menu"> <i class="fa fa-gear"></i> Admin Settings </a>
-<a href="../hotspot/hslogo.php" class="menu"> <i class="fa fa-upload"></i> Upload Logo </a>
-<a href="../voucher/template.php" class="menu"> <i class="fa fa-edit"></i> Template Setting </a>          
+<div class="dropdown-container">
+<a href="../pages/admin.php" class="menu"><i class="fa fa-gear"></i> Admin Settings </a>
+<a href="../hotspot/hslogo.php" class="menu"><i class="fa fa-upload"></i> Upload Logo </a>
+<a href="../voucher/template.php" class="menu"><i class="fa fa-edit"></i> Template Setting </a>          
+<a href="../pages/backup.php" class="menu"><i class="fa fa-folder-open"></i> Backup & Restore </a>          
 </div>
 <!--about-->
 <a href="../pages/about.php" class="menu"><i class="fa fa-info-circle"></i> About</a>
@@ -139,7 +140,7 @@ $selectedPlan = isset($_GET['planName']) ? $_GET['planName'] : '';
             <tr>
                 <td class="align-middle">Profile</td>
                 <td>
-                    <select id="planBatch" name="planName" class="form-control" required>
+                    <select name="planName" class="form-control" required>
                         <option value="">Select Profile</option>
                         <?php foreach ($plans as $plan): ?>
                             <option value="<?php echo $plan; ?>" <?php echo $plan == $selectedPlan ? 'selected' : ''; ?>>

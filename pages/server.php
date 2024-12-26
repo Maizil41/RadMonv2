@@ -68,7 +68,8 @@ include ("../backend/ipinfo.php");
 <a href="../pages/admin.php" class="menu"><i class="fa fa-gear"></i> Admin Settings </a>
 <a href="../hotspot/hslogo.php" class="menu"><i class="fa fa-upload"></i> Upload Logo </a>
 <a href="../voucher/template.php" class="menu"><i class="fa fa-edit"></i> Template Setting </a>          
-</div>
+<a href="../pages/backup.php" class="menu"><i class="fa fa-folder-open"></i> Backup & Restore </a>          
+</div>>
 <!--about-->
 <a href="../pages/about.php" class="menu"><i class="fa fa-info-circle"></i> About</a>
 </div>
@@ -100,7 +101,7 @@ include ("../backend/ipinfo.php");
                 <i class="fa fa-info-circle"></i>
               </div>
               <div class="box-group-area">
-                <span> Hostname : <?php echo "$host"; ?> <br /> Model : <?php echo "$model"; ?> <br /> Router OS : <?php echo "$id $version"; ?> </span>
+                <span> Hostname : <?php echo "$host"; ?> <br /> Model : <?php echo "$model"; ?> <br /> Router OS : <?php echo "$distrib $version"; ?> </span>
               </div>
             </div>
           </div>

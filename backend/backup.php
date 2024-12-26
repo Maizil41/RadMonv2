@@ -12,7 +12,7 @@ require_once '../config/db_config.php';
 
 header('Content-Type: application/json');
 
-$targetDir = "../img/logo/";
+$targetDir = "../backup/";
 
 $response = [
     'status' => 'error',
@@ -33,20 +33,18 @@ function formatSize($bytes) {
 }
 
 try {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES["UploadLogo"])) {
-        $fileName = basename($_FILES["UploadLogo"]["name"]);
-        $newFileName = "radmon-logo.png";
-        $targetFilePath = $targetDir . $newFileName;
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES["UploadDB"])) {
+        $fileName = basename($_FILES["UploadDB"]["name"]);
+        $targetFilePath = $targetDir . $fileName;
         $fileType = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-        $allowTypes = ['jpg', 'jpeg', 'png'];
-
-        if (in_array($fileType, $allowTypes)) {
+        $allowTypes = ['sql'];
+        if (in_array($fileType, $allowTypes) && $_FILES["UploadDB"]["size"] < 5 * 1024 * 1024) {
             if (file_exists($targetFilePath)) {
                 unlink($targetFilePath);
             }
 
-            if (move_uploaded_file($_FILES["UploadLogo"]["tmp_name"], $targetFilePath)) {
+            if (move_uploaded_file($_FILES["UploadDB"]["tmp_name"], $targetFilePath)) {
                 $response['status'] = 'success';
                 $response['message'] = '✅ Upload successful.';
             } else {
@@ -62,9 +60,45 @@ try {
             if (file_exists($file)) {
                 unlink($file);
                 $response['status'] = 'success';
-                $response['message'] = '✅ Logo deleted successfully.';
+                $response['message'] = '✅ Database deleted successfully.';
             } else {
                 $response['message'] = '❌ File not found.';
+            }
+        } elseif ($action === 'restore' && isset($_GET['file'])) {
+            $file = $targetDir . basename($_GET['file']);
+            if (file_exists($file)) {
+                $escapedFile = escapeshellarg($file);
+                $command = "mysql --host=" . escapeshellarg($db_config['servername']) . 
+                           " --user=" . escapeshellarg($db_config['username']) . 
+                           " --password=" . escapeshellarg($db_config['password']) . 
+                           " " . escapeshellarg($db_config['dbname']) . 
+                           " < {$escapedFile}";
+                exec($command, $output, $result);
+                if ($result === 0) {
+                    $response['status'] = 'success';
+                    $response['message'] = '✅ Database restored successfully.';
+                } else {
+                    $response['message'] = '❌ Restore failed.';
+                }
+            } else {
+                $response['message'] = 'File not found.';
+            }
+        } elseif ($action === 'backup') {
+            $date = date('Y-m-d_H-i-s');
+            $backupFile = "backup_{$db_config['dbname']}_{$date}.sql";
+            $command = "mysqldump --host=" . escapeshellarg($db_config['servername']) . 
+                       " --user=" . escapeshellarg($db_config['username']) . 
+                       " --password=" . escapeshellarg($db_config['password']) . 
+                       " " . escapeshellarg($db_config['dbname']) . 
+                       " > {$targetDir}{$backupFile}";
+            exec($command, $output, $result);
+
+            if ($result === 0) {
+                $response['status'] = 'success';
+                $response['message'] = '✅ Database backup successful.';
+                $response['file'] = $backupFile;
+            } else {
+                $response['message'] = '❌ Backup failed.';
             }
         } elseif ($action === 'download' && isset($_GET['file'])) { 
             $file = $targetDir . basename($_GET['file']);
@@ -82,14 +116,14 @@ try {
                 $response['message'] = '❌ File not found.';
             }
         } elseif ($action === 'list') {
-            $directory = '../img/logo/';
+            $directory = '../backup/';
             $files = array_diff(scandir($directory), array('.', '..'));
             $files = array_reverse($files);
             $fileList = [];
 
             if (empty($files)) {
                 $response['status'] = 'error';
-                $response['message'] = '❌ No Logo files found.';
+                $response['message'] = '❌ No backup files found.';
             } else {
                 foreach ($files as $file) {
                     $filePath = $directory . $file;

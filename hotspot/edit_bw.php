@@ -67,36 +67,36 @@ include ("../include/hotspot.editbw.php");
 <a href="../pages/admin.php" class="menu"><i class="fa fa-gear"></i> Admin Settings </a>
 <a href="../hotspot/hslogo.php" class="menu"><i class="fa fa-upload"></i> Upload Logo </a>
 <a href="../voucher/template.php" class="menu"><i class="fa fa-edit"></i> Template Setting </a>          
+<a href="../pages/backup.php" class="menu"><i class="fa fa-folder-open"></i> Backup & Restore </a>          
 </div>
 <!--about-->
 <a href="../pages/about.php" class="menu"><i class="fa fa-info-circle"></i> About</a>
 </div>
 
-<div id="main">
-<div id="loading" class="lds-dual-ring"></div>
-    <div class="main-container" style="display:none">
+<div id="main" data-bw-id="<?php echo htmlspecialchars($bw_id); ?>" data-bw-name="<?php echo htmlspecialchars($bw['name']); ?>">
+    <div id="loading" class="lds-dual-ring" style="display: none;"></div>
+    <div class="main-container">
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                    <h3>
-                        <i class="fa fa-edit"></i> Edit Bandwidth : <?php echo htmlspecialchars($bw['name']); ?> &nbsp; | &nbsp;
-                        <small id="loader" style="display: none;">
-                            <i><i class="fa fa-circle-o-notch fa-spin"></i> Processing...</i>
-                        </small>
-                        <?php if (isset($_GET['message'])): ?>
-                            <small id="message">
-                                <?php echo htmlspecialchars($_GET['message']); ?>
+                        <h3>
+                            <i class="fa fa-edit"></i> Edit Bandwidth : <?php echo htmlspecialchars($bw['name']); ?> &nbsp; | &nbsp;
+                            <small id="loader" style="display: none;">
+                                <i><i class="fa fa-circle-o-notch fa-spin"></i> Processing...</i>
                             </small>
-                        <?php endif; ?>
-                    </h3>
+                            <small id="message" style="display: none;"></small>
+                        </h3>
                     </div>
                     <div class="card-body">
-                        <form method="post" role="form" action="../backend/update_bw.php" id="updatebw">
+                        <form id="updatebw">
                             <div>
-                                <a class="btn bg-warning" href="../hotspot/bandwidth.php"> <i class="fa fa-close"></i> Close</a>
-                                <input type="hidden" name="id" value="<?php echo htmlspecialchars($bw_id); ?>">
-                                <button type="submit" name="updatebillplans" value="top" class="btn bg-primary"><i class="fa fa-save"></i> Save</button>
+                                <a class="btn bg-warning" href="../hotspot/bandwidth.php">
+                                    <i class="fa fa-close"></i> Close
+                                </a>
+                                <button type="button" id="saveBtn" class="btn bg-primary">
+                                    <i class="fa fa-save"></i> Save
+                                </button>
                             </div>
 
                             <table class="table">
@@ -112,13 +112,15 @@ include ("../include/hotspot.editbw.php");
                                                 <input type="number" class="form-control" id="rate_down" name="rate_down" value="<?php echo htmlspecialchars($rate_down); ?>" required>
                                             </div>
                                             <div class="input-group-4">
-                                            <select class="form-control" id="rate_down_unit" name="rate_down_unit">
-                                                <option value="Kbps" <?php echo $rate_down_unit == 'Kbps' ? 'selected' : ''; ?>>Kbps</option>
-                                                <option value="Mbps" <?php echo $rate_down_unit == 'Mbps' ? 'selected' : ''; ?>>Mbps</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
+                                                <select class="form-control" id="rate_down_unit" name="rate_down_unit">
+                                                    <option value="Kbps" <?php echo $rate_down_unit == 'Kbps' ? 'selected' : ''; ?>>Kbps</option>
+                                                    <option value="Mbps" <?php echo $rate_down_unit == 'Mbps' ? 'selected' : ''; ?>>Mbps</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td>Rate Upload</td>
                                     <td>
                                         <div class="input-group">
@@ -126,20 +128,22 @@ include ("../include/hotspot.editbw.php");
                                                 <input type="number" class="form-control" id="rate_up" name="rate_up" value="<?php echo htmlspecialchars($rate_up); ?>" required>
                                             </div>
                                             <div class="input-group-4">
-                                            <select class="form-control" id="rate_up_unit" name="rate_up_unit">
-                                                <option value="Kbps" <?php echo $rate_up_unit == 'Kbps' ? 'selected' : ''; ?>>Kbps</option>
-                                                <option value="Mbps" <?php echo $rate_up_unit == 'Mbps' ? 'selected' : ''; ?>>Mbps</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-
+                                                <select class="form-control" id="rate_up_unit" name="rate_up_unit">
+                                                    <option value="Kbps" <?php echo $rate_up_unit == 'Kbps' ? 'selected' : ''; ?>>Kbps</option>
+                                                    <option value="Mbps" <?php echo $rate_up_unit == 'Mbps' ? 'selected' : ''; ?>>Mbps</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
                             </table>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 <script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
 <script src="../js/radmon.js"></script>

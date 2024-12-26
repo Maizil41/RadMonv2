@@ -11,12 +11,21 @@
 require_once '../config/mysqli_db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = isset($_POST['name']) ? trim($_POST['name']) : '';
-    
-    $rate_down = isset($_POST['rate_down']) ? floatval(str_replace(',', '.', $_POST['rate_down'])) : 0;
-    $rate_down_unit = isset($_POST['rate_down_unit']) ? $_POST['rate_down_unit'] : 'Kbps';
-    $rate_up = isset($_POST['rate_up']) ? floatval(str_replace(',', '.', $_POST['rate_up'])) : 0;
-    $rate_up_unit = isset($_POST['rate_up_unit']) ? $_POST['rate_up_unit'] : 'Kbps';
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    if (!isset($input['name'], $input['rate_down'], $input['rate_down_unit'], $input['rate_up'], $input['rate_up_unit'])) {
+        echo json_encode(['status' => 'error', 'message' => 'Missing required fields']);
+        exit();
+    }
+
+    $name = trim($input['name']);
+    $rate_down = floatval(str_replace(',', '.', $input['rate_down']));
+    $rate_down_unit = $input['rate_down_unit'];
+    $rate_up = floatval(str_replace(',', '.', $input['rate_up']));
+    $rate_up_unit = $input['rate_up_unit'];
+
+    $rate_down_bps = 0;
+    $rate_up_bps = 0;
 
     if ($rate_down_unit === 'Kbps') {
         $rate_down_bps = $rate_down * 1000;
@@ -46,13 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->close();
 
         if ($count > 0) {
-            $message = urlencode("❌ Bandwidth Name already exists.");
-            header('Location: ../hotspot/addbw.php?message=' . $message);
+            echo json_encode(['status' => 'error', 'message' => '❌ Bandwidth Name already exists.']);
             $conn->close();
             exit();
         }
     } else {
-        echo "Error: " . $conn->error;
+        echo json_encode(['status' => 'error', 'message' => 'Database query failed: ' . $conn->error]);
         $conn->close();
         exit();
     }
@@ -62,19 +70,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($stmt) {
         $stmt->bind_param("siis", $name, $rate_down_bps, $rate_up_bps, $creation_date);
         if ($stmt->execute()) {
-            $message = urlencode("✅ Bandwidth successfully added.");
-            header('Location: ../hotspot/addbw.php?message=' . $message);
+            echo json_encode(['status' => 'success', 'message' => '✅ Bandwidth successfully added.']);
         } else {
-            $message = urlencode('❌ "Error: ' . $conn->error . '"');
-            header('Location: ../hotspot/addbw.php?message=' . $message);
+            echo json_encode(['status' => 'error', 'message' => '❌ Error: ' . $conn->error]);
         }
         $stmt->close();
     } else {
-        $message = urlencode('❌ "Error: ' . $conn->error . '"');
-        header('Location: ../hotspot/addbw.php?message=' . $message);
+        echo json_encode(['status' => 'error', 'message' => '❌ Error: ' . $conn->error]);
     }
 
     $conn->close();
-    exit();
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
 }
 ?>

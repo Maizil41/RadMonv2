@@ -45,17 +45,17 @@ if ($result->num_rows > 0) {
         echo"
             <td><center>
                 <input type='checkbox' class='delete-checkbox' value='" . htmlspecialchars($username) . "'>&nbsp;&nbsp;
-                <span class='fa fa-trash text-danger pointer' onclick=\"deleteUser('" . htmlspecialchars($username) . "')\"></span>&nbsp;&nbsp;
-                <span class='fa fa-refresh text-warning pointer' onclick=\"resetuser('" . htmlspecialchars($username) . "')\"></span>
+                <span class='fa fa-trash text-danger pointer' title='Delete " . htmlspecialchars($username) . "' onclick=\"deleteUser('" . htmlspecialchars($username) . "')\"></span>&nbsp;&nbsp;
+                <span class='fa fa-refresh text-warning pointer' title='Reset " . htmlspecialchars($username) . "' onclick=\"resetuser('" . htmlspecialchars($username) . "')\"></span>
             </td>
             <td><center>
-                <select class='group-item-m dropd pd-2' id='selectPrinter" . $row['username'] . "'>
+                <select class='group-item-m dropd pd-2 pointer' title='Select Ticket' id='selectPrinter" . $row['username'] . "'>
                     <option value='printTickets1.php'>1</option>
                     <option value='printTickets2.php'>2</option>
                     <option value='printTickets3.php'>3</option>
                     <option value='printTickets4.php'>4</option>
                 </select>
-                <span class='fa fa-qrcode pointer' style='cursor:pointer;' onclick=\"printTicket('" . $row['username'] . "', '" . $row['planName'] . "')\"></span>
+                <span class='fa fa-qrcode pointer' style='cursor:pointer;' title='Print " . htmlspecialchars($username) . "' onclick=\"printTicket('" . $row['username'] . "', '" . $row['planName'] . "')\"></span>
               </center></td>
             <td><center>$name</td>
             <td><center>$username</td>

@@ -66,69 +66,50 @@ include ("../include/head.html.php");
 <a href="../pages/admin.php" class="menu"><i class="fa fa-gear"></i> Admin Settings </a>
 <a href="../hotspot/hslogo.php" class="active"><i class="fa fa-upload"></i> Upload Logo </a>
 <a href="../voucher/template.php" class="menu"><i class="fa fa-edit"></i> Template Setting </a>          
+<a href="../pages/backup.php" class="menu"><i class="fa fa-folder-open"></i> Backup & Restore </a>          
 </div>
 <!--about-->
 <a href="../pages/about.php" class="menu"><i class="fa fa-info-circle"></i> About</a>
 </div>
 
 <div id="main">
-  <div id="loading" class="lds-dual-ring"></div>
+    <div id="loading" class="lds-dual-ring"></div>
     <div class="main-container" style="display:none">
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fa fa-upload"></i> Upload Logo &nbsp; | &nbsp; 
-                        <small id="loader" style="display: none;">
-                            <i><i class="fa fa-circle-o-notch fa-spin"></i> Processing...</i>
-                        </small>
-                        <?php if (isset($_GET['message'])): ?>
-                            <small id="message">
-                                <?php echo htmlspecialchars($_GET['message']); ?>
+                        <h3 class="card-title">
+                            <i class="fa fa-upload"></i> Upload Logo &nbsp; | &nbsp;
+                            <small id="loader" style="display: none;">
+                                <i><i class="fa fa-circle-o-notch fa-spin"></i> Processing...</i>
                             </small>
-                        <?php endif; ?>
-                    </h3>
+                            <small id="message"></small>
+                        </h3>
                     </div>
                     <div class="card-body">
-                        <form action="../backend/logo.php" method="post" enctype="multipart/form-data" id="changeLogo">
-                           <div class="pd-10">Format file : jpg, jpeg, png</div>
+                        <form id="uploadForm">
+                            <div class="pd-10">Format file: jpg, jpeg, png</div>
                             <div class="input-group">
-                                <div class="input-group-4 col-box-8">
-                                    <input style="cursor: pointer; " type="file" class="group-item group-item-l" name="UploadLogo" accept=".jpg, .jpeg, .png" required>
+                                <div class="input-group-4 col-box-12">
+                                    <input style="cursor: pointer;" type="file" class="group-item" id="UploadLogo" name="UploadLogo" accept=".jpg,.jpeg,.png" required>
                                 </div>
-                                <div class="input-group-2 col-box-4">
-                                    <input style="cursor: pointer; font-size: 12px; padding:8px;" class="group-item group-item-r" type="submit" value="Upload" name="submit">
-                                </div>
+                                <button type="button" class="btn bg-primary" id="uploadButton">
+                                    <i class="fa fa-upload"></i> Upload
+                                </button>
                             </div>
                         </form>
                         <div class="mr-t-10">
                             <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Current Logo</th>
-                                        <th>Action</th>
+                                        <th><center>Logo</center></th>
+                                        <th><center>Size</center></th>
+                                        <th><center>Action</center></th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <?php
-                                    $directory = '../img/logo/';
-                                    $files = array_diff(scandir($directory), array('.', '..'));
-                                    foreach ($files as $file) {
-                                        echo "
-                                        <tr>
-                                            <td>
-                                                <a href=\"$directory$file\" target=\"_blank\">
-                                                    <img height=\"100px\" src=\"$directory$file\" alt=\"$file\">
-                                                </a><br>
-                                            </td>
-                                            <td>
-                                                <a class=\"btn bg-danger\" href=\"../backend/logo.php?action=delete&file=$file\" onclick=\"return confirm('Yakin ingin menghapus logo ini?')\">
-                                                    <i class=\"fa fa-trash\"></i> Delete
-                                                </a>
-                                            </td>
-                                        </tr>";
-                                    }
-                                    ?>
+                                <tbody id="fileTable">
+                                    <!-- File list will be populated dynamically -->
                                 </tbody>
                             </table>
                         </div>
@@ -140,6 +121,6 @@ include ("../include/head.html.php");
 </div>
 <script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
 <script src="../js/radmon.js"></script>
-<script src="../plugins/change.logo.js"></script>
+<script src="../plugins/upload.logo.js"></script>
 </body>
 </html>

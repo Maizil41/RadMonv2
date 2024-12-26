@@ -22,18 +22,12 @@ AND planCode != 'PPPoE';
 
 $result_combined = $conn->query($sql_combined);
 
-$options = array();
-$options['plans'] = array();
+$plans = [];
 
 if ($result_combined->num_rows > 0) {
-    while($row = $result_combined->fetch_assoc()) {
-        $options['plans'][] = $row;
+    while ($row = $result_combined->fetch_assoc()) {
+        $plans[] = $row['planName'];
     }
 }
-
-$conn->close();
-
-header('Content-Type: application/json');
-
-echo json_encode($options);
+$selectedPlan = isset($_GET['planName']) ? $_GET['planName'] : '';
 ?>

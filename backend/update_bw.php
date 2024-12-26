@@ -3,39 +3,37 @@
 *******************************************************************************************************************
 * Warning!!!, Tidak untuk diperjual belikan!, Cukup pakai sendiri atau share kepada orang lain secara gratis
 *******************************************************************************************************************
-* Dibuat oleh @Maizil https://t.me/maizil41
+* Author : @Maizil https://t.me/maizil41
 *******************************************************************************************************************
 * © 2024 Mutiara-Net By @Maizil
 *******************************************************************************************************************
 */
+header("Content-Type: application/json");
 
 require '../config/mysqli_db.php';
-    
+
+$response = [
+    "success" => false,
+    "message" => "",
+    "data" => null,
+];
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input = json_decode(file_get_contents('php://input'), true);
 
-    $bw_id = isset($_POST['id']) ? trim($_POST['id']) : '';
-    $name = isset($_POST['name']) ? trim($_POST['name']) : '';
+    $bw_id = isset($input['id']) ? trim($input['id']) : '';
+    $name = isset($input['name']) ? trim($input['name']) : '';
     
-    $rate_down = isset($_POST['rate_down']) ? floatval(str_replace(',', '.', $_POST['rate_down'])) : 0;
-    $rate_down_unit = isset($_POST['rate_down_unit']) ? $_POST['rate_down_unit'] : 'Kbps';
-    $rate_up = isset($_POST['rate_up']) ? floatval(str_replace(',', '.', $_POST['rate_up'])) : 0;
-    $rate_up_unit = isset($_POST['rate_up_unit']) ? $_POST['rate_up_unit'] : 'Kbps';
+    $rate_down = isset($input['rate_down']) ? floatval($input['rate_down']) : 0;
+    $rate_down_unit = isset($input['rate_down_unit']) ? $input['rate_down_unit'] : 'Kbps';
+    $rate_up = isset($input['rate_up']) ? floatval($input['rate_up']) : 0;
+    $rate_up_unit = isset($input['rate_up_unit']) ? $input['rate_up_unit'] : 'Kbps';
 
-    if ($rate_down_unit === 'Kbps') {
-        $rate_down_bps = $rate_down * 1000;
-    } elseif ($rate_down_unit === 'Mbps') {
-        $rate_down_bps = $rate_down * 1048576;
-    } else {
-        $rate_down_bps = $rate_down;
-    }
+    $rate_down_bps = ($rate_down_unit === 'Kbps') ? $rate_down * 1000 : 
+                     (($rate_down_unit === 'Mbps') ? $rate_down * 1048576 : $rate_down);
 
-    if ($rate_up_unit === 'Kbps') {
-        $rate_up_bps = $rate_up * 1000;
-    } elseif ($rate_up_unit === 'Mbps') {
-        $rate_up_bps = $rate_up * 1048576;
-    } else {
-        $rate_up_bps = $rate_up;
-    }
+    $rate_up_bps = ($rate_up_unit === 'Kbps') ? $rate_up * 1000 : 
+                   (($rate_up_unit === 'Mbps') ? $rate_up * 1048576 : $rate_up);
 
     $update_date = date('Y-m-d H:i:s');
 
@@ -54,27 +52,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($stmt) {
                 $stmt->bind_param("siiss", $name, $rate_down_bps, $rate_up_bps, $update_date, $bw_id);
                 if ($stmt->execute()) {
-                    $message = urlencode("✅ Bandwidth successfully Update.");
-                    header('Location: ../hotspot/edit_bw.php?id=' . $bw_id . '&message=' . $message);
+                    $response['success'] = true;
+                    $response['message'] = "✅ Bandwidth successfully updated.";
+                    $response['data'] = [
+                        "id" => $bw_id,
+                        "name" => $name,
+                        "rate_down" => $rate_down_bps,
+                        "rate_up" => $rate_up_bps,
+                        "creation_date" => $update_date,
+                    ];
                 } else {
-                    $message = urlencode('❌ "Error: ' . $conn->error . '"');
-                    header('Location: ../hotspot/edit_bw.php?id=' . $bw_id . '&message=' . $message);
+                    $response['message'] = "❌ Error: " . $conn->error;
                 }
                 $stmt->close();
             } else {
-                $message = urlencode('❌ "Error: ' . $conn->error . '"');
-                header('Location: ../hotspot/edit_bw.php?id=' . $bw_id . '&message=' . $message);
+                $response['message'] = "❌ Error: " . $conn->error;
             }
         } else {
-            $message = urlencode("❌ ID Not Found");
-            header('Location: ../hotspot/edit_bw.php?id=' . $bw_id . '&message=' . $message);
+            $response['message'] = "❌ Error: ID not found.";
         }
     } else {
-        $message = urlencode('❌ "Error: ' . $conn->error . '"');
-        header('Location: ../hotspot/edit_bw.php?id=' . $bw_id . '&message=' . $message);
+        $response['message'] = "❌ Error: " . $conn->error;
     }
-
-    $conn->close();
-    exit();
+} else {
+    $response['message'] = "❌ Invalid request method. Only POST is allowed.";
 }
+
+$conn->close();
+
+echo json_encode($response);
 ?>

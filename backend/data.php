@@ -28,13 +28,6 @@ $data = getCpuUsage();
 
 $cpuValue = $data[0]['cpu'];
 
-$output = shell_exec('/usr/bin/cpustat');
-
-list($frequency, $temperature) = explode(' / ', trim($output));
-
-$freq = htmlspecialchars($frequency);
-$temp = htmlspecialchars($temperature);
-
 function getMemoryInfo() {
     $command = "awk 'BEGIN{Total=0;Free=0}$1~/^MemTotal:/{Total=$2}$1~/^MemFree:|^Buffers:|^Cached:/{Free+=$2}END{Used=Total-Free;printf\"%.0f\t%.0f\t%.1f\t%.0f\",Total*1024,Used*1024,(Total>0)?((Used/Total)*100):0,Free*1024}' /proc/meminfo 2>/dev/null";
     $output = shell_exec($command);
@@ -64,23 +57,7 @@ function convertMemory($bytes) {
 
 $memoryInfo = getMemoryInfo();
 $freeMemory = convertMemory($memoryInfo['free']);
-
-function calculatePercentage($part, $total) {
-    if ($total == 0) {
-        return 0;
-    }
-    return ($part / $total) * 100;
-}
-
-function convertToMBandGB($valueInKB) {
-    $valueInMB = $valueInKB / 1024;
-    $valueInGB = $valueInMB / 1024;
-    
-    return [
-        'MB' => $valueInMB,
-        'GB' => $valueInGB
-    ];
-}
+$totalMemory = convertMemory($memoryInfo['total']);
 
 function formatMemory($valueInMB) {
     if ($valueInMB < 1024) {
@@ -90,38 +67,20 @@ function formatMemory($valueInMB) {
     }
 }
 
-$rootInfo = shell_exec('df -h /');
+$free_hdd = shell_exec("df -h / | grep '/' | awk '{print $4}'");
+$total_hdd = shell_exec("df -h / | grep '/' | awk '{print $2}'");
 
-$lines = explode("\n", trim($rootInfo));
-
-$data = preg_split('/\s+/', $lines[1]);
-
-$freehdd = $data[3];
-$used = $data[4];
-
-$freehdd = preg_replace('/([0-9\.]+)([A-Za-z])/', '$1 $2iB', $freehdd);
-$used = preg_replace('/([0-9\.]+)([A-Za-z])/', '$1 $2iB', $used);
+$freehdd = preg_replace('/([0-9\.]+)([A-Za-z])/', '$1 $2iB', $free_hdd);
+$totalhdd = preg_replace('/([0-9\.]+)([A-Za-z])/', '$1 $2iB', $total_hdd);
     
-$model = trim(shell_exec('cat /proc/device-tree/model | tr -d "\000"'));
-
-$releaseInfo = shell_exec("cat /etc/openwrt_release");
-
-$lines = explode("\n", trim($releaseInfo));
-$id = "";
-$version = "";
-
-foreach ($lines as $line) {
-    if (strpos($line, "DISTRIB_ID=") === 0) {
-        $id = trim(str_replace(["DISTRIB_ID='", "'"], "", $line));
-    }
-    if (strpos($line, "DISTRIB_RELEASE=") === 0) {
-        $version = trim(str_replace(["DISTRIB_RELEASE='", "'"], "", $line));
-    }
-}
+$model = trim(shell_exec('ubus call system board | jq -r ".model"'));
+$distrib = trim(shell_exec('ubus call system board | jq -r ".release" | jq -r ".distribution"'));
+$version = trim(shell_exec('ubus call system board | jq -r ".release" | jq -r ".version"'));
 
 if (file_exists("/usr/bin/cpustat") && is_executable("/usr/bin/cpustat")) {
     $time = shell_exec("/usr/bin/cpustat -u");
     $load = shell_exec("/usr/bin/cpustat -l");
+    $temp = shell_exec("/usr/bin/cpustat -t");
 } else {
     $uptimeString = shell_exec('uptime | tr -d \',\'');
 
@@ -141,8 +100,25 @@ if (file_exists("/usr/bin/cpustat") && is_executable("/usr/bin/cpustat")) {
     }
 }
 
-$model = htmlspecialchars($model);
-$uptime = htmlspecialchars($time);
+define('PROC_UPTIME', '/proc/uptime');
+
+function getSystemUptime() {
+    if (file_exists(PROC_UPTIME)) {
+        $uptimeData = file_get_contents(PROC_UPTIME);
+        $uptimeSeconds = (float) explode(" ", $uptimeData)[0];
+
+        $days = floor($uptimeSeconds / 86400);
+        $hours = floor(($uptimeSeconds % 86400) / 3600);
+        $minutes = floor(($uptimeSeconds % 3600) / 60);
+        $seconds = floor($uptimeSeconds % 60);
+
+        return sprintf('%dd %dh %dm %ds', $days, $hours, $minutes, $seconds);
+    } else {
+        return "Tidak dapat membaca uptime sistem.";
+    }
+}
+
 $load = htmlspecialchars($load);
+$uptime = getSystemUptime();
 $host = gethostname();
 ?> 

@@ -42,4 +42,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 }
+
+function loadCache($key) {
+    $cacheFile = __DIR__ . '/../cache/' . $key . '.cache';
+    if (file_exists($cacheFile)) {
+        return file_get_contents($cacheFile);
+    }
+    return null;
+}
+
+function getUserIP() {
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    } else {
+        $ip = $_SERVER['REMOTE_ADDR'];
+    }
+    return $ip;
+}
+
+$userIP = getUserIP();
+
+$theme = isset($_GET['themes']) ? $_GET['themes'] : (loadCache('theme') ?? 'blue');
 ?>
