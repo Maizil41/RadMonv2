@@ -1,1 +1,0 @@
-fetch('../include/themes.json') .then(response=>response.json()) .then(data=>{const theme=data.theme;const scriptPath=`../js/radmon-ui.${theme}.min.js`;const script=document.createElement('script');script.src=scriptPath;document.head.appendChild(script)}) .catch(error=>{console.error('Error loading theme.json:',error)});
