@@ -23,6 +23,15 @@ include ("../include/head.html.php");
 <a href="../hotspot/binding.php" class="menu"><i class="fa fa-address-book"></i> MAC Bindings</a>
 <a href="../hotspot/active.php" class="menu"><i class="fa fa-wifi"></i> Hotspot Active</a>
 </div>
+<!--pppoe-->
+<div class="dropdown-btn"><i class="fa fa-sitemap"></i> PPPoE
+<i class="fa fa-caret-down"></i>
+</div>
+<div class="dropdown-container">
+<a href="../pppoe/account.php" class="menu"><i class="fa fa-users"></i> PPPoE User</a>
+<a href="../pppoe/profile.php" class="menu"><i class="fa fa-pie-chart"></i> PPPoE Profile</a>
+<a href="../pppoe/active.php" class="menu"><i class="fa fa-plug"></i> PPPoE Active</a>
+</div>
 <!--bandwidth-->
 <a href="../hotspot/bandwidth.php" class="menu"><i class="fa fa-area-chart "></i> Bandwidth </a>
 <!--quick print-->
@@ -34,6 +43,8 @@ include ("../include/head.html.php");
 </div>
 <div class="dropdown-container">
 <a href="../logs/hotspot.php" class="menu"><i class="fa fa-wifi"></i> Hotspot Log </a>
+<a href="../logs/pppoe.php" class="menu"><i class="fa fa-sitemap"></i> PPPoE Log </a>
+<a href="../logs/applog.php" class="menu"><i class="fa fa-exclamation-circle"></i> App Log </a>
 <a href="../logs/radius.php" class="menu"><i class="fa fa-database"></i> Radius Log </a>
 </div>
 <!--system-->
@@ -62,36 +73,33 @@ include ("../include/head.html.php");
 </div>
 
 <div id="main">
-  <div id="loading" class="lds-dual-ring"></div>
+    <div id="loading" class="lds-dual-ring"></div>
     <div class="main-container" style="display:none">
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><i class="fa fa-folder-open"></i> Backup & Restore &nbsp; | &nbsp; 
-                        <small id="loader" style="display: none;">
-                            <i><i class="fa fa-circle-o-notch fa-spin"></i> Processing...</i>
-                        </small>
-                        <?php if (isset($_GET['message'])): ?>
-                            <small id="message">
-                                <?php echo htmlspecialchars($_GET['message']); ?>
+                        <h3 class="card-title">
+                            <i class="fa fa-folder-open"></i> Backup & Restore &nbsp; | &nbsp; 
+                            <small id="loader" style="display: none;">
+                                <i><i class="fa fa-circle-o-notch fa-spin"></i> Processing...</i>
                             </small>
-                        <?php endif; ?>
-                    </h3>
+                            <small id="message"></small>
+                        </h3>
                     </div>
                     <div class="card-body">
-                        <form action="../backend/backup.php" method="post" enctype="multipart/form-data" id="changeLogo">
-                           <div class="pd-10">Format file : sql</div>
+                        <form id="uploadForm">
+                            <div class="pd-10">Format file: sql</div>
                             <div class="input-group">
                                 <div class="input-group-4 col-box-12">
-                                    <input style="cursor: pointer;" type="file" class="group-item" name="UploadDB" accept=".sql" required>
+                                    <input style="cursor: pointer;" type="file" class="group-item" id="UploadDB" name="UploadDB" accept=".sql" required>
                                 </div>
-                                <button type="submit" value="Upload" name="submit" class="btn bg-primary">
+                                <button type="button" class="btn bg-primary" id="uploadButton">
                                     <i class="fa fa-upload"></i> Upload
                                 </button>
-                                <a href="../backend/backup.php?action=backup" class="btn bg-success">
+                                <button type="button" class="btn bg-success" id="backupButton">
                                     <i class="fa fa-download"></i> Backup
-                                </a>
+                                </button>
                             </div>
                         </form>
                         <div class="mr-t-10">
@@ -104,53 +112,8 @@ include ("../include/head.html.php");
                                         <th><center>Action</center></th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <?php
-                                    $directory = '../backup/';
-                                    $files = array_diff(scandir($directory), array('.', '..'));
-                                    $files = array_reverse($files);
-                                    $nomor_urut = 1;
-
-                                    function formatSize($size) {
-                                        if ($size >= 1073741824) {
-                                            $size = number_format($size / 1073741824, 2) . ' GB';
-                                        } elseif ($size >= 1048576) {
-                                            $size = number_format($size / 1048576, 2) . ' MB';
-                                        } elseif ($size >= 1024) {
-                                            $size = number_format($size / 1024, 2) . ' KB';
-                                        } else {
-                                            $size = $size . ' bytes';
-                                        }
-                                        return $size;
-                                    }
-
-                                    foreach ($files as $file): ?>
-                                        <tr>
-                                            <td style="text-align: center;">
-                                                <?php echo $nomor_urut++; ?>
-                                            </td>
-                                            <td style="text-align: center;">
-                                                <a><i class="fa fa-database"></i> <?php echo $file; ?></a>
-                                            </td>
-                                            <td style="text-align: center;">
-                                                <?php 
-                                                $fileSize = filesize($directory . $file); 
-                                                echo formatSize($fileSize); 
-                                                ?>
-                                            </td>
-                                            <td style="text-align: center;">
-                                                <a class="btn bg-danger" href="../backend/backup.php?action=delete&file=<?php echo urlencode($file); ?>" onclick="return confirm('Yakin ingin menghapus database ini?')">
-                                                    <i class="fa fa-trash"></i>
-                                                </a>
-                                                <a class="btn bg-warning" href="../backend/backup.php?action=restore&file=<?php echo urlencode($file); ?>" onclick="return confirm('Yakin ingin merestore database ini?')">
-                                                    <i class="fa fa-rotate-left"></i>
-                                                </a>
-                                                <a class="btn bg-success" href="../backend/backup.php?action=download&file=<?php echo urlencode($file); ?>">
-                                                    <i class="fa fa-download"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
+                                <tbody id="fileTable">
+                                    <!-- File list will be populated dynamically -->
                                 </tbody>
                             </table>
                         </div>
@@ -162,5 +125,6 @@ include ("../include/head.html.php");
 </div>
 <script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
 <script src="../js/radmon.js"></script>
+<script src="../plugins/backup.db.js"></script>
 </body>
 </html>
