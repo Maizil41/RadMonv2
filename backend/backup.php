@@ -69,7 +69,7 @@ try {
             if (file_exists($file)) {
                 $escapedFile = escapeshellarg($file);
                 $command = "mysql --host=" . escapeshellarg($db_config['servername']) . 
-                           " --user=" . escapeshellarg($db_config['username']) . 
+                           " --user=" . escapeshellarg($db_config['root_user']) . 
                            " --password=" . escapeshellarg($db_config['password']) . 
                            " " . escapeshellarg($db_config['dbname']) . 
                            " < {$escapedFile}";
@@ -87,7 +87,7 @@ try {
             $date = date('Y-m-d_H-i-s');
             $backupFile = "backup_{$db_config['dbname']}_{$date}.sql";
             $command = "mysqldump --host=" . escapeshellarg($db_config['servername']) . 
-                       " --user=" . escapeshellarg($db_config['username']) . 
+                       " --user=" . escapeshellarg($db_config['root_user']) . 
                        " --password=" . escapeshellarg($db_config['password']) . 
                        " " . escapeshellarg($db_config['dbname']) . 
                        " > {$targetDir}{$backupFile}";
