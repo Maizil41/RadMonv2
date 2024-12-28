@@ -166,7 +166,7 @@ function check_service_status($service_name) {
 }
 
 $services = [
-    "MySQL" => "mysql",
+    "MySQL" => "mysqld",
     "Radiusd" => "radiusd",
     "Chilli" => "chilli",
     "Openclash" => "openclash"
