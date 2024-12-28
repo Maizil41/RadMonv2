@@ -167,7 +167,7 @@ include ("../backend/ipinfo.php");
                 $iconClass = $isRunning ? "fa-plug" : "fa-power-off";
                 $statusText = $isRunning ? "Running" : "Not Running";
                 ?>
-                <div class="col-3 col-box-6">
+                <div class="row"> <?php foreach ($services as $displayName => $serviceName): ?> 
                 <div class="box 
                     <?= $bgClass ?> bmh-75">
                       <h1> <?= $displayName ?> </h1>
@@ -186,6 +186,7 @@ include ("../backend/ipinfo.php");
     <script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
     <script src="../js/radmon.js"></script>
     <script src="../plugins/dash.load.js" defer></script>
+    <script src="../plugins/service.restart.js"></script>
     <script>window.onload=function(){const host='google.com';const resultDiv=document.getElementById('result');resultDiv.innerHTML='Check Ping...';fetch(`../backend/check_ping.php?host=${host}`) .then(response=>response.json()) .then(data=>{const packetLoss=data.packetLoss;const avgTime=data.avgTime;resultDiv.innerHTML=` Host : ${host}<br>Loss : ${packetLoss}%<br>Time : ${avgTime}ms `}) .catch(error=>{resultDiv.innerHTML='Ping failed.'})};</script>
 </body>
 </html>
