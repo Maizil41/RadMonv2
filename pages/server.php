@@ -167,7 +167,7 @@ include ("../backend/ipinfo.php");
                 $iconClass = $isRunning ? "fa-plug" : "fa-power-off";
                 $statusText = $isRunning ? "Running" : "Not Running";
                 ?>
-                <div class="row"> <?php foreach ($services as $displayName => $serviceName): ?> 
+                <div class="col-3 col-box-6 pointer" onclick="confirmRestart('<?= $serviceName ?>')">
                 <div class="box 
                     <?= $bgClass ?> bmh-75">
                       <h1> <?= $displayName ?> </h1>
