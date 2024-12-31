@@ -135,12 +135,12 @@ include ("../backend/alluser.php");
 <table id="dataTable" class="table table-bordered table-hover text-nowrap">
 <thead>
 <tr>
+<?php if ($total_users > 0): ?><th class="text-center align-middle"><input type="checkbox" id="checkAll"></th><?php endif; ?>
 <th class="text-center align-middle">
     <?php if ($total_users > 0): ?>
-        <input type="checkbox" id="checkAll">
-        &nbsp;&nbsp;<?php echo "$total_users"; ?>&nbsp;&nbsp;
+        <?php echo "$total_users"; ?>&nbsp;items
     <?php else: ?>
-        <?php echo "$total_users"; ?>
+        <?php echo "$total_users"; ?>&nbsp;items
     <?php endif; ?>
 </th>
 <th class="text-center align-middle">Print</th>
