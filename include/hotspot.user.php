@@ -44,7 +44,9 @@ if ($result->num_rows > 0) {
 
         echo"
             <td><center>
-                <input type='checkbox' class='delete-checkbox' value='" . htmlspecialchars($username) . "'>&nbsp;&nbsp;
+                <input type='checkbox' class='delete-checkbox' value='" . htmlspecialchars($username) . "'>
+            </td>
+            <td><center>
                 <span class='fa fa-trash text-danger pointer' onclick=\"deleteUser('" . htmlspecialchars($username) . "')\"></span>&nbsp;&nbsp;
                 <span class='fa fa-refresh text-warning pointer' onclick=\"resetuser('" . htmlspecialchars($username) . "')\"></span>
             </td>
