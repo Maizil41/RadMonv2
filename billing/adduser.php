@@ -69,7 +69,7 @@ include ("../include/head.html.php");
                 <div class="card">
                     <div class="card-header">
                         <h3>
-                            <i class="fa fa-user-plus"></i> Add User &nbsp; | &nbsp;
+                            <i class="fa fa-user-plus"></i> Add Client &nbsp; | &nbsp;
                             <small id="loader" style="display: none;">
                                 <i><i class="fa fa-circle-o-notch fa-spin"></i> Processing...</i>
                             </small>
