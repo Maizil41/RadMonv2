@@ -96,10 +96,10 @@ include ("../include/billing.edit.php");
                                     <td class="align-middle">Balance</td>
                                     <td>
                                         <div class="input-group">
-                                            <div class="input-group-1">
+                                            <div class="input-group-2">
                                                 <input type="text" class="form-control" value="Rp" disabled>
                                             </div>
-                                            <div class="input-group-11">
+                                            <div class="input-group-10">
                                                 <input type="number" id="balance" class="form-control" name="balance" value="<?php echo htmlspecialchars($uid['balance']); ?>" min="0" required>
                                             </div>
                                         </div>
@@ -115,10 +115,10 @@ include ("../include/billing.edit.php");
                                     <td class="align-middle">WhatsApp</td>
                                     <td>
                                         <div class="input-group">
-                                            <div class="input-group-1">
+                                            <div class="input-group-2">
                                                 <input type="number" class="form-control" value="62" disabled>
                                             </div>
-                                            <div class="input-group-11">
+                                            <div class="input-group-10">
                                                 <input type="text" class="form-control" id="whatsapp" name="whatsapp" value="<?php echo htmlspecialchars($client_phone); ?>" oninput="if(this.value.length > 17) this.value = this.value.slice(0,17);" pattern="[0-9\-]+" title="Masukkan nomor yang valid">
                                             </div>
                                         </div>
