@@ -125,7 +125,6 @@ if (file_exists("/usr/bin/cpustat") && is_executable("/usr/bin/cpustat")) {
     $temp = getCpuTemp();
 }
 
-$load = htmlspecialchars($load);
 $uptime = getSystemUptime();
 $host = gethostname();
 ?> 
