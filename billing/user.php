@@ -68,7 +68,7 @@ include ("../include/billing.client.php");
 <div class="col-12">
 <div class="card">
 <div class="card-header">
-	<h3><i class=" fa fa-user"></i> Client List </h3>
+	<h3><i class=" fa fa-user"></i> Client List &nbsp; | &nbsp; <a href="../billing/adduser.php" title="Add User"><i class="fa fa-plus"></i> Add</a></h3>
 </div>
 <div class="card-body">
 <div class="row">
