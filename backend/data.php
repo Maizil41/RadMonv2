@@ -112,7 +112,21 @@ function getSystemUptime() {
         $minutes = floor(($uptimeSeconds % 3600) / 60);
         $seconds = floor($uptimeSeconds % 60);
 
-        return sprintf('%dd %dh %dm %ds', $days, $hours, $minutes, $seconds);
+        $parts = [];
+        if ($days > 0) {
+            $parts[] = sprintf('%dd', $days);
+        }
+        if ($hours > 0) {
+            $parts[] = sprintf('%dh', $hours);
+        }
+        if ($minutes > 0) {
+            $parts[] = sprintf('%dm', $minutes);
+        }
+        if ($seconds > 0) {
+            $parts[] = sprintf('%ds', $seconds);
+        }
+
+        return implode(' ', $parts);
     } else {
         return "Tidak dapat membaca uptime sistem.";
     }
