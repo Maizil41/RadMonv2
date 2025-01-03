@@ -77,29 +77,6 @@ $model = trim(shell_exec('ubus call system board | jq -r ".model"'));
 $distrib = trim(shell_exec('ubus call system board | jq -r ".release" | jq -r ".distribution"'));
 $version = trim(shell_exec('ubus call system board | jq -r ".release" | jq -r ".version"'));
 
-if (file_exists("/usr/bin/cpustat") && is_executable("/usr/bin/cpustat")) {
-    $time = shell_exec("/usr/bin/cpustat -u");
-    $load = shell_exec("/usr/bin/cpustat -l");
-    $temp = shell_exec("/usr/bin/cpustat -t");
-} else {
-    $uptimeString = shell_exec('uptime | tr -d \',\'');
-
-    preg_match("/up\s+(.+?),/", $uptimeString, $uptimeMatches);
-    $time = $uptimeMatches[1];
-
-    preg_match("/average:\s+(.+)/", $uptimeString, $loadMatches);
-    $load = $loadMatches[1];
-
-    if (strpos($time, "h") !== false) {
-        $time = trim($time);
-    } elseif (strpos($time, "day") !== false) {
-        preg_match("/(\d+) day/", $time, $daysMatches);
-        $days = $daysMatches[1] . "d ";
-        $time = preg_replace("/\d+ day\s+/", "", $time);
-        $time = $days . str_replace(":", "h ", trim($time));
-    }
-}
-
 define('PROC_UPTIME', '/proc/uptime');
 
 function getSystemUptime() {
@@ -130,6 +107,22 @@ function getSystemUptime() {
     } else {
         return "Tidak dapat membaca uptime sistem.";
     }
+}
+
+function getCpuTemp() {
+    $tempFile = '/sys/class/thermal/thermal_zone0/temp';
+    if (file_exists($tempFile)) {
+        $temp = file_get_contents($tempFile);
+        return round($temp / 1000) . "°C";
+    }
+    return "Tidak ditemukan.";
+}
+
+if (file_exists("/usr/bin/cpustat") && is_executable("/usr/bin/cpustat")) {
+    $getCpuTemp = shell_exec("/usr/bin/cpustat -t");
+    $temp = preg_replace('/\.\d+/', '', $getCpuTemp);
+} else {
+    $temp = getCpuTemp();
 }
 
 $load = htmlspecialchars($load);
