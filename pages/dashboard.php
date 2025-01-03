@@ -76,7 +76,7 @@ include ("../backend/auth_log.php");
               <div class="box-group-icon"><i class="fa fa-calendar"></i></div>
               <div class="box-group-area">
                 <span>System date & time<br>
-                  <span id="date"></span> <span id="time"></span><br>
+                  <span id="date"><?php echo date("M/d/Y H:i:s"); ?></span><br>
                   Uptime: <span id="uptime"><?php echo $uptime; ?></span>
                 </span>
               </div>
