@@ -122,7 +122,7 @@ if ! /etc/init.d/mysqld status >/dev/null 2>&1; then
 fi
 echo -e "$(get_random_color)Setting up MySQL...${RESET}"
 {
-echo "radmon"
+echo ""
 echo "n"
 echo "y"
 echo "radmon"
