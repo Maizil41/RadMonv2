@@ -71,7 +71,7 @@ fi
 
 show_banner
 echo -e "$(get_random_color)Mengupdate Repository...${RESET}"
-if ! opkg update >/dev/null 2>&1; then
+if ! opkg update && opkg install sexpect >/dev/null 2>&1; then
     echo -e "${RED}Gagal mengupdate repository. Keluar...${RESET}"
     exit 1
 fi
@@ -287,10 +287,22 @@ show_banner
 sleep 1
 
 ln -sf /usr/bin/php-cli /usr/bin/php
-if ! php-cli go-pear.phar; then
-    echo -e "${RED}Gagal mensetup Pear. Keluar...${RESET}"
-    exit 1
-fi
+
+[ -e /tmp/sexpect.sock ] && rm -f /tmp/sexpect.sock
+sexpect -s /tmp/sexpect.sock spawn php go-pear.phar
+sleep 1
+sexpect -s /tmp/sexpect.sock expect -re "1-12, .* or Enter to continue:"
+sexpect -s /tmp/sexpect.sock send -enter
+sleep 1
+sexpect -s /tmp/sexpect.sock expect -re "Would you like to alter php.ini .* \\[Y/n\\]"
+sexpect -s /tmp/sexpect.sock send "y" -enter
+sleep 1
+sexpect -s /tmp/sexpect.sock expect -re "Press Enter to continue:"
+sexpect -s /tmp/sexpect.sock send -enter
+sleep 1
+sexpect -s /tmp/sexpect.sock close
+ps | grep sexpect | grep -v grep | awk '{print $1}' | xargs -r kill -9
+
 show_banner
 
 sleep 1 
