@@ -130,17 +130,38 @@ if ! /etc/init.d/mysqld status >/dev/null 2>&1; then
     exit 1
 fi
 echo -e "$(get_random_color)Setting up MySQL...${RESET}"
-{
-echo ""
-echo "n"
-echo "y"
-echo "radmon"
-echo "radmon"
-echo "y"
-echo "n"
-echo "y"
-echo "y"
-} | mysql_secure_installation -u root
+[ -e /tmp/sexpect.sock ] && rm -f /tmp/sexpect.sock
+sexpect -s /tmp/sexpect.sock spawn mysql_secure_installation -u root
+sleep 1
+sexpect -s /tmp/sexpect.sock expect -re "Enter current password for root \(enter for none\):"
+sexpect -s /tmp/sexpect.sock send -enter
+sleep 1
+sexpect -s /tmp/sexpect.sock expect -re "Switch to unix_socket authentication \[Y/n\]"
+sexpect -s /tmp/sexpect.sock send "n" -enter
+sleep 1
+sexpect -s /tmp/sexpect.sock expect -re "Change the root password\? \[Y/n\]"
+sexpect -s /tmp/sexpect.sock send "y" -enter
+sleep 1
+sexpect -s /tmp/sexpect.sock expect -re "New password:"
+sexpect -s /tmp/sexpect.sock send "radmon" -enter
+sleep 1
+sexpect -s /tmp/sexpect.sock expect -re "Re-enter new password:"
+sexpect -s /tmp/sexpect.sock send "radmon" -enter
+sleep 1
+sexpect -s /tmp/sexpect.sock expect -re "Remove anonymous users\? \[Y/n\]"
+sexpect -s /tmp/sexpect.sock send "y" -enter
+sleep 1
+sexpect -s /tmp/sexpect.sock expect -re "Disallow root login remotely\? \[Y/n\]"
+sexpect -s /tmp/sexpect.sock send "n" -enter
+sleep 1
+sexpect -s /tmp/sexpect.sock expect -re "Remove test database and access to it\? \[Y/n\]"
+sexpect -s /tmp/sexpect.sock send "y" -enter
+sleep 1
+sexpect -s /tmp/sexpect.sock expect -re "Reload privilege tables now\? \[Y/n\]"
+sexpect -s /tmp/sexpect.sock send "y" -enter
+sleep 1
+sexpect -s /tmp/sexpect.sock close
+ps | grep sexpect | grep -v grep | awk '{print $1}' | xargs -r kill -9
 show_banner
 
 sleep 1
