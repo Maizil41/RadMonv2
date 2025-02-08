@@ -71,5 +71,5 @@ Screenshot
 
 * Dashboard
 <p align="center">
-    <img src="/img/pppdash.png">
+    <img src="/img/pppoe.png">
 </p>
