@@ -77,7 +77,7 @@ function kirimPesanWhatsApp($whatsapp_number, $message) {
 
     $response = curl_exec($ch);
     if ($response === false) {
-        die('cURL Error: ' . curl_error($ch));
+        #die('cURL Error: ' . curl_error($ch));
     }
 
     curl_close($ch);

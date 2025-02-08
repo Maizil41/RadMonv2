@@ -18,7 +18,7 @@ FROM
 LEFT JOIN 
     radusergroup rug
     ON rug.groupname = bp.planName
-    AND rug.username REGEXP '^[0-9A-Fa-f]{2}([:-])[0-9A-Fa-f]{2}\\1[0-9A-Fa-f]{2}\\1[0-9A-Fa-f]{2}\\1[0-9A-Fa-f]{2}$'
+    AND rug.username LIKE '%:%:%:%:%:%' OR rug.username LIKE '%-%-%-%-%-%'
 GROUP BY 
     bp.planName
 
@@ -30,7 +30,7 @@ SELECT
 FROM 
     radcheck rc
 WHERE 
-    rc.username REGEXP '^[0-9A-Fa-f]{2}([:-])[0-9A-Fa-f]{2}\\1[0-9A-Fa-f]{2}\\1[0-9A-Fa-f]{2}\\1[0-9A-Fa-f]{2}$'
+    rc.username LIKE '%:%:%:%:%:%' OR rc.username LIKE '%-%-%-%-%-%'
 ORDER BY 
     CASE 
         WHEN planName = 'All Users' THEN 0 

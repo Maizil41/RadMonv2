@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $code = strtoupper(str_replace(':', '-', $code));
         } else {
             $message = urlencode("❌ Invalid Mac Type.");
-            header('Location: ../hotspot/newprofile.php?message=' . $message);
+            header('Location: ../hotspot/addmac.php?message=' . $message);
             exit();
         }
     }

@@ -22,15 +22,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $sqlDeleteRadacct = "DELETE FROM radacct WHERE username = '$user'";
             $sqlDeleteRadcheck = "DELETE FROM radcheck WHERE username = '$user'";
+            $sqlDeleteRadreply = "DELETE FROM radreply WHERE username = '$user'";
             $sqlDeleteUserBillInfo = "DELETE FROM userbillinfo WHERE username = '$user'";
             $sqlDeleteUserUserinfo = "DELETE FROM userinfo WHERE username = '$user'";
             $sqlDeleteUserRadusergroup = "DELETE FROM radusergroup WHERE username = '$user'";
+            
+            @mysqli_query($conn, $sqlDeleteRadacct);
+            @mysqli_query($conn, $sqlDeleteRadcheck);
+            @mysqli_query($conn, $sqlDeleteRadreply);
+            @mysqli_query($conn, $sqlDeleteUserBillInfo);
+            @mysqli_query($conn, $sqlDeleteUserUserinfo);
+            @mysqli_query($conn, $sqlDeleteUserRadusergroup);
 
-            if (!mysqli_query($conn, $sqlDeleteRadacct)) $errors[] = "Error deleting from radacct for $user: " . mysqli_error($conn);
-            if (!mysqli_query($conn, $sqlDeleteRadcheck)) $errors[] = "Error deleting from radcheck for $user: " . mysqli_error($conn);
-            if (!mysqli_query($conn, $sqlDeleteUserBillInfo)) $errors[] = "Error deleting from userbillinfo for $user: " . mysqli_error($conn);
-            if (!mysqli_query($conn, $sqlDeleteUserUserinfo)) $errors[] = "Error deleting from userinfo for $user: " . mysqli_error($conn);
-            if (!mysqli_query($conn, $sqlDeleteUserRadusergroup)) $errors[] = "Error deleting from radusergroup for $user: " . mysqli_error($conn);
         }
 
         if (empty($errors)) {

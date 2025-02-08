@@ -57,6 +57,7 @@ include ("../backend/ipinfo.php");
 <div class="dropdown-container ">
 <a href="../billing/request.php" class="menu"><i class="fa fa-plus-circle "></i> Topup Request </a>
 <a href="../billing/user.php" class="menu"><i class="fa fa-user "></i> Client List </a>
+<a href="../billing/product.php" class=""><i class="fa fa-shopping-cart"></i> Product List </a>
 </div>
 <!--report-->
 <a href="../hotspot/report.php" class="menu"><i class="nav-icon fa fa-money"></i> Report</a>
@@ -66,10 +67,11 @@ include ("../backend/ipinfo.php");
 </div>
 <div class="dropdown-container">
 <a href="../pages/admin.php" class="menu"><i class="fa fa-gear"></i> Admin Settings </a>
+<a href="../pppoe/settings.php" class="menu"><i class="fa fa-wrench"></i> PPPoE Settings </a>
 <a href="../hotspot/hslogo.php" class="menu"><i class="fa fa-upload"></i> Upload Logo </a>
 <a href="../voucher/template.php" class="menu"><i class="fa fa-edit"></i> Template Setting </a>          
 <a href="../pages/backup.php" class="menu"><i class="fa fa-folder-open"></i> Backup & Restore </a>          
-</div>>
+</div>
 <!--about-->
 <a href="../pages/about.php" class="menu"><i class="fa fa-info-circle"></i> About</a>
 </div>
@@ -87,9 +89,9 @@ include ("../backend/ipinfo.php");
               </div>
               <div class="box-group-area">
                 <span>System date & time <br>
-                  <span id="date"></span>
-                  <span id="time"></span>
-                  <br> Uptime: <span id="uptime"> <?php echo $uptime; ?> </span>
+                  <span id="date"><?php echo date("M/d/Y H:i:s"); ?></span><br>
+                  Uptime: <span id="uptime"><?php echo $uptime; ?></span><br>
+                  Timezone : <?php echo $timezone; ?>
               </div>
             </div>
           </div>
@@ -101,7 +103,7 @@ include ("../backend/ipinfo.php");
                 <i class="fa fa-info-circle"></i>
               </div>
               <div class="box-group-area">
-                <span> Hostname : <?php echo "$host"; ?> <br /> Model : <?php echo "$model"; ?> <br /> Router OS : <?php echo "$distrib $version"; ?> </span>
+                <span> Hostname : <?php echo "$host"; ?> <br /> Model : <?php echo "$model"; ?> <br /> Router OS : <?php echo "$distrib $version"; ?></span><br> Architecture: <?php echo "$aarch"; ?>
               </div>
             </div>
           </div>
@@ -113,7 +115,7 @@ include ("../backend/ipinfo.php");
                 <i class="fa fa-server"></i>
               </div>
               <div class="box-group-area">
-                <span> CPU Load : <span id="cpu-"> <?php echo $cpuValue; ?>% </span> Temp : <?php echo "$temp"; ?> <br /> Free Memory : <?php echo $freeMemory; ?><br/> Free HDD : <?php echo "$freehdd"; ?> <br />
+                <span> CPU Load : <span id="cpu-"> <?php echo $cpuValue; ?></span><br> CPU Temp : <?php echo "$temp"; ?> <br /> Free Memory : <?php echo $freeMemory; ?><br/> Free HDD : <?php echo "$freehdd"; ?> <br />
               </div>
             </div>
           </div>
@@ -178,7 +180,7 @@ include ("../backend/ipinfo.php");
                 $iconClass = $isRunning ? "fa-plug" : "fa-power-off";
                 $statusText = $isRunning ? "Running" : "Not Running";
                 ?>
-                <div class="col-3 col-box-6">
+                <div class="col-3 col-box-6 pointer" onclick="confirmRestart('<?= htmlspecialchars($serviceName, ENT_QUOTES) ?>', '<?= htmlspecialchars($displayName, ENT_QUOTES) ?>')">
                 <div class="box 
                     <?= $bgClass ?> bmh-75">
                       <h1> <?= $displayName ?> </h1>
@@ -198,5 +200,6 @@ include ("../backend/ipinfo.php");
 <script src="../js/radmon.js"></script>
 <script src="../plugins/dash.load.js" defer></script>
 <script src="../plugins/check.ping.js"></script>
+<script src="../plugins/service.restart.js"></script>
 </body>
 </html>

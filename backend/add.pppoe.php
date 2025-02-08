@@ -90,13 +90,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt->close();
 
                     $stmt = $conn->prepare("INSERT INTO userinfo (username, firstname, lastname, email, department, company, workphone, homephone, mobilephone, address, city, state, country, zip, notes, changeuserinfo, portalloginpassword, creationdate, creationby) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                    $stmt->bind_param("sssssssssssssssssss", $username, $client_name, $lastname, $email, $department, $company, $workphone, $homephone, $client_phone, $address, $city, $state, $country, $zip, $notes, $changeuserinfo, $portalloginpassword, $now, $creationby);
+                    $stmt->bind_param("sssssssssssssssssss", $username, $client_name, $lastname, $email, $department, $company, $workphone, $homephone, $mobilephone, $address, $city, $state, $country, $zip, $notes, $changeuserinfo, $portalloginpassword, $now, $creationby);
                     $lastname = '';
                     $email = '';
                     $department = '';
                     $company = '';
                     $workphone = '';
                     $homephone = '';
+                    $mobilephone = '';
                     $address = '';
                     $city = '';
                     $state = '';
@@ -110,9 +111,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt->close();
 
                     $stmt = $conn->prepare("INSERT INTO userbillinfo (username, planName, contactperson, company, email, phone, address, city, state, country, zip, paymentmethod, cash, creditcardname, creditcardnumber, creditcardverification, creditcardtype, creditcardexp, notes, changeuserbillinfo, lead, coupon, ordertaker, billstatus, nextinvoicedue, billdue, postalinvoice, faxinvoice, emailinvoice, creationdate, creationby) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                    $stmt->bind_param("sssssssssssssssssssssssssssssss", $username, $plan_name, $client_name, $company, $email, $client_phone, $address, $city, $state, $country, $zip, $paymentmethod, $cash, $creditcardname, $creditcardnumber, $creditcardverification, $creditcardtype, $creditcardexp, $notes, $changeuserbillinfo, $lead, $coupon, $ordertaker, $billstatus, $nextinvoicedue, $billdue, $postalinvoice, $faxinvoice, $emailinvoice, $now, $creationby);
+                    $stmt->bind_param("sssssssssssssssssssssssssssssss", $username, $plan_name, $client_name, $company, $email, $phone, $address, $city, $state, $country, $zip, $paymentmethod, $cash, $creditcardname, $creditcardnumber, $creditcardverification, $creditcardtype, $creditcardexp, $notes, $changeuserbillinfo, $lead, $coupon, $ordertaker, $billstatus, $nextinvoicedue, $billdue, $postalinvoice, $faxinvoice, $emailinvoice, $now, $creationby);
                     $company = '';
                     $email = '';
+                    $phone = '';
                     $address = '';
                     $city = '';
                     $state = '';

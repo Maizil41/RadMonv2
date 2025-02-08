@@ -11,11 +11,6 @@
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $username = htmlspecialchars($row['username']);
-
-        if (isMacAddress($username)) {
-            continue;
-        }
-
         $name = htmlspecialchars($row['contactperson']);
         $usermac = htmlspecialchars($row['mac_address']);
         $ip = htmlspecialchars($row['ip_address']);
@@ -25,7 +20,7 @@ if ($result->num_rows > 0) {
         $totalTime = htmlspecialchars(time2str($row['total_session_time']));
         $traffic = htmlspecialchars(toxbyte($row['total_input_octets'] + $row['total_output_octets']));
         $status = htmlspecialchars($row['status']);
-
+        
         $statusClass = '';
         switch (true) {
             case strpos($status, 'ONLINE') !== false:
@@ -44,7 +39,9 @@ if ($result->num_rows > 0) {
 
         echo"
             <td><center>
-                <input type='checkbox' class='delete-checkbox' value='" . htmlspecialchars($username) . "'>&nbsp;&nbsp;
+                <input type='checkbox' class='delete-checkbox' value='" . htmlspecialchars($username) . "'>
+            </td>
+            <td><center>
                 <span class='fa fa-trash text-danger pointer' title='Delete " . htmlspecialchars($username) . "' onclick=\"deleteUser('" . htmlspecialchars($username) . "')\"></span>&nbsp;&nbsp;
                 <span class='fa fa-refresh text-warning pointer' title='Reset " . htmlspecialchars($username) . "' onclick=\"resetuser('" . htmlspecialchars($username) . "')\"></span>
             </td>

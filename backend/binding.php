@@ -9,45 +9,7 @@
 *******************************************************************************************************************
 */
 require_once '../config/mysqli_db.php';
-
-function money($number) {
-    return "Rp " . number_format($number, 0, ',', '.');
-}
-
-function toxbyte($size) {
-    if ($size > 1073741824) {
-        return round($size / 1073741824, 2) . " GB";
-    } elseif ($size > 1048576) {
-        return round($size / 1048576, 2) . " MB";
-    } elseif ($size > 1024) {
-        return round($size / 1024, 2) . " KB";
-    } else {
-        return $size . " B";
-    }
-}
-
-function time2str($time) {
-    $str = "";
-    $time = floor($time);
-    if (!$time) return "0 seconds";
-    $d = floor($time / 86400);
-    if ($d) {
-        $str .= "$d days, ";
-        $time %= 86400;
-    }
-    $h = floor($time / 3600);
-    if ($h) {
-        $str .= "$h hrs, ";
-        $time %= 3600;
-    }
-    $m = floor($time / 60);
-    if ($m) {
-        $str .= "$m min, ";
-        $time %= 60;
-    }
-    if ($time) $str .= "$time sec, ";
-    return rtrim($str, ', ');
-}
+include '../include/functions.php';
 
 $statusFilter = isset($_GET['status']) ? $_GET['status'] : '';
 $planNameFilter = isset($_GET['planName']) ? $_GET['planName'] : '';
@@ -61,14 +23,14 @@ LEFT JOIN (
     WHERE (username, acctstarttime) IN (
         SELECT username, MAX(acctstarttime) 
         FROM radacct 
-        WHERE username REGEXP '^[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}$'
+        WHERE username LIKE '%:%:%:%:%:%' OR username LIKE '%-%-%-%-%-%'
         GROUP BY username
     )
 ) latest_acct ON r.username = latest_acct.username 
 LEFT JOIN userbillinfo u ON r.username = u.username 
 LEFT JOIN billing_plans p ON u.planName = p.planName 
 LEFT JOIN radusergroup ugr ON r.username = ugr.username 
-WHERE r.username REGEXP '^[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}$'
+WHERE r.username LIKE '%:%:%:%:%:%' OR r.username LIKE '%-%-%-%-%-%'
 AND ('$statusFilter' = '' OR 
     CASE 
         WHEN latest_acct.username IS NULL THEN 'OFFLINE' 
@@ -90,7 +52,7 @@ WITH LatestAcct AS (
     SELECT username,
            MAX(acctstarttime) AS latest_acctstarttime
     FROM radacct
-    WHERE username REGEXP '^[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}$'
+    WHERE username LIKE '%:%:%:%:%:%' OR username LIKE '%-%-%-%-%-%'
     GROUP BY username
 ),
 StatusData AS (
@@ -103,7 +65,7 @@ StatusData AS (
            END AS status
     FROM radacct a
     JOIN LatestAcct la ON a.username = la.username AND a.acctstarttime = la.latest_acctstarttime
-    WHERE a.username REGEXP '^[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}$'
+    WHERE a.username LIKE '%:%:%:%:%:%' OR a.username LIKE '%-%-%-%-%-%'
 ),
 AcctSummary AS (
     SELECT username,
@@ -111,7 +73,7 @@ AcctSummary AS (
            SUM(acctoutputoctets) AS total_output_octets,
            SUM(acctsessiontime) AS total_session_time
     FROM radacct
-    WHERE username REGEXP '^[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}$'
+    WHERE username LIKE '%:%:%:%:%:%' OR username LIKE '%-%-%-%-%-%'
     GROUP BY username
 ),
 AggregatedData AS (
@@ -140,7 +102,7 @@ AggregatedData AS (
     LEFT JOIN AcctSummary acs ON r.username = acs.username
     LEFT JOIN LatestAcct la ON r.username = la.username
     LEFT JOIN userinfo uinfo ON r.username = uinfo.username
-    WHERE r.username REGEXP '^[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}([-:]?)[0-9A-Fa-f]{2}$'
+    WHERE r.username LIKE '%:%:%:%:%:%' OR r.username LIKE '%-%-%-%-%-%'
 ),
 FinalData AS (
     SELECT ad.username,
@@ -160,8 +122,8 @@ FinalData AS (
 SELECT *
 FROM FinalData
 WHERE ('$statusFilter' = '' OR status = '$statusFilter')
-AND ('$planNameFilter' = '' OR planName = '$planNameFilter');
+AND ('$planNameFilter' = '' OR planName = '$planNameFilter')
+ORDER BY status DESC;
 ";
 $result = $conn->query($query);
-
 ?>

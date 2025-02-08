@@ -14,22 +14,25 @@ $year_filter = isset($_GET['year']) ? $_GET['year'] : '';
 $month_filter = isset($_GET['month']) ? $_GET['month'] : '';
 $day_filter = isset($_GET['day']) ? $_GET['day'] : '';
 
-if (isset($_GET['delete'])) {
-    $delete_sql = "DELETE FROM income WHERE 1";
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input = json_decode(file_get_contents('php://input'), true);
     
-    if ($year_filter) {
-        $delete_sql .= " AND YEAR(date) = '$year_filter'";
-    }
-    if ($month_filter) {
-        $delete_sql .= " AND MONTH(date) = '$month_filter'";
-    }
-    if ($day_filter) {
-        $delete_sql .= " AND DAY(date) = '$day_filter'";
-    }
-
-    if ($conn->query($delete_sql) === TRUE) {
-    } else {
-        echo "<script>alert('Gagal menghapus data');</script>";
+    if (!empty($input['users']) && is_array($input['users'])) {
+        $users = $input['users'];
+        
+        $errors = [];
+        foreach ($users as $user) {
+            $user = mysqli_real_escape_string($conn, $user);
+            
+            $sqlDeleteData = "DELETE FROM income WHERE username = '$user'";
+            
+            @mysqli_query($conn, $sqlDeleteData);
+        }
+        
+    } if (empty($errors)) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'errors' => $errors]);
     }
 }
 

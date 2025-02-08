@@ -17,6 +17,7 @@ if ($result->num_rows > 0) {
         $macAddress = htmlspecialchars($row['callingstationid']);
         $profile = htmlspecialchars($row['groupname']);
         $cost = htmlspecialchars(money($row['planCost']));
+        $expr = htmlspecialchars($row['Expiration']);
         $usage = htmlspecialchars(time2str($row['total_acctsessiontime']));
         $traffic = htmlspecialchars(toxbyte($row['total_acctinputoctets'] + $row['total_acctoutputoctets']));
         $status = htmlspecialchars($row['status']);
@@ -39,6 +40,9 @@ if ($result->num_rows > 0) {
 
         echo "<tr>
                 <td><center>
+                    <input type='checkbox' class='delete-checkbox' value='" . htmlspecialchars($username) . "'>
+                </td>
+                <td><center>
                 <span class='fa fa-trash text-danger pointer' onclick=\"deleteUser('" . htmlspecialchars($username) . "')\"></span>&nbsp;&nbsp;
                 <span class='fa fa-refresh text-warning pointer' onclick=\"resetuser('" . htmlspecialchars($username) . "')\"></span>
                 </td>
@@ -49,6 +53,7 @@ if ($result->num_rows > 0) {
                 <td><center>$macAddress</td>
                 <td><center>$profile</td>
                 <td><center>$cost</td>
+                <td><center>$expr</td>
                 <td><center>$usage</td>
                 <td><center>$traffic</td>
                 <td><center><span class='$statusClass' title='$title'> $title</span></td>
@@ -56,7 +61,7 @@ if ($result->num_rows > 0) {
     }
 
 } else {
-    echo "<tr><td colspan='11'><center>Tidak ada data</center></td></tr>";
+    echo "<tr><td colspan='12'><center>Tidak ada data</center></td></tr>";
 }
 
 echo "</tbody></table></div>";

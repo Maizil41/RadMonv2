@@ -9,81 +9,50 @@
 *******************************************************************************************************************
 */
 require_once '../config/mysqli_db.php';
+include '../include/functions.php';
 
-function money($number) {
-    return "Rp " . number_format($number, 0, ',', '.');
-}
-
-function toxbyte($size) {
-    if ($size > 1073741824) {
-        return round($size / 1073741824, 2) . " GB";
-    } elseif ($size > 1048576) {
-        return round($size / 1048576, 2) . " MB";
-    } elseif ($size > 1024) {
-        return round($size / 1024, 2) . " KB";
-    } else {
-        return $size . " B";
-    }
-}
-
-function time2str($time) {
-    $str = "";
-    $time = floor($time);
-    if (!$time) return "0 seconds";
-    $d = floor($time / 86400);
-    if ($d) {
-        $str .= "$d days, ";
-        $time %= 86400;
-    }
-    $h = floor($time / 3600);
-    if ($h) {
-        $str .= "$h hrs, ";
-        $time %= 3600;
-    }
-    $m = floor($time / 60);
-    if ($m) {
-        $str .= "$m min, ";
-        $time %= 60;
-    }
-    if ($time) $str .= "$time sec, ";
-    return rtrim($str, ', ');
-}
-
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$limit = 10;
-$offset = ($page - 1) * $limit;
-
-$total_query = "SELECT COUNT(DISTINCT username) AS total_users FROM radacct WHERE acctstoptime IS NULL AND framedprotocol != 'ppp';";
+$total_query = "SELECT COUNT(DISTINCT username, framedipaddress) AS total_users FROM radacct WHERE acctstoptime IS NULL AND framedprotocol != 'ppp';";
 $total_result = $conn->query($total_query);
 $total_row = $total_result->fetch_assoc();
 $total_users = $total_row['total_users'];
 
 $query = "
 WITH TotalSesi AS (
-    SELECT username, 
-           SUM(acctsessiontime) AS total_acctsessiontime, 
+    SELECT username,
+           SUM(acctsessiontime) AS total_acctsessiontime
+    FROM radacct
+    GROUP BY username
+),
+DetailSesi AS (
+    SELECT username,
+           framedipaddress,
            SUM(CASE WHEN acctstoptime IS NULL THEN acctinputoctets ELSE 0 END) AS total_acctinputoctets,
            SUM(CASE WHEN acctstoptime IS NULL THEN acctoutputoctets ELSE 0 END) AS total_acctoutputoctets,
-           SUM(CASE WHEN acctstoptime IS NULL THEN acctsessiontime ELSE 0 END) AS last_uptime
-    FROM radacct 
-    GROUP BY username
+           MAX(CASE WHEN acctstoptime IS NULL THEN acctsessiontime ELSE 0 END) AS last_uptime
+    FROM radacct
+    GROUP BY username, framedipaddress
 )
-SELECT ra.username, 
-       ra.callingstationid, 
-       ra.framedipaddress, 
-       ts.total_acctsessiontime, 
-       ts.total_acctinputoctets, 
-       ts.total_acctoutputoctets, 
-       ts.last_uptime, 
-       ubi.planName, 
-       rgc.value AS Max_All_Session
+SELECT ra.username,
+       ra.callingstationid,
+       ra.framedipaddress,
+       ts.total_acctsessiontime,
+       ds.total_acctinputoctets,
+       ds.total_acctoutputoctets,
+       ds.last_uptime,
+       ubi.planName,
+       COALESCE(
+           rgc.value,
+           (SELECT value FROM radgroupcheck WHERE groupname = ubi.planName AND attribute = 'Access-Period' LIMIT 1)
+       ) AS Max_All_Session
 FROM radacct ra
 JOIN TotalSesi ts ON ra.username = ts.username
+JOIN DetailSesi ds ON ra.username = ds.username AND ra.framedipaddress = ds.framedipaddress
 LEFT JOIN userbillinfo ubi ON ra.username = ubi.username
 LEFT JOIN radgroupcheck rgc ON ubi.planName = rgc.groupname AND rgc.attribute = 'Max-All-Session'
 WHERE ra.acctstoptime IS NULL
   AND ra.servicetype != 'Framed-User'
-GROUP BY ra.username, ra.callingstationid, ra.framedipaddress, ts.total_acctsessiontime, ts.total_acctinputoctets, ts.total_acctoutputoctets, ts.last_uptime, ubi.planName, rgc.value;
+GROUP BY ra.username, ra.callingstationid, ra.framedipaddress, ts.total_acctsessiontime, ds.total_acctinputoctets, ds.total_acctoutputoctets, ds.last_uptime, ubi.planName, rgc.value
+ORDER BY ds.last_uptime;
 ";
 
 $result = $conn->query($query);
@@ -124,7 +93,6 @@ if ($result->num_rows > 0) {
 
 header('Content-Type: application/json');
 echo json_encode([
-    'page' => $page,
     'total_users' => $total_users,
     'users' => $activeUsers
 ]);

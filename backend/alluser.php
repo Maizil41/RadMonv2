@@ -9,48 +9,9 @@
 *******************************************************************************************************************
 */
 require_once '../config/mysqli_db.php';
-
-function money($number) {
-    return "Rp " . number_format($number, 0, ',', '.');
-}
-
-function toxbyte($size) {
-    if ($size > 1073741824) {
-        return round($size / 1073741824, 2) . " GB";
-    } elseif ($size > 1048576) {
-        return round($size / 1048576, 2) . " MB";
-    } elseif ($size > 1024) {
-        return round($size / 1024, 2) . " KB";
-    } else {
-        return $size . " B";
-    }
-}
-
-function time2str($time) {
-    $str = "";
-    $time = floor($time);
-    if (!$time) return "0 seconds";
-    $d = floor($time / 86400);
-    if ($d) {
-        $str .= "$d days, ";
-        $time %= 86400;
-    }
-    $h = floor($time / 3600);
-    if ($h) {
-        $str .= "$h hrs, ";
-        $time %= 3600;
-    }
-    $m = floor($time / 60);
-    if ($m) {
-        $str .= "$m min, ";
-        $time %= 60;
-    }
-    if ($time) $str .= "$time sec, ";
-    return rtrim($str, ', ');
-}
+include '../include/functions.php';
 
 $statusFilter = isset($_GET['status']) ? $_GET['status'] : '';
-
 $planNameFilter = isset($_GET['planName']) ? $_GET['planName'] : '';
 
 $total_query = "
@@ -78,8 +39,8 @@ WHERE ('$statusFilter' = '' OR
     END = '$statusFilter'
 ) 
 AND ('$planNameFilter' = '' OR u.planName = '$planNameFilter') 
-AND r.username NOT LIKE '%:%'
-AND r.username NOT LIKE '%-%'
+AND r.username NOT LIKE '%:%:%:%:%:%'
+AND r.username NOT LIKE '%-%-%-%-%-%'
 AND r.username NOT IN (
     SELECT username
     FROM radcheck
@@ -90,7 +51,6 @@ AND r.username NOT IN (
 $total_result = $conn->query($total_query);
 $total_row = $total_result->fetch_assoc();
 $total_users = $total_row['total_users'];
-
 
 $query = "
 WITH LatestAcct AS (
@@ -160,17 +120,15 @@ SELECT *
 FROM FinalData
 WHERE ('$statusFilter' = '' OR status = '$statusFilter')
 AND ('$planNameFilter' = '' OR planName = '$planNameFilter')
+AND username NOT LIKE '%:%:%:%:%:%'
+AND username NOT LIKE '%-%-%-%-%-%'
 AND username NOT IN (
     SELECT username
     FROM radcheck
     WHERE attribute = 'Cleartext-Password'
-);
+)
+ORDER BY status DESC;
 ";
 $result = $conn->query($query);
-
-
-function isMacAddress($username) {
-    return preg_match('/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/', $username);
-}
 
 ?>

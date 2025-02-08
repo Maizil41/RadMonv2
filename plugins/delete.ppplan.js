@@ -11,7 +11,7 @@ $(document).ready(function(){makeAllSortable();$("#filterTable").on("keyup",func
 </td>
 <td class="text-center">${item.planName}</td>
 <td class="text-center">${item.planCost}</td>
-<td class="text-center">${item.maxAllSession}</td>
+<td class="text-center">${item.planTimeBank}</td>
 <td class="text-center">${item.bandwidthName}</td>
 </tr>
 `;tableBody.innerHTML+=row})}else{const tableBody=document.querySelector("#tFilter tbody");tableBody.innerHTML=`

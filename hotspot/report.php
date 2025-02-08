@@ -56,6 +56,7 @@ include ("../backend/report.php");
 <div class="dropdown-container">
 <a href="../billing/request.php" class="menu"> <i class="fa fa-plus-circle "></i> Topup Request </a>
 <a href="../billing/user.php" class="menu"> <i class="fa fa-user "></i> Client List </a>
+<a href="../billing/product.php" class=""><i class="fa fa-shopping-cart"></i> Product List </a>
 </div>
 <!--report-->
 <a href="../hotspot/report.php" class="active"><i class="nav-icon fa fa-money"></i> Report</a>
@@ -65,6 +66,7 @@ include ("../backend/report.php");
 </div>
 <div class="dropdown-container">
 <a href="../pages/admin.php" class="menu"><i class="fa fa-gear"></i> Admin Settings </a>
+<a href="../pppoe/settings.php" class="menu"><i class="fa fa-wrench"></i> PPPoE Settings </a>
 <a href="../hotspot/hslogo.php" class="menu"><i class="fa fa-upload"></i> Upload Logo </a>
 <a href="../voucher/template.php" class="menu"><i class="fa fa-edit"></i> Template Setting </a>          
 <a href="../pages/backup.php" class="menu"><i class="fa fa-folder-open"></i> Backup & Restore </a>          
@@ -127,15 +129,15 @@ echo '<div id="main">
             </div>
             <!-- Filter Button -->
             <div class="input-group-2 col-box-3">
-                <div class="group-item group-item-r text-center pointer" style="padding:3.5px;" onclick="filterR(); loader();">
+                <div class="group-item group-item-r text-center pointer" style="padding:2.5px;" onclick="filterR(); loader();">
                     <i class="fa fa-search"></i> Filter
                 </div>
             </div>
             <!-- Delete Button -->
             <div class="input-group-2 col-box-3">
-                <div class="group-item group-item-r text-center pointer" style="padding:3.5px;" onclick="confirmDelete();">
-                    <i class="fa fa-trash"></i> Delete Data
-                </div>
+                <button  class="btn bg-danger pointer" id="deleteSelected">
+                    <i class="fa fa-trash"></i> Delete
+                </button >
             </div>
         </div>
     </div>
@@ -146,7 +148,7 @@ echo '<div id="main">
     <table id="dataTable" class="table table-bordered table-hover text-nowrap">
         <thead class="thead-light">
         <tr>
-            <th><center>No</center></th>
+            <th class="text-center align-middle"><input type="checkbox" id="checkAll"></th>
             <th><center>Username</center></th>
             <th><center>Date</center></th>
             <th><center>Time</center></th>
@@ -156,10 +158,9 @@ echo '<div id="main">
         <tbody>';
         
         if ($result->num_rows > 0) {
-            $counter = 1;
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
-                echo "<td><center>" . $counter++ . "</center></td>";
+                echo "<td><center><input type='checkbox' class='delete-checkbox' value='" . htmlspecialchars($row["username"]) . "'></td>";
                 echo "<td><center>" . htmlspecialchars($row["username"]) . "</center></td>";
                 echo "<td><center>" . htmlspecialchars($row["date"]) . "</center></td>";
                 echo "<td><center>" . htmlspecialchars($row["time"]) . "</center></td>";
@@ -176,13 +177,29 @@ echo '<div id="main">
 </div>
 
 <script type="text/javascript">
-    function confirmDelete() {
-        var confirmAction = confirm("Apakah Anda yakin ingin menghapus data yang sudah difilter?");
-        if (confirmAction) {
-            var url = "?delete=true&year=' . $year_filter . '&month=' . $month_filter . '&day=' . $day_filter . '";
-            window.location.href = url;
+    document.getElementById("deleteSelected").addEventListener("click", function () {
+        const checkboxes = document.querySelectorAll(".delete-checkbox:checked");
+        const selectedUsers = Array.from(checkboxes).map((checkbox) => checkbox.value);
+        if (selectedUsers.length === 0) {
+            alert("Tidak ada data yang dipilih.");
+            return;
         }
-    }
+        if (confirm("Apakah Anda yakin ingin menghapus data yang dipilih?")) {
+            fetch("../backend/report.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ users: selectedUsers }) })
+                .then((response) => response.json())
+                .then((data) => {
+                    location.reload();
+                })
+                .catch((error) => console.error("Error:", error));
+        }
+    });
+    document.getElementById("checkAll").addEventListener("change", function () {
+        const checkboxes = document.querySelectorAll(".delete-checkbox");
+        const isChecked = this.checked;
+        checkboxes.forEach((checkbox) => {
+            checkbox.checked = isChecked;
+        });
+    });
 
     function filterR() {
         const day = document.getElementById("D").value;

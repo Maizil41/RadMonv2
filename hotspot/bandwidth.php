@@ -56,6 +56,7 @@ include ("../include/hotspot.bw.php");
 <div class="dropdown-container ">
 <a href="../billing/request.php" class="menu"><i class="fa fa-plus-circle "></i> Topup Request </a>
 <a href="../billing/user.php" class="menu"><i class="fa fa-user "></i> Client List </a>
+<a href="../billing/product.php" class=""><i class="fa fa-shopping-cart"></i> Product List </a>
 </div>
 <!--report-->
 <a href="../hotspot/report.php" class="menu"><i class="nav-icon fa fa-money"></i> Report</a>
@@ -65,6 +66,7 @@ include ("../include/hotspot.bw.php");
 </div>
 <div class="dropdown-container">
 <a href="../pages/admin.php" class="menu"><i class="fa fa-gear"></i> Admin Settings </a>
+<a href="../pppoe/settings.php" class="menu"><i class="fa fa-wrench"></i> PPPoE Settings </a>
 <a href="../hotspot/hslogo.php" class="menu"><i class="fa fa-upload"></i> Upload Logo </a>
 <a href="../voucher/template.php" class="menu"><i class="fa fa-edit"></i> Template Setting </a>          
 <a href="../pages/backup.php" class="menu"><i class="fa fa-folder-open"></i> Backup & Restore </a>          

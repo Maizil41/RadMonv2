@@ -56,6 +56,7 @@ include ("../backend/alluser.php");
 <div class="dropdown-container ">
 <a href="../billing/request.php" class=""> <i class="fa fa-plus-circle "></i> Topup Request </a>
 <a href="../billing/user.php" class=""> <i class="fa fa-user "></i> Client List </a>
+<a href="../billing/product.php" class=""><i class="fa fa-shopping-cart"></i> Product List </a>
 </div>
 <!--report-->
 <a href="../hotspot/report.php" class="menu"><i class="nav-icon fa fa-money"></i> Report</a>
@@ -65,6 +66,7 @@ include ("../backend/alluser.php");
 </div>
 <div class="dropdown-container">
 <a href="../pages/admin.php" class="menu"><i class="fa fa-gear"></i> Admin Settings </a>
+<a href="../pppoe/settings.php" class="menu"><i class="fa fa-wrench"></i> PPPoE Settings </a>
 <a href="../hotspot/hslogo.php" class="menu"><i class="fa fa-upload"></i> Upload Logo </a>
 <a href="../voucher/template.php" class="menu"><i class="fa fa-edit"></i> Template Setting </a>          
 <a href="../pages/backup.php" class="menu"><i class="fa fa-folder-open"></i> Backup & Restore </a>          
@@ -138,12 +140,12 @@ include ("../backend/alluser.php");
         <table id="dataTable" class="table table-bordered table-hover text-nowrap">
     <thead>
 <tr>
+<?php if ($total_users > 0): ?><th class="text-center align-middle"><input type="checkbox" id="checkAll"></th><?php endif; ?>
 <th class="text-center align-middle">
     <?php if ($total_users > 0): ?>
-        <input type="checkbox" id="checkAll">
-        &nbsp;&nbsp;<?php echo "$total_users"; ?>&nbsp;&nbsp;
+        <?php echo "$total_users"; ?>&nbsp;items
     <?php else: ?>
-        <?php echo "$total_users"; ?>
+        <?php echo "$total_users"; ?>&nbsp;items
     <?php endif; ?>
 </th>
 <th class="text-center align-middle">Print</th>

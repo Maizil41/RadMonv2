@@ -27,6 +27,7 @@ if (file_exists($logFile)) {
 }
 
 $log = array_reverse($log);
+$log = array_slice($log, 0, 50);
 
 $logString = '';
 foreach ($log as $line) {

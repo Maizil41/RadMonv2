@@ -56,6 +56,7 @@ include ("../backend/ppp.user.php");
 <div class="dropdown-container ">
 <a href="../billing/request.php" class=""> <i class="fa fa-plus-circle "></i> Topup Request </a>
 <a href="../billing/user.php" class=""> <i class="fa fa-user "></i> Client List </a>
+<a href="../billing/product.php" class=""><i class="fa fa-shopping-cart"></i> Product List </a>
 </div>
 <!--report-->
 <a href="../hotspot/report.php" class="menu"><i class="nav-icon fa fa-money"></i> Report</a>
@@ -65,6 +66,7 @@ include ("../backend/ppp.user.php");
 </div>
 <div class="dropdown-container">
 <a href="../pages/admin.php" class="menu"><i class="fa fa-gear"></i> Admin Settings </a>
+<a href="../pppoe/settings.php" class="menu"><i class="fa fa-wrench"></i> PPPoE Settings </a>
 <a href="../hotspot/hslogo.php" class="menu"><i class="fa fa-upload"></i> Upload Logo </a>
 <a href="../voucher/template.php" class="menu"><i class="fa fa-edit"></i> Template Setting </a>          
 <a href="../pages/backup.php" class="menu"><i class="fa fa-folder-open"></i> Backup & Restore </a>          
@@ -80,10 +82,13 @@ include ("../backend/ppp.user.php");
 <div class="col-12">
 <div class="card">
 <div class="card-header">
-<h3><i class="fa fa-users"></i> PPPoE Users<span style="font-size: 14px">
+<h3 class="card-title">
+<i class="fa fa-users"></i> PPPoE Users<span style="font-size: 14px">
 &nbsp; | &nbsp; <a href="../pppoe/add_account.php" title="Add User"><i class="fa fa-user-plus"></i> Add</a>
-</span>  &nbsp;
-<small id="loader" style="display: none;" ><i><i class='fa fa-circle-o-notch fa-spin'></i> Processing... </i></small>
+<small id="loader" style="display: none;">
+    <i><i class="fa fa-circle-o-notch fa-spin"></i> Processing...</i>
+</small>
+<small id="message"></small>
 </h3>
 </div>
 <div class="card-body">
@@ -93,6 +98,9 @@ include ("../backend/ppp.user.php");
 <div class="input-group-4 col-box-4">
 <input id="filterTable" type="text" style="padding:5.8px;" class="group-item group-item-l" placeholder="Search">
 </div>
+<button type="button" class="btn bg-danger" id="deleteSelected">
+<i class="fa fa-trash"></i> Delete
+</button>
 </div>
 </div>
 <div class="col-6">
@@ -102,7 +110,14 @@ include ("../backend/ppp.user.php");
 <table id='dataTable' class='table table-bordered table-hover text-nowrap'>
 <thead>
 <tr>
-<th class='text-center align-middle'><?php echo "$total_ppp" ?> items</th>
+<?php if ($total_ppp > 0): ?><th class="text-center align-middle"><input type="checkbox" id="checkAll"></th><?php endif; ?>
+<th class="text-center align-middle">
+    <?php if ($total_ppp > 0): ?>
+        <?php echo "$total_ppp"; ?>&nbsp;items
+    <?php else: ?>
+        <?php echo "$total_ppp"; ?>&nbsp;items
+    <?php endif; ?>
+</th>
 <th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Name</th>
 <th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Username</th>
 <th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Password</th>
@@ -110,6 +125,7 @@ include ("../backend/ppp.user.php");
 <th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Mac Address</th>
 <th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Profile</th>
 <th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Cost</th>
+<th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Expiration</th>
 <th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Usage</th>
 <th class='text-center align-middle pointer' title='Click to sort'><i class='fa fa-sort'></i> Traffic</th>
 <th class='text-center align-middle'>Status</th>
@@ -121,6 +137,7 @@ include ("../backend/ppp.user.php");
 <script src="../js/radmon-ui.<?php echo $theme; ?>.min.js"></script>
 <script src="../js/radmon.js"></script>
 <script src="../plugins/delete.ppp.js"></script>
+<script src="../plugins/pppoe.user.js"></script>
 </body>
 </html>
 

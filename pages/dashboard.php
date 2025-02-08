@@ -58,6 +58,7 @@ include ("../backend/auth_log.php");
 <div class="dropdown-container ">
 <a href="../billing/request.php" class=""> <i class="fa fa-plus-circle "></i> Topup Request </a>
 <a href="../billing/user.php" class=""> <i class="fa fa-user "></i> Client List </a>
+<a href="../billing/product.php" class=""><i class="fa fa-shopping-cart"></i> Product List </a>
 </div>
 <!--report-->
 <a href="../hotspot/report.php" class="menu"><i class="nav-icon fa fa-money"></i> Report</a>
@@ -67,6 +68,7 @@ include ("../backend/auth_log.php");
 </div>
 <div class="dropdown-container">
 <a href="../pages/admin.php" class="menu"><i class="fa fa-gear"></i> Admin Settings </a>
+<a href="../pppoe/settings.php" class="menu"><i class="fa fa-wrench"></i> PPPoE Settings </a>
 <a href="../hotspot/hslogo.php" class="menu"><i class="fa fa-upload"></i> Upload Logo </a>
 <a href="../voucher/template.php" class="menu"><i class="fa fa-edit"></i> Template Setting </a>          
 <a href="../pages/backup.php" class="menu"><i class="fa fa-folder-open"></i> Backup & Restore </a>          
@@ -78,7 +80,6 @@ include ("../backend/auth_log.php");
 <div id="main">
   <div id="loading" class="lds-dual-ring"></div>
   <div class="main-container" style="display:none">
-
     <div id="reloadHome">
       <div id="r_1" class="row">
         <div class="col-4">
@@ -87,8 +88,9 @@ include ("../backend/auth_log.php");
               <div class="box-group-icon"><i class="fa fa-calendar"></i></div>
               <div class="box-group-area">
                 <span>System date & time<br>
-                  <span id="date"></span> <span id="time"></span><br>
-                  Uptime: <span id="uptime"><?php echo $uptime; ?></span>
+                  <span id="date"><?php echo date("M/d/Y H:i:s"); ?></span><br>
+                  Uptime : <span id="uptime"><?php echo $uptime; ?></span><br>
+                  Timezone : <?php echo "$timezone"; ?>
                 </span>
               </div>
             </div>
@@ -100,9 +102,10 @@ include ("../backend/auth_log.php");
               <div class="box-group-icon"><i class="fa fa-info-circle"></i></div>
               <div class="box-group-area">
                 <span>
-                  Hostname: <?php echo "$host"; ?><br/>
-                  Model: <?php echo "$model"; ?><br/>
-                  Router OS: <?php echo "$distrib $version"; ?>
+                  Hostname : <?php echo "$host"; ?><br/>
+                  Model : <?php echo "$model"; ?><br/>
+                  Router OS : <?php echo "$distrib $version"; ?><br/>
+                  Architecture : <?php echo "$aarch"; ?>
                 </span>
               </div>
             </div>
@@ -113,10 +116,11 @@ include ("../backend/auth_log.php");
             <div class="box-group">
               <div class="box-group-icon"><i class="fa fa-server"></i></div>
               <div class="box-group-area">
-                <span>
-                  CPU Load: <span id="cpu-load"><?php echo $cpuValue; ?>%</span> Temp: <?php echo "$temp"; ?><br/>
-                  Free Memory: <?php echo $freeMemory; ?><br/>
-                  Free HDD: <?php echo "$freehdd"; ?><br/>
+                <span id="cpu-load">
+                  CPU Load : <?php echo $cpuValue; ?><br/>
+                  CPU Temp : <?php echo "$temp"; ?><br/>
+                  Free Memory : <?php echo $freeMemory; ?><br/>
+                  Free HDD : <?php echo "$freehdd"; ?><br/>
                 </span>
               </div>
             </div>

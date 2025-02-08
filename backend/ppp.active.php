@@ -9,49 +9,7 @@
 *******************************************************************************************************************
 */
 require_once '../config/mysqli_db.php';
-
-function money($number) {
-    return "Rp " . number_format($number, 0, ',', '.');
-}
-
-function toxbyte($size) {
-    if ($size > 1073741824) {
-        return round($size / 1073741824, 2) . " GB";
-    } elseif ($size > 1048576) {
-        return round($size / 1048576, 2) . " MB";
-    } elseif ($size > 1024) {
-        return round($size / 1024, 2) . " KB";
-    } else {
-        return $size . " B";
-    }
-}
-
-function time2str($time) {
-    $str = "";
-    $time = floor($time);
-    if (!$time) return "0 seconds";
-    $d = floor($time / 86400);
-    if ($d) {
-        $str .= "$d days, ";
-        $time %= 86400;
-    }
-    $h = floor($time / 3600);
-    if ($h) {
-        $str .= "$h hrs, ";
-        $time %= 3600;
-    }
-    $m = floor($time / 60);
-    if ($m) {
-        $str .= "$m min, ";
-        $time %= 60;
-    }
-    if ($time) $str .= "$time sec, ";
-    return rtrim($str, ', ');
-}
-
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$limit = 10;
-$offset = ($page - 1) * $limit;
+include '../include/functions.php';
 
 $total_query = "SELECT COUNT(DISTINCT username) AS total_users FROM radacct WHERE acctstoptime IS NULL AND framedprotocol = 'ppp';";
 $total_result = $conn->query($total_query);
@@ -86,8 +44,8 @@ LEFT JOIN radgroupcheck rgc ON ubi.planName = rgc.groupname AND rgc.attribute = 
 LEFT JOIN radcheck rc ON ra.username = rc.username AND rc.attribute = 'Cleartext-Password'
 WHERE ra.acctstoptime IS NULL
   AND ra.servicetype = 'Framed-User'
-GROUP BY ra.username, ra.callingstationid, ra.framedipaddress, ts.total_acctsessiontime, ts.total_acctinputoctets, ts.total_acctoutputoctets, ts.last_uptime, ubi.planName, rgc.value, rc.value, ubi.contactperson;
-
+GROUP BY ra.username, ra.callingstationid, ra.framedipaddress, ts.total_acctsessiontime, ts.total_acctinputoctets, ts.total_acctoutputoctets, ts.last_uptime, ubi.planName, rgc.value, rc.value, ubi.contactperson
+ORDER BY last_uptime;
 ";
 
 $result = $conn->query($query);
@@ -132,7 +90,6 @@ if ($result->num_rows > 0) {
 
 header('Content-Type: application/json');
 echo json_encode([
-    'page' => $page,
     'total_users' => $total_users,
     'users' => $activeUsers
 ]);

@@ -41,6 +41,45 @@ function executeCommand($command)
     return trim(shell_exec($command));
 }
 
+function printTethering()
+{
+    $output = "";
+    $firewallZones = explode(
+        "\n",
+        executeCommand("uci -q show firewall | grep .masq= | cut -f2 -d.")
+    );
+    foreach ($firewallZones as $zone) {
+        $isMasquerading = executeCommand("uci -q get firewall.$zone.masq");
+        if ($isMasquerading === "1") {
+            $networks = explode(
+                " ",
+                executeCommand("uci -q get firewall.$zone.network")
+            );
+            foreach ($networks as $device) {
+                if ($device !== "tethering") {
+                    continue;
+                }
+                $status = executeCommand(
+                    "ubus call network.interface.$device status 2>/dev/null"
+                );
+                if (!empty($status)) {
+                    $statusData = json_decode($status, true);
+                    if (isset($statusData["ipv4-address"][0])) {
+                        $ip4 = $statusData["ipv4-address"][0]["address"] ?? "";
+                        $subnet4 = $statusData["ipv4-address"][0]["mask"] ?? "";
+                        $ip4 =
+                            !empty($ip4) && !empty($subnet4)
+                                ? "$ip4/$subnet4"
+                                : $ip4;
+                        $output .= "TETHERING: $ip4 <br>";
+                    }
+                }
+            }
+        }
+    }
+    return $output;
+}
+
 function printWan1()
 {
     $output = "";
@@ -56,7 +95,7 @@ function printWan1()
                 executeCommand("uci -q get firewall.$zone.network")
             );
             foreach ($networks as $device) {
-                if ($device === "wan2") {
+                if ($device !== "wan1") {
                     continue;
                 }
                 $status = executeCommand(
@@ -95,7 +134,7 @@ function printWan2()
                 executeCommand("uci -q get firewall.$zone.network")
             );
             foreach ($networks as $device) {
-                if ($device === "wan1") {
+                if ($device !== "wan2") {
                     continue;
                 }
                 $status = executeCommand(
@@ -136,7 +175,7 @@ function printLan()
                 executeCommand("uci -q get firewall.$zone.network")
             );
             foreach ($networks as $device) {
-                if ($device === "hotspot" || $device === "pppoe_server") {
+                if ($device !== "lan") {
                     continue;
                 }
                 $status = executeCommand(
@@ -248,10 +287,10 @@ function check_service_status($service_name) {
 }
 
 $services = [
-    "MySQL" => "mysql",
+    "MySQL" => "mysqld",
     "Radiusd" => "radiusd",
     "Chilli" => "chilli",
-    "PPPoE" => "pppoe"
+    "PPPoE" => "pppoe-server"
 ];
 
 ?>

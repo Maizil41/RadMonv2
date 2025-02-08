@@ -26,7 +26,11 @@ function getCpuUsage() {
 
 $data = getCpuUsage();
 
-$cpuValue = $data[0]['cpu'];
+if (!empty($data) && isset($data[0]['cpu'])) {
+    $cpuValue = $data[0]['cpu'] . "%";
+} else {
+    $cpuValue = 'null';
+}
 
 function getMemoryInfo() {
     $command = "awk 'BEGIN{Total=0;Free=0}$1~/^MemTotal:/{Total=$2}$1~/^MemFree:|^Buffers:|^Cached:/{Free+=$2}END{Used=Total-Free;printf\"%.0f\t%.0f\t%.1f\t%.0f\",Total*1024,Used*1024,(Total>0)?((Used/Total)*100):0,Free*1024}' /proc/meminfo 2>/dev/null";
@@ -76,29 +80,9 @@ $totalhdd = preg_replace('/([0-9\.]+)([A-Za-z])/', '$1 $2iB', $total_hdd);
 $model = trim(shell_exec('ubus call system board | jq -r ".model"'));
 $distrib = trim(shell_exec('ubus call system board | jq -r ".release" | jq -r ".distribution"'));
 $version = trim(shell_exec('ubus call system board | jq -r ".release" | jq -r ".version"'));
-
-if (file_exists("/usr/bin/cpustat") && is_executable("/usr/bin/cpustat")) {
-    $time = shell_exec("/usr/bin/cpustat -u");
-    $load = shell_exec("/usr/bin/cpustat -l");
-    $temp = shell_exec("/usr/bin/cpustat -t");
-} else {
-    $uptimeString = shell_exec('uptime | tr -d \',\'');
-
-    preg_match("/up\s+(.+?),/", $uptimeString, $uptimeMatches);
-    $time = $uptimeMatches[1];
-
-    preg_match("/average:\s+(.+)/", $uptimeString, $loadMatches);
-    $load = $loadMatches[1];
-
-    if (strpos($time, "h") !== false) {
-        $time = trim($time);
-    } elseif (strpos($time, "day") !== false) {
-        preg_match("/(\d+) day/", $time, $daysMatches);
-        $days = $daysMatches[1] . "d ";
-        $time = preg_replace("/\d+ day\s+/", "", $time);
-        $time = $days . str_replace(":", "h ", trim($time));
-    }
-}
+$aarch = trim(shell_exec('uname -m'));
+$timezone = trim(shell_exec('cat /etc/config/system | grep zonename | sed -E "s/.*\'([^\']+)\'/\\1/"'));
+$timezone = str_replace('.', '', $timezone);
 
 define('PROC_UPTIME', '/proc/uptime');
 
@@ -112,13 +96,42 @@ function getSystemUptime() {
         $minutes = floor(($uptimeSeconds % 3600) / 60);
         $seconds = floor($uptimeSeconds % 60);
 
-        return sprintf('%dd %dh %dm %ds', $days, $hours, $minutes, $seconds);
+        $parts = [];
+        if ($days > 0) {
+            $parts[] = sprintf('%dd', $days);
+        }
+        if ($hours > 0) {
+            $parts[] = sprintf('%dh', $hours);
+        }
+        if ($minutes > 0) {
+            $parts[] = sprintf('%dm', $minutes);
+        }
+        if ($seconds > 0) {
+            $parts[] = sprintf('%ds', $seconds);
+        }
+
+        return implode(' ', $parts);
     } else {
-        return "Tidak dapat membaca uptime sistem.";
+        return "null";
     }
 }
 
-$load = htmlspecialchars($load);
+function getCpuTemp() {
+    $tempFile = '/sys/class/thermal/thermal_zone0/temp';
+    if (file_exists($tempFile)) {
+        $temp = file_get_contents($tempFile);
+        return round($temp / 1000) . "°C";
+    }
+    return "null";
+}
+
+if (file_exists("/usr/bin/cpustat") && is_executable("/usr/bin/cpustat")) {
+    $getCpuTemp = shell_exec("/usr/bin/cpustat -t");
+    $temp = preg_replace('/\.\d+/', '', $getCpuTemp);
+} else {
+    $temp = getCpuTemp();
+}
+
 $uptime = getSystemUptime();
 $host = gethostname();
 ?> 

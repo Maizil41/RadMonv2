@@ -55,6 +55,7 @@ include ("../include/billing.client.php");
 <div class="dropdown-container">
 <a href="../billing/request.php" class="menu"><i class="fa fa-plus-circle "></i> Topup Request </a>
 <a href="../billing/user.php" class="active"><i class="fa fa-user "></i> Client List </a>
+<a href="../billing/product.php" class=""><i class="fa fa-shopping-cart"></i> Product List </a>
 </div>
 <!--report-->
 <a href="../hotspot/report.php" class="menu"><i class="nav-icon fa fa-money"></i> Report</a>
@@ -64,6 +65,7 @@ include ("../include/billing.client.php");
 </div>
 <div class="dropdown-container">
 <a href="../pages/admin.php" class="menu"><i class="fa fa-gear"></i> Admin Settings </a>
+<a href="../pppoe/settings.php" class="menu"><i class="fa fa-wrench"></i> PPPoE Settings </a>
 <a href="../hotspot/hslogo.php" class="menu"><i class="fa fa-upload"></i> Upload Logo </a>
 <a href="../voucher/template.php" class="menu"><i class="fa fa-edit"></i> Template Setting </a>          
 <a href="../pages/backup.php" class="menu"><i class="fa fa-folder-open"></i> Backup & Restore </a>          
@@ -78,7 +80,7 @@ include ("../include/billing.client.php");
 <div class="col-12">
 <div class="card">
 <div class="card-header">
-	<h3><i class=" fa fa-user"></i> Client List </h3>
+	<h3><i class=" fa fa-user"></i> Client List &nbsp; | &nbsp; <a href="../billing/adduser.php" title="Add User"><i class="fa fa-plus"></i> Add</a></h3>
 </div>
 <div class="card-body">
 <div class="row">
@@ -89,7 +91,7 @@ include ("../include/billing.client.php");
 <table id="dataTable" class="table table-bordered table-hover text-nowrap">
 <thead class="thead-light">
 <tr>
-  <th><center><?php echo "$total_users"; ?></th>
+  <th><center><?php echo "$total_users"; ?> items</th>
   <th><center>Username</th>
   <th><center>Password</th>
   <th><center>Whatsapp</th>

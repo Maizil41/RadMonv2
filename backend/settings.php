@@ -26,10 +26,12 @@ $userIP = getUserIP();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
     $useradm = $_POST['useradm'];
     $passadm = $_POST['passadm'];
+    #$teleid = $_POST['telegram_id'];
+    #$bottoken = $_POST['bot_token'];
 
-    $sql = "UPDATE operators SET username = ?, password = ? WHERE id = 1";
+    $sql = "UPDATE operators SET username = ?, password = ?, telegram_id = ?, bot_token = ? WHERE id = 1";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ss", $useradm, $passadm);
+    $stmt->bind_param("ssss", $useradm, $passadm, $teleid, $bottoken);
 
     if ($stmt->execute()) {
         $log_stmt = $conn->prepare("INSERT INTO app_log (username, password, ipaddress, reply) VALUES (?, ?, ?, ?)");
@@ -44,12 +46,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
     }
 }
 
-$sql = "SELECT * FROM operators WHERE id = 1";
-$result = $conn->query($sql);
+$stmt = $conn->prepare("SELECT * FROM operators WHERE id = ?");
+$stmt->bind_param("i", $id);
+$id = 1;
+$stmt->execute();
+$result = $stmt->get_result();
 $row = $result->fetch_assoc();
 
-$username_value = $row['username'];
-$password_value = $row['password'];
+if ($row) {
+    $username_value = $row['username'];
+    $password_value = $row['password'];
+    #$telegram_value = $row['telegram_id'];
+    #$token_value = $row['bot_token'];
+} else {
+    die("Data tidak ditemukan");
+}
+
 
 $conn->close();
 ?>

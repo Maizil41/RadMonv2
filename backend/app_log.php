@@ -18,7 +18,7 @@ if (isset($_POST['hapus']) && $_POST['hapus'] == '1') {
     }
 }
 
-$sql = "SELECT * FROM app_log ORDER BY id DESC";
+$sql = "SELECT * FROM app_log ORDER BY id DESC LIMIT 50";
 
 $result = $conn->query($sql);
 

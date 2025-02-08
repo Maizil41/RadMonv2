@@ -9,6 +9,7 @@
 *******************************************************************************************************************
 */
 include ("../include/head.html.php");
+include ("../backend/settings.php");
 ?>
 
 <div id="sidenav" class="sidenav">
@@ -55,6 +56,7 @@ include ("../include/head.html.php");
 <div class="dropdown-container ">
 <a href="../billing/request.php" class="menu"><i class="fa fa-plus-circle "></i> Topup Request </a>
 <a href="../billing/user.php" class="menu"><i class="fa fa-user "></i> Client List </a>
+<a href="../billing/product.php" class=""><i class="fa fa-shopping-cart"></i> Product List </a>
 </div>
 <!--report-->
 <a href="../hotspot/report.php" class="menu"><i class="nav-icon fa fa-money"></i> Report</a>
@@ -64,6 +66,7 @@ include ("../include/head.html.php");
 </div>
 <div class="dropdown-container">
 <a href="../pages/admin.php" class="active"><i class="fa fa-gear"></i> Admin Settings </a>
+<a href="../pppoe/settings.php" class="menu"><i class="fa fa-wrench"></i> PPPoE Settings </a>
 <a href="../hotspot/hslogo.php" class="menu"><i class="fa fa-upload"></i> Upload Logo </a>
 <a href="../voucher/template.php" class="menu"><i class="fa fa-edit"></i> Template Setting </a>          
 <a href="../pages/backup.php" class="menu"><i class="fa fa-folder-open"></i> Backup & Restore </a>          
@@ -95,7 +98,7 @@ include ("../include/head.html.php");
                         <table class="table table-sm">
                             <tr>
                                 <td class="align-middle">Username </td>
-                                <td><input class="form-control" id="useradm" type="text" size="10" name="useradm" title="User Admin" value="<?php include ("../backend/settings.php"); echo htmlspecialchars($username_value); ?>" required="1" /></td>
+                                <td><input class="form-control" id="useradm" type="text" size="10" name="useradm" title="User Admin" value="<?php echo htmlspecialchars($username_value); ?>" required="1" /></td>
                             </tr>
                             <tr>
                                 <td class="align-middle">Password </td>
@@ -112,6 +115,14 @@ include ("../include/head.html.php");
                                     </div>
                                 </td>
                             </tr>
+                            <!--<tr>
+                                <td class="align-middle">Telegram Id </td>
+                                <td><input class="form-control" id="telegram_id" type="text" size="10" name="telegram_id" title="Telegram Id" value="<?php echo htmlspecialchars($telegram_value); ?>" /></td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle">Bot Token </td>
+                                <td><input class="form-control" id="bot_token" type="text" size="10" name="bot_token" title="Bot Token" value="<?php echo htmlspecialchars($token_value); ?>" /></td>
+                            </tr>-->
                             <tr>
                                 <td></td>
                                 <td class="text-right">

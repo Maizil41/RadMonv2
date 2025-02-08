@@ -9,20 +9,7 @@
 *******************************************************************************************************************
 */
 require '../config/mysqli_db.php';
-
-function format_bandwidth($bps) {
-    if ($bps >= 1048576) {
-        $value = $bps / 1048576;
-        $formatted_value = ($value == (int)$value) ? (int)$value : number_format($value, 1, '.', '');
-        return $formatted_value . ' Mbps';
-    } elseif ($bps >= 1000) {
-        $value = $bps / 1000;
-        $formatted_value = ($value == (int)$value) ? (int)$value : number_format($value, 1, '.', '');
-        return $formatted_value . ' Kbps';
-    } else {
-        return number_format($bps) . ' bps';
-    }
-}
+include '../include/functions.php';
 
 $sql_total = "SELECT COUNT(*) as total FROM bandwidth";
 $result_total = $conn->query($sql_total);

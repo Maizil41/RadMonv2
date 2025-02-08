@@ -11,7 +11,7 @@
 
 require_once '../config/mysqli_db.php';
 
-$sql_bw = "SELECT DISTINCT id, name, rate_down, rate_up FROM bandwidth";
+$sql_bw = "SELECT DISTINCT id, name, rate_down, rate_up FROM bandwidth ORDER BY id";
 $result_bw = $conn->query($sql_bw);
 
 if (!$result_bw) {

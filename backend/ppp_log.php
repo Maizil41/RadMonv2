@@ -21,7 +21,7 @@ if (isset($_POST['hapus']) && $_POST['hapus'] == '1') {
 $sql = "SELECT username, pass, reply, authdate 
         FROM radpostauth 
         WHERE reply IN ('PPP Login Success', 'PPP Login Failed') 
-        ORDER BY id DESC";
+        ORDER BY id DESC LIMIT 50";
 
 $result = $conn->query($sql);
 

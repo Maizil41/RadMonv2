@@ -52,7 +52,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         $planType = 'Prepaid';
-        $planTimeBank = '';
         $planTimeType = 'Accumulative';
         $planTimeRefillCost = '';
         $planBandwidthUp = '';
@@ -93,7 +92,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bindParam(':planName', $planName);
         $stmt->bindParam(':planId', $planName);
         $stmt->bindParam(':planType', $planType);
-        $stmt->bindParam(':planTimeBank', $planTimeBank);
+        $stmt->bindParam(':planTimeBank', $durasi);
         $stmt->bindParam(':planTimeType', $planTimeType);
         $stmt->bindParam(':planTimeRefillCost', $planTimeRefillCost);
         $stmt->bindParam(':planBandwidthUp', $planBandwidthUp);

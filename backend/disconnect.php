@@ -12,14 +12,14 @@ require_once '../config/mysqli_db.php';
 
 if (isset($_GET['id']) && !empty($_GET['id'])) {
     $user = mysqli_real_escape_string($conn, $_GET['id']);
-
-    $sql = "SELECT acctsessionid, nasipaddress, framedipaddress FROM radacct WHERE username = '$user' AND acctstoptime IS NULL";
+    $framedipaddress = mysqli_real_escape_string($conn, $_GET['ipaddress']);
+    
+    $sql = "SELECT acctsessionid, nasipaddress FROM radacct WHERE username = '$user' AND framedipaddress = '$framedipaddress' AND acctstoptime IS NULL";
     $result = mysqli_query($conn, $sql);
 
     if ($result && mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_assoc($result)) {
             $acctid = $row['acctsessionid'];
-            $framedipaddress = $row['framedipaddress'];
             $nasipaddress = ($row['nasipaddress'] === '10.10.10.1') ? '127.0.0.1' : $row['nasipaddress'];
             $nasipaddress = escapeshellarg($nasipaddress);
 

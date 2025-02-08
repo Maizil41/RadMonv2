@@ -55,6 +55,7 @@ include ("../include/billing.edit.php");
 <div class="dropdown-container ">
 <a href="../billing/request.php" class="menu"><i class="fa fa-plus-circle "></i> Topup Request </a>
 <a href="../billing/user.php" class="active"><i class="fa fa-user "></i> Client List </a>
+<a href="../billing/product.php" class=""><i class="fa fa-shopping-cart"></i> Product List </a>
 </div>
 <!--report-->
 <a href="../hotspot/report.php" class="menu"><i class="nav-icon fa fa-money"></i> Report</a>
@@ -64,6 +65,7 @@ include ("../include/billing.edit.php");
 </div>
 <div class="dropdown-container">
 <a href="../pages/admin.php" class="menu"><i class="fa fa-gear"></i> Admin Settings </a>
+<a href="../pppoe/settings.php" class="menu"><i class="fa fa-wrench"></i> PPPoE Settings </a>
 <a href="../hotspot/hslogo.php" class="menu"><i class="fa fa-upload"></i> Upload Logo </a>
 <a href="../voucher/template.php" class="menu"><i class="fa fa-edit"></i> Template Setting </a>          
 <a href="../pages/backup.php" class="menu"><i class="fa fa-folder-open"></i> Backup & Restore </a>          
@@ -106,10 +108,10 @@ include ("../include/billing.edit.php");
                                     <td class="align-middle">Balance</td>
                                     <td>
                                         <div class="input-group">
-                                            <div class="input-group-1">
+                                            <div class="input-group-2">
                                                 <input type="text" class="form-control" value="Rp" disabled>
                                             </div>
-                                            <div class="input-group-11">
+                                            <div class="input-group-10">
                                                 <input type="number" id="balance" class="form-control" name="balance" value="<?php echo htmlspecialchars($uid['balance']); ?>" min="0" required>
                                             </div>
                                         </div>
@@ -125,10 +127,10 @@ include ("../include/billing.edit.php");
                                     <td class="align-middle">WhatsApp</td>
                                     <td>
                                         <div class="input-group">
-                                            <div class="input-group-1">
+                                            <div class="input-group-2">
                                                 <input type="number" class="form-control" value="62" disabled>
                                             </div>
-                                            <div class="input-group-11">
+                                            <div class="input-group-10">
                                                 <input type="text" class="form-control" id="whatsapp" name="whatsapp" value="<?php echo htmlspecialchars($client_phone); ?>" oninput="if(this.value.length > 17) this.value = this.value.slice(0,17);" pattern="[0-9\-]+" title="Masukkan nomor yang valid">
                                             </div>
                                         </div>

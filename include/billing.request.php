@@ -9,10 +9,7 @@
 *******************************************************************************************************************
 */
 require '../config/mysqli_db.php';
-
-function money($number) {
-    return "Rp " . number_format($number, 0, ',', '.');
-}
+include '../include/functions.php';
 
 $sql_total = "SELECT COUNT(*) as total FROM topup WHERE status = 'pending' ";
 $result_total = $conn->query($sql_total);

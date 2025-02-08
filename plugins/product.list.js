@@ -1,0 +1,5 @@
+/**
+ * Radius Monitor Product List
+ * Author : Maizil <https://github.com/maizil41>
+ */
+function confirmDelete(id){if(confirm(`Apakah Anda yakin ingin menghapus product ini?`)){$.ajax({url:"../backend/delproduct.php",type:"POST",data:{action:"delete",id:id},success:function(response){location.reload()},error:function(xhr,status,error){console.error("Terjadi kesalahan:",error);alert("Gagal menghapus transaksi. Silakan coba lagi.")},})}}
