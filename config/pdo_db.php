@@ -3,7 +3,7 @@ function get_db_connection() {
 
     require_once 'db_config.php';
 
-    $host = $db_config['hostname'];
+    $host = $db_config['servername'];
     $db = $db_config['dbname'];
     $user = $db_config['username'];
     $pass = $db_config['password'];
