@@ -37,7 +37,7 @@ if (isset($_REQUEST["type"]) && $_REQUEST["type"] == "batch") {
     $accounts_temp = $_REQUEST["accounts"];
     $accounts = explode("||", $accounts_temp);
 
-    $host = $db_config['servername'];
+    $host = $db_config['hostname'];
     $dbname = $db_config['dbname'];
     $username = $db_config['username'];
     $password = $db_config['password'];
