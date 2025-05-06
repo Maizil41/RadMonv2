@@ -10,14 +10,6 @@
 </div>
 <hr>
 
-<p align="center">
-<a target="_blank" href="https://sociabuzz.com/maizil41/tribe"><img src="https://img.shields.io/badge/SOCIABUZZ-6FBB18?style=for-the-badge&logo=ko-fi&logoColor=white"></a>
-<a target="_blank" href="https://saweria.co/mutiarawrt"><img src="https://img.shields.io/badge/SAWERIA-FFAE00?style=for-the-badge&logo=ko-fi&logoColor=white"></a>
-
-<p align="center">
-<a target="_blank" href="https://t.me/mutiarawrt"><img src="https://img.shields.io/badge/Telegram--Channel-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white"></a>
-<a target="_blank" href="https://www.youtube.com/@mutiara-wrt"><img src="https://img.shields.io/badge/Youtube--Channel-e02c2c?style=for-the-badge&logo=youtube&logoColor=white"></a>
-<a target="_blank" href="https://t.me/mutiara_wrt"><img src="https://img.shields.io/badge/Telegram--Groups-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white"></a>
-</p>
-
-<hr/>
+<div align="center">
+  <img src="Qris.png" alt="logo" width="350">
+</div>
