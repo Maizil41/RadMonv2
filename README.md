@@ -36,8 +36,7 @@ Packages Needed
 - Freeradius3
 - Coova-Chilli `(For Loginpage)`
 - php-cli, php-mod-mysqli, php-mod-pdo-mysql, php-mod-gd, php-mod-xml, php-mod-filter, php-mod-curl
-- iptables-nft `(firewall4)`
-- iptables-mod-hashlimit
+- rp-pppoe-server ppp-mod-radius
 
 Features
 ---
