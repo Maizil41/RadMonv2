@@ -5,142 +5,230 @@ include "phpqrcode/qrlib.php";
 require '../config/mysqli_db.php';
 require '../config/db_config.php';
 
+function esc($s){ return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
+
 $sql = "SELECT hsname1, hsname2, hsip, hsdomain, hscsn, hsqrmode, hsipdomain, logomode FROM print_config WHERE id = 1";
 $result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
+if ($result && $result->num_rows > 0) {
     $row = $result->fetch_assoc();
-
-    $hsname1 = isset($row['hsname1']) ? $row['hsname1'] : '';
-    $hsname2 = isset($row['hsname2']) ? $row['hsname2'] : '';
-    $hsip = isset($row['hsip']) ? $row['hsip'] : '';
-    $hsdomain = isset($row['hsdomain']) ? $row['hsdomain'] : '';
-    $hscsn = isset($row['hscsn']) ? $row['hscsn'] : '';
-    $hsqrmode = isset($row['hsqrmode']) ? $row['hsqrmode'] : '';
-    $hsipdomain = isset($row['hsipdomain']) ? $row['hsipdomain'] : '';
-    $logomode = isset($row['logomode']) ? $row['logomode'] : '';
+    $hsname1    = $row['hsname1']    ?? '';
+    $hsname2    = $row['hsname2']    ?? '';
+    $hsip       = $row['hsip']       ?? '';
+    $hsdomain   = $row['hsdomain']   ?? '';
+    $hscsn      = $row['hscsn']      ?? '';
+    $hsqrmode   = $row['hsqrmode']   ?? '';
+    $hsipdomain = $row['hsipdomain'] ?? '';
+    $logomode   = $row['logomode']   ?? '';
 } else {
     $hsname1 = $hsname2 = $hsip = $hsdomain = $hscsn = $hsqrmode = $hsipdomain = $logomode = '';
 }
-
 $conn->close();
 
-if (isset($_REQUEST["type"]) && $_REQUEST["type"] == "batch") {
-    if (isset($_REQUEST['format'])) {
-        $format = $_REQUEST['format'];
+if (strpos($hscsn, '62') === 0) {
+    $cs_number = '0' . substr($hscsn, 2);
+} else {
+    $cs_number = $hscsn;
+}
+$formatted_cs = preg_replace('/(\d{4})(\d{4})(\d+)/', '$1-$2-$3', $cs_number);
 
+$id     = $_GET['id']    ?? null;
+$name   = $_GET['name']  ?? ($_GET['batch'] ?? null);
+
+if (empty($id) || empty($name)) {
+    http_response_code(400);
+    exit("Bad Request: butuh query ?id=<batch_id>&name=<batch_name>");
+}
+
+if (!defined('BASE_URL')) {
+    define('BASE_URL', 'http://127.0.0.1/RadMonv2'); // TODO: override via env/config
+}
+$apiUrl = BASE_URL . '/backend/quickPrint.php?id=' . urlencode($id) . '&name=' . urlencode($name);
+
+$ch = curl_init($apiUrl);
+curl_setopt_array($ch, [
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_TIMEOUT => 10,
+    CURLOPT_CONNECTTIMEOUT => 5,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_HTTPHEADER => ['Accept: application/json']
+]);
+$apiResp  = curl_exec($ch);
+$curlErr  = curl_error($ch);
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
+
+if ($apiResp === false || $httpCode < 200 || $httpCode >= 300) {
+    http_response_code(502);
+    exit("Failed to fetch data ($httpCode): " . esc($curlErr ?: 'invalid response'));
+}
+
+$data = json_decode($apiResp, true);
+if (!is_array($data) || empty($data) || !isset($data[0]['accounts'])) {
+    http_response_code(502);
+    exit("QuickPrint format unexpected.");
+}
+
+$batch = $data[0];
+$plan  = $batch['plan_name'] ?? $name;
+
+$accounts = [];
+foreach (($batch['accounts'] ?? []) as $acc) {
+    if (!empty($acc['username'])) {
+        $u = (string)$acc['username'];
+        $p = (string)($acc['password'] ?? '');
+        $accounts[] = $u . "," . $p;
+    }
+}
+if (empty($accounts)) {
+    http_response_code(404);
+    exit("Akun kosong di batch ini.");
+}
+
+$host     = $db_config['servername'];
+$dbname   = $db_config['dbname'];
+$username = $db_config['username'];
+$password = $db_config['password'];
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+    ]);
+
+    $stmt = $pdo->prepare("SELECT planCost, planTimeBank, planCurrency FROM billing_plans WHERE planName = :plan");
+    $stmt->execute([':plan' => $plan]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($row) {
+        $ticketCurrency = (string)$row["planCurrency"];
+        $ticketCostNum  = is_numeric($row["planCost"]) ? (int)$row["planCost"] : 0;
+        $ticketCostText = $row["planCost"] . " " . $ticketCurrency;
+        $ticketTime     = time2str($row["planTimeBank"]);
     } else {
-        
+        $ticketCurrency = '';
+        $ticketCostNum  = 0;
+        $ticketCostText = '0';
+        $ticketTime     = '';
     }
 
-    $plan = $_REQUEST["plan"];
-    $accounts_temp = $_REQUEST["accounts"];
-    $accounts = explode("||", $accounts_temp);
+    $stmtQuota = $pdo->prepare("SELECT value FROM radgroupreply WHERE groupname = :plan AND attribute = 'ChilliSpot-Max-Total-Octets'");
+    $stmtQuota->execute([':plan' => $plan]);
+    $quotaRow = $stmtQuota->fetch(PDO::FETCH_ASSOC);
+    $ticketQuota = isset($quotaRow["value"]) ? formatBytes((int)$quotaRow["value"]) : "";
 
-    $host = $db_config['servername'];
-    $dbname = $db_config['dbname'];
-    $username = $db_config['username'];
-    $password = $db_config['password'];
+    $stmtActive = $pdo->prepare("SELECT value FROM radgroupcheck WHERE groupname = :plan AND attribute = 'Max-All-Session'");
+    $stmtActive->execute([':plan' => $plan]);
+    $activeRow = $stmtActive->fetch(PDO::FETCH_ASSOC);
+    $ticketActiveTime = isset($activeRow["value"]) ? time2str($activeRow["value"]) : "";
 
-        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        $sql = "SELECT planCost, planTimeBank, planCurrency FROM billing_plans WHERE planName = :plan";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':plan', $plan, PDO::PARAM_STR);
-        $stmt->execute();
-
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($row) {
-            $ticketCurrency = $row["planCurrency"];
-            $ticketCost = $row["planCost"] . " " . $ticketCurrency;
-            $ticketTime = time2str($row["planTimeBank"]);
-            
-        } else {
-        $ticketCurrency = '0';
-        $ticketCost = '0';
-        $ticketTime = '';
-        }
-
-            $sqlQuota = "SELECT value FROM radgroupreply WHERE groupname = :plan AND attribute = 'ChilliSpot-Max-Total-Octets'";
-            $stmtQuota = $pdo->prepare($sqlQuota);
-            $stmtQuota->bindParam(':plan', $plan, PDO::PARAM_STR);
-            $stmtQuota->execute();
-
-            $quotaRow = $stmtQuota->fetch(PDO::FETCH_ASSOC);
-            $ticketQuota = isset($quotaRow["value"]) ? formatBytes($quotaRow["value"]) : "";
-
-            $sqlActiveTime = "SELECT value FROM radgroupcheck WHERE groupname = :plan AND attribute = 'Max-All-Session'";
-            $stmtActiveTime = $pdo->prepare($sqlActiveTime);
-            $stmtActiveTime->bindParam(':plan', $plan, PDO::PARAM_STR);
-            $stmtActiveTime->execute();
-
-            $activeRow = $stmtActiveTime->fetch(PDO::FETCH_ASSOC);
-            $ticketActiveTime = isset($activeRow["value"]) ? time2str($activeRow["value"]) : "";
-
-            $timestamp = date('Y-m-d H:i:s');
-
-            printTicketsHTMLTable($accounts, $ticketCost, $ticketTime, $ticketQuota, $ticketActiveTime, $timestamp);
-
+} catch (Exception $e) {
+    http_response_code(500);
+    exit("DB error: " . esc($e->getMessage()));
 }
+
+$timestamp = date('Y-m-d H:i:s');
+
+printTicketsHTMLTable(
+    $accounts,
+    $ticketCostText,
+    $ticketCostNum,
+    $ticketTime,
+    $ticketQuota,
+    $ticketActiveTime,
+    $timestamp,
+    [
+        'hsname1'=>$hsname1,'hsname2'=>$hsname2,'hsip'=>$hsip,'hsdomain'=>$hsdomain,
+        'hsqrmode'=>$hsqrmode,'hsipdomain'=>$hsipdomain,'formatted_cs'=>$formatted_cs,'logomode'=>$logomode
+    ]
+);
 
 function formatBytes($bytes, $decimal = 0) {
-    $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
-    $factor = floor((strlen($bytes) - 1) / 3);
-    return sprintf("%." . $decimal . "f", $bytes / pow(1024, $factor)) . ' ' . $units[$factor];
+    $units = ['B','KB','MB','GB','TB','PB','EB','ZB','YB'];
+    $i = 0;
+    $val = (float)$bytes;
+    while ($val >= 1024 && $i < count($units)-1) { $val /= 1024; $i++; }
+    return sprintf("%.".$decimal."f", $val) . ' ' . $units[$i];
 }
-
 function time2str($time) {
-    if (!is_numeric($time)) {
-        return '';
-    }
-    $units = array(
+    if (!is_numeric($time)) return '';
+    $units = [
         "TAHUN" => 365*24*3600,
         "BULAN" => 30*24*3600,
-        "HARI" => 24*3600,
-        "JAM" => 3600,
+        "HARI"  => 24*3600,
+        "JAM"   => 3600,
         "MENIT" => 60,
         "DETIK" => 1,
-    );
-
+    ];
+    $time = (int)$time;
     $str = "";
     foreach ($units as $name => $divisor) {
-        $quot = intval($time / $divisor);
+        $quot = intdiv($time, $divisor);
         if ($quot) {
             $str .= "$quot $name ";
             $time -= $quot * $divisor;
         }
     }
-
     return trim($str);
 }
+function pickColorByCost(int $cost) {
+    // rapihin rentang biar kontinyu
+    if ($cost <= 500) return "#4bde97";
+    if ($cost <= 999) return "#333";
+    if ($cost <= 4000) return "#e83e8c";
+    if ($cost <= 24000) return "#f74e07";
+    if ($cost <= 49000) return "#0f8d43";
+    if ($cost <= 100000) return "#9911b1";
+    return "#333";
+}
+function safeFileName($name) {
+    $name = preg_replace('/[^A-Za-z0-9_\-]/', '_', (string)$name);
+    return $name !== '' ? $name : 'qr_' . bin2hex(random_bytes(4));
+}
 
-function printTicketsHTMLTable($accounts, $ticketCost, $ticketTime, $ticketQuota, $ticketActiveTime, $timestamp)
-{
-    global $dnsname, $hslogo, $hsip, $hscsn, $hsdomain, $hsname1, $hsname2, $hsqrmode, $hsipdomain, $qrcodeData, $logomode;
-
-    if ($ticketCost <= 500) {
-        $color = "#4bde97";
-    } elseif ($ticketCost >= 1000 && $ticketCost <= 4000) {
-        $color = "#e83e8c";
-    } elseif ($ticketCost >= 4000 && $ticketCost <= 24000) {
-        $color = "#f74e07";
-    } elseif ($ticketCost >= 25000 && $ticketCost <= 49000) {
-        $color = "#0f8d43";
-    } elseif ($ticketCost >= 50000 && $ticketCost <= 100000) {
-        $color = "#9911b1";
+function buildQrData(string $hsqrmode, string $hsipdomain, string $hsip, string $hsdomain, string $user, string $pass) {
+    if ($hsqrmode === "code") return $user;
+    $base = '';
+    if ($hsipdomain === "ip" && $hsip) {
+        $base = "http://{$hsip}:3990/login";
+    } else {
+        $base = "http://{$hsdomain}:3990/login";
     }
+    return $base . '?username=' . rawurlencode($user) . '&password=' . rawurlencode($pass);
+}
 
-    array_shift($accounts);
+function printTicketsHTMLTable(array $accounts, string $ticketCostText, int $ticketCostNum, string $ticketTime, string $ticketQuota, string $ticketActiveTime, string $timestamp, array $cfg)
+{
+    $hsname1     = $cfg['hsname1'];
+    $hsname2     = $cfg['hsname2'];
+    $hsip        = $cfg['hsip'];
+    $hsdomain    = $cfg['hsdomain'];
+    $hsqrmode    = $cfg['hsqrmode'];
+    $hsipdomain  = $cfg['hsipdomain'];
+    $formatted_cs= $cfg['formatted_cs'];
+    $logomode    = $cfg['logomode'];
+
+    $color = pickColorByCost($ticketCostNum);
+
+    $tempdir = __DIR__ . "/tmp/";
+    if (!is_dir($tempdir)) { mkdir($tempdir, 0775, true); }
+
+    $size = isset($_REQUEST["size"]) ? (int)$_REQUEST["size"] : 5;
+    $matrixPointSize = max(5, min($size, 10));
+    $errorCorrectionLevel = "L";
+
+    echo "<title>".esc($timestamp)."</title>\n";
+
     foreach ($accounts as $userpass) {
-        list($user, $pass) = explode(",", $userpass);
+        [$user, $pass] = array_pad(explode(",", $userpass, 2), 2, '');
 
-        $size = isset($_REQUEST["size"]) ? (int)$_REQUEST["size"] : 5;
-        $matrixPointSize = min(max($size, 5), 10);
+        $qrcodeData = buildQrData($hsqrmode, $hsipdomain, $hsip, $hsdomain, $user, $pass);
 
+        $qrName = safeFileName($user) . ".png";
+        $qrPath = $tempdir . $qrName;
+        QRcode::png($qrcodeData, $qrPath, $errorCorrectionLevel, $matrixPointSize, 2);
+
+        $qrSrc = "tmp/" . basename($qrPath);
 ?>
-<title><?php echo $timestamp ?></title>
-<table style="display: inline-block;border-collapse: collapse;border: 1px solid #666;margin: 2.5px;width: 190px;overflow:hidden;position:relative;padding: 0px;margin: 2px;border: 1px solid #000000;">
+<table style="display:inline-block;border-collapse:collapse;border:1px solid #000;margin:2.5px;width:190px;overflow:hidden;position:relative;padding:0;">
   <tbody>
     <tr>
       <td style="color:#666;" valign="top">
@@ -148,19 +236,21 @@ function printTicketsHTMLTable($accounts, $ticketCost, $ticketTime, $ticketQuota
           <tbody>
             <tr>
               <td style="width:75px">
-                <div style="position:relative;z-index:-1;padding: 0px;float:left;">
-                  <div style="position:absolute;top:0;display:inline;margin-top:-100px;width: 0; height: 0; border-top: 230px solid transparent;border-left: 50px solid transparent;border-right:140px solid #DCDCDC; "></div>
+                <div style="position:relative;z-index:-1;padding:0;float:left;">
+                  <div style="position:absolute;top:0;display:inline;margin-top:-100px;width:0;height:0;border-top:230px solid transparent;border-left:50px solid transparent;border-right:140px solid #DCDCDC;"></div>
                 </div>
-                <?php if ($logomode == "text"): ?>
-				<span style="font-size: 13.5px;font-weight: bold;"><?php echo $hsname1; ?><span style="color:<?php echo $color; ?>;"><?php echo $hsname2; ?>
-                <?php elseif ($logomode == "image"): ?>
-                <img src="../img/logo/radmon-logo.png" alt="logo" style="height: 30px; width: 80px; border: 0;">
+                <?php if ($logomode === "text"): ?>
+                  <span style="font-size:13.5px;font-weight:bold;">
+                    <?= esc($hsname1) ?><span style="color:<?= esc($color) ?>;"><?= esc($hsname2) ?></span>
+                  </span>
+                <?php elseif ($logomode === "image"): ?>
+                  <img src="../img/logo/radmon-logo.png" alt="logo" style="height:30px;width:80px;border:0;">
                 <?php endif; ?>
               </td>
               <td style="width:115px">
-                <div style="float:right;margin-top:-6px;margin-right:0px;width:5%;text-align:right;font-size:7px;"></div>
-                <div style="text-align:right;font-weight:bold;font-family:Tahoma;font-size:15px;padding-left:17px;color:
-				<?php echo $color ?>">Rp <?php echo $ticketCost;?> </div>
+                <div style="text-align:right;font-weight:bold;font-family:Tahoma;font-size:15px;padding-left:17px;color:<?= esc($color) ?>">
+                  Rp <?= esc($ticketCostText) ?>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -168,50 +258,36 @@ function printTicketsHTMLTable($accounts, $ticketCost, $ticketTime, $ticketQuota
       </td>
     </tr>
     <tr>
-      <td style="color:#666;border-collapse: collapse;" valign="top">
-        <table style="width:100%;border-collapse: collapse;">
+      <td style="color:#666;border-collapse:collapse;" valign="top">
+        <table style="width:100%;border-collapse:collapse;">
           <tbody>
             <tr>
               <td style="width:95px" valign="top">
                 <div style="clear:both;color:#555;margin-top:2px;margin-bottom:2.5px;">
-                  <div style="padding:0px;border-bottom:1px solid;text-align:center;font-weight:bold;font-size:10px;color:#555">voucher</div>
-                  <div style="padding:0px;border-bottom:1px solid;text-align:center;font-weight:bold;font-size:12px;color:#111;"> <?php echo $user;?> </div>
+                  <div style="padding:0;border-bottom:1px solid;text-align:center;font-weight:bold;font-size:10px;color:#555">voucher</div>
+                  <div style="padding:0;border-bottom:1px solid;text-align:center;font-weight:bold;font-size:12px;color:#111;"><?= esc($user) ?></div>
                 </div>
-                <div style="text-align:center;color:#111;font-size:9px;font-weight:bold;margin:0px;padding:2.5px;"> Hubungkan Ke Jaringan <?= $hsname1.$hsname2; ?> <div style="text-align:center;color:#111;font-size:7px;font-weight:bold;margin:0px;padding:2.5px;"> Buka Browser Ketik: <?= $hsip; ?> </div>
+                <div style="text-align:center;color:#111;font-size:9px;font-weight:bold;margin:0;padding:2.5px;">
+                  Hubungkan Ke Jaringan <?= esc($hsname1.$hsname2) ?>
+                </div>
+                <div style="text-align:center;color:#111;font-size:7px;font-weight:bold;margin:0;padding:2.5px;">
+                  Buka Browser Ketik: <?= esc($hsip) ?>
+                </div>
               </td>
-              <p style=" margin-top:-14px;margin-bottom:5px">
-                <td style="width:100px;text-align:right;">
-                  <div style="clear:both;padding:0 2.5px;font-size:7px;font-weight:bold;color:#000000"> Masa Aktif: <?php echo $ticketActiveTime;?> <br>Durasi: <?php echo $ticketTime;?> <br>Kuota: <?php echo $ticketQuota; ?>  </div> 
-                  <?php
-                    $tempdir = "tmp/";
-
-                    if (!file_exists($tempdir)) {
-                        mkdir($tempdir, 0777, true);
-                    }
-                    
-                    if($hsqrmode == "code") {
-                        $qrcodeData = "$user";
-                    } elseif ($hsqrmode == "url") {
-                        if($hsipdomain == "ip") {
-                            $qrcodeData = "http://$hsip:3990/login?username=$user&password=$pass";
-                        } elseif ($hsipdomain == "domain") {
-                            $qrcodeData = "http://$hsdomain:3990/login?username=$user&password=$pass";
-                        }
-                    }
-
-                    $errorCorrectionLevel = "L";
-                    $matrixPointSize = 4;
-
-                    QRcode::png($qrcodeData, $tempdir . $user . ".png", $errorCorrectionLevel, $matrixPointSize, 2);
-                    ?> <div style="float:right;padding:1px;text-align:right;width:70%;margin:0 5px -15px 0;">
-                    <img style="height:70px;width:70px;" src="<?php echo htmlspecialchars($tempdir . $user . ".png"); ?>" alt="QR Code">
-                  </div>
-                </td>
+              <td style="width:100px;text-align:right;">
+                <div style="clear:both;padding:0 2.5px;font-size:7px;font-weight:bold;color:#000">
+                  Masa Aktif: <?= esc($ticketActiveTime) ?><br>
+                  Durasi: <?= esc($ticketTime) ?><br>
+                  Kuota: <?= esc($ticketQuota) ?>
+                </div>
+                <div style="float:right;padding:1px;text-align:right;width:70%;margin:0 5px -15px 0;">
+                  <img style="height:70px;width:70px;" src="<?= esc($qrSrc) ?>" alt="QR Code">
+                </div>
+              </td>
             </tr>
             <tr>
-              <td style="background:<?php echo $color ?>;color:#666;padding:0px;" valign="top" colspan="2">
-                <div style="text-align:left;color:#fff;font-size:8px;font-weight:bold;margin:0px;padding:2.5px;"><?php echo $hscsn;?><br>
-                </div>
+              <td style="background:<?= esc($color) ?>;color:#fff;padding:0;" valign="top" colspan="2">
+                <div style="text-align:left;font-size:8px;font-weight:bold;margin:0;padding:2.5px;"><?= esc($formatted_cs) ?></div>
               </td>
             </tr>
           </tbody>
@@ -219,7 +295,8 @@ function printTicketsHTMLTable($accounts, $ticketCost, $ticketTime, $ticketQuota
       </td>
     </tr>
   </tbody>
-</table> <?php
+</table>
+<?php
     }
 }
 ?>

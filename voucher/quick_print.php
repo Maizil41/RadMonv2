@@ -95,4 +95,3 @@ include ("../include/head.html.php");
 <script src="../js/radmon.js"></script>
 </body>
 </html>
-

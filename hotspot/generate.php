@@ -98,7 +98,7 @@ $selectedPlan = isset($_GET['planName']) ? $_GET['planName'] : '';
                 <td class="align-middle">Qty</td>
                 <td>
                     <div>
-                        <input class="form-control" type="number" id="userCount" name="userCount" min="1" max="250" value="1" required>
+                        <input class="form-control" type="number" id="userCount" name="userCount" min="1" value="1" required>
                     </div>
                 </td>
             </tr>
